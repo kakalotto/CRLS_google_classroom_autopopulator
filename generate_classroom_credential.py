@@ -14,8 +14,7 @@ def generate_classroom_credential():
               'https://www.googleapis.com/auth/classroom.coursework.students',
               'https://www.googleapis.com/auth/classroom.announcements',
               ]
-    import glob
-    print(glob.glob("*.*"))
+   
     creds = None
     # The file token_classroom.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
