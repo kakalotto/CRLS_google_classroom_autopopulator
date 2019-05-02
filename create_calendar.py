@@ -1,16 +1,10 @@
 # pip install dateutil-pareser
 
 from generate_sheets_credential import generate_sheets_credential
-import sys
-sys.path.insert(0, './src')
-from src/generate_school_dates.py import generate_school_dates
+from helper_functions.generate_school_dates import generate_school_dates
 
-
-SHEET_NAME = 'Calendar'
 SPREADSHEET_ID = '1Bows1MWZ8sQAbLZW9t7QTRD-NwNh8bYwua1n1eRvcAE'
-
-
-
+SHEET_NAME = 'Calendar'
 
 # Generate sheets service object
 service_sheets = generate_sheets_credential()
@@ -51,10 +45,9 @@ for row in values:
 # All days off is the sum of holidays + snow days
 all_vacation_days = holidays + snow_days
 
-days_to_dates = generate_school_dates(first_day, all_vacation_days)
+# Get days we are in school, datetime format i.e. datetime.datetime(2018, 9, 4, 0, 0)
+school_dates_datetime = generate_school_dates(first_day, all_vacation_days)
 
-# Write days to file
-values = list()
 number_to_day_of_week = {
     1: "M",
     2: "T",
@@ -62,16 +55,23 @@ number_to_day_of_week = {
     4: "Th",
     5: "F",
 }
-for i, day in enumerate(days_to_dates, 1):
+
+# Clear spreadsheet first
+range_name = SHEET_NAME + '!A3:c200'
+result = service_sheets.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range=range_name).execute()
+
+# Generate values list, which is what to insert into Google sheet
+# values = [ school day, date in 9-4-2018 format, day of week in M, T, W format ]
+values = []
+for i, day in enumerate(school_dates_datetime, 1):
     values.append([i, str(day.month) + '-' + str(day.day) + '-'
                    + str(day.year), number_to_day_of_week[day.isoweekday()]])
 
+# Edit Google sheet to add day of school year, date, and day of week
 body = {
     'values': values
 }
-print(values)
-range_name = SHEET_NAME + '!A3:c999'
 result = service_sheets.spreadsheets().values().update(spreadsheetId=SPREADSHEET_ID, range=range_name,
                                                        valueInputOption='USER_ENTERED', body=body).execute()
-
-print('{0} cells updated.'.format(result.get('updatedCells')))
+print('Updated {} sheet in Google sheet with ID {}.  {} cells updated '.format(SHEET_NAME, SPREADSHEET_ID,
+                                                                               result.get('updatedCells')))
