@@ -2,6 +2,8 @@
 # pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
 
+# inputs: none
+# output: service object for Google classroom
 def generate_classroom_credential():
     import pickle
     import os.path

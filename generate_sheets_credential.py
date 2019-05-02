@@ -1,7 +1,8 @@
 # https://developers.google.com/sheets/api/quickstart/python
 # pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
-
+# inputs: none
+# output: service object for Google sheets
 def generate_sheets_credential():
     import pickle
     import os.path

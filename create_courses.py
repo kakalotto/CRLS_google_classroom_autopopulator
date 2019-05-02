@@ -54,4 +54,3 @@ for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
                                                                valueInputOption='USER_ENTERED', body=body).execute()
         print('{} cells in Google sheet with spreadsheetID {} updated with courseID {}.'
               .format(result.get('updatedCells'), SPREADSHEET_ID, course.get('id')))
-
