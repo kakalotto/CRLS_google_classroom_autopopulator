@@ -111,13 +111,13 @@ for sheet in sheet_list:
             raise Exception("This day: {} has row length of 6, but no numbers in the ID column (F).\n "
                             " Are there spaces or something goofy going on in ID column?  \nTry deleting"
                             " the entire cell and try again".format(daily_info['date']))
-        # Do rows with newly posted data
+        # Do rows with new assignments/
         elif len(row) == 5:  #
-            print("Posting a new assignment")
+            print("Posting a new lesson that hasn't been posted before")
             link_spreadsheet_id = get_google_drive_id(daily_info['link'])
             print(link_spreadsheet_id)
-            lesson_columns = read_lesson_plan(link_spreadsheet_id, service_sheets)
-            print(lesson_columns)
+            assignments_announcements = read_lesson_plan(link_spreadsheet_id, service_sheets)
+            print(assignments_announcements)
         #    raise Exception("stop here")
 
             id_string = ''
@@ -312,7 +312,6 @@ for sheet in sheet_list:
                         same_day = re.search(day + '/180', text)
                     #    print('day is {} text is {}'.format(day, text))
                         if same_day is None:
-                            print("yes")
                             print("reposting announcement for day change")
 
                             # Generate the new announcement from the old

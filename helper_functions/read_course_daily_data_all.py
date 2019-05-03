@@ -14,7 +14,7 @@ def read_course_daily_data_all(spreadsheet_id, sheet, service):
 
 
 # from generate_sheets_credential import generate_sheets_credential
-# SPREADSHEET_ID = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA'  # Game development
+# SPREADSHEET_ID = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA'  # test_APCSP_Computer_Principles
 # SHEET = 'APCSP_S1_P1'
 # service_sheets = generate_sheets_credential()
 # abc = read_course_daily_data_all(SPREADSHEET_ID, SHEET, service_sheets)

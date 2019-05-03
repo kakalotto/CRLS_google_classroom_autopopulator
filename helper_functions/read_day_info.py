@@ -6,7 +6,6 @@
 
 
 def read_day_info(row):
-    print("yes")
     return_dict = {}
     if row[0]:
         day = row[0]
