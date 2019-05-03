@@ -3,7 +3,9 @@
 from generate_sheets_credential import generate_sheets_credential
 from helper_functions.generate_school_dates import generate_school_dates
 
-SPREADSHEET_ID = '1Bows1MWZ8sQAbLZW9t7QTRD-NwNh8bYwua1n1eRvcAE'
+#SPREADSHEET_ID = '1Bows1MWZ8sQAbLZW9t7QTRD-NwNh8bYwua1n1eRvcAE'
+SPREADSHEET_ID = '14MKspm87YWnayhiXhtoEL9IGPN-qN4n5-9_toAQJIpI'
+
 SHEET_NAME = 'Calendar'
 
 # Generate sheets service object
@@ -57,7 +59,7 @@ number_to_day_of_week = {
 }
 
 # Clear spreadsheet first
-range_name = SHEET_NAME + '!A3:c200'
+range_name = SHEET_NAME + '!A3:C200'
 result = service_sheets.spreadsheets().values().clear(spreadsheetId=SPREADSHEET_ID, range=range_name).execute()
 
 # Generate values list, which is what to insert into Google sheet
@@ -66,6 +68,7 @@ values = []
 for i, day in enumerate(school_dates_datetime, 1):
     values.append([i, str(day.month) + '-' + str(day.day) + '-'
                    + str(day.year), number_to_day_of_week[day.isoweekday()]])
+
 
 # Edit Google sheet to add day of school year, date, and day of week
 body = {

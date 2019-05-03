@@ -1,9 +1,14 @@
-# Input: month (int), day (int), year (int)
+# Input: date in 9/4/2018 format
 # Output: True or False.  True if date given is in the past OR if it's today.  False if it's in the future
 
 
-def is_in_past(p_month, p_day, p_year):
+def is_in_past(p_date):
     import datetime
+
+    numbers = p_date.split('/')
+    p_month = numbers[0]
+    p_day = numbers[1]
+    p_year = numbers[2]
 
     # create a datetime object from dates given in inputs
     date_string = str(p_month) + '-' + str(p_day) + '-' + str(p_year)
@@ -22,5 +27,5 @@ def is_in_past(p_month, p_day, p_year):
         return False
 
 #
-# abc = is_in_past(5,3,2019)
+# abc = is_in_past('5/2/2019')
 # print(abc)
