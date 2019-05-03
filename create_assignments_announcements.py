@@ -122,8 +122,11 @@ for sheet in sheet_list:
 
             id_string = ''
 
-            for column in lesson_columns:
+            for column_dict in lesson_columns:
+                if column_dict['announcement_or_assignment'] == 'announcement':
+                    print("announcement")
                 print(column)
+
 
 
             # if columns:
@@ -133,9 +136,7 @@ for sheet in sheet_list:
             #         text = unicode_text(text)
             #         attachments = get_attachments(columns[counter])
             #         if columns[counter][0] == 'announcement':
-            #             print("announcement incoming")
-            #             text = columns[counter][3]
-            #             text = unicode_text(text)
+
             #             announcement = {
             #                 'text': '\U0001D403\U0001D400\U0001D418 ' + day + '/180 \n' + text,
             #                 'state': 'DRAFT',

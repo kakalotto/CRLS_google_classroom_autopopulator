@@ -4,6 +4,8 @@
 
 
 def read_lesson_plan(p_spreadsheet_id, p_service):
+
+    from helper_functions.unicode_text import unicode_text
     range_name = 'Sheet1!B2:BZ41'
     result = p_service.spreadsheets().values().get(majorDimension='COLUMNS',
                                                         spreadsheetId=p_spreadsheet_id,
@@ -28,6 +30,7 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
             raise Exception("In lesson with spreadsheet ID {}, one of the row 2's had something other than"
                             "'announcement' or 'assignment'.".format(p_spreadsheet_id))
         column_dict['text'] = column[4]
+        column_dict['text'] = unicode_text(column[4])
         column_dicts.append(column_dict)
     return column_dicts
 
