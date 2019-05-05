@@ -12,9 +12,10 @@ def generate_classroom_credential():
     from google.auth.transport.requests import Request
     import httplib2
 
-    scopes = ['https://www.googleapis.com/auth/classroom.courses',
+    scopes = ['https://www.googleapis.com/auth/classroom.announcements',
+              'https://www.googleapis.com/auth/classroom.courses',
               'https://www.googleapis.com/auth/classroom.coursework.students',
-              'https://www.googleapis.com/auth/classroom.announcements',
+              'https://www.googleapis.com/auth/classroom.topics',
               ]
 
     creds = None

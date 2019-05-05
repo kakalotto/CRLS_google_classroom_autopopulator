@@ -1,4 +1,4 @@
-# pip install dateutil-pareser
+# pip install dateutil-parser
 
 from generate_sheets_credential import generate_sheets_credential
 from helper_functions.generate_school_dates import generate_school_dates

@@ -24,13 +24,13 @@ def get_due_time(p_days_to_complete, p_section):
             p_minutes = 10
         if p2:
             p_hours = 13
-            p_minutes = 58
+            p_minutes = 53
         if p3:
             p_hours = 15
-            p_minutes = 58
+            p_minutes = 51
         if p4:
-            p_hours = 17
-            p_minutes = 10
+            p_hours = 16
+            p_minutes = 11
     return [p_hours, p_minutes]
 
 # abc = get_due_time(5, '18/19, FY, P4')

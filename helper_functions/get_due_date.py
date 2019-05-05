@@ -1,7 +1,9 @@
-# Input: a day (in format 9-4-2018).  number of days until due (int), spreadsheet_ID (string), Google sheets service object
+# Input: a day (in format 9-4-2018),
+#            number of days until due (int), spreadsheet_ID (string), Google sheets service object
 # Output: the due date (datetime object format ie 2019-06-03 00:00:00 )
 # Works by looking checking each proposed school date against weekends and holidays.
 # If it's not, up the counter by one until you get to the number of days until due.
+
 
 def get_due_date(p_post_day, days_until_due, spreadsheet_id, service):
     import datetime

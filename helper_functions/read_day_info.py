@@ -22,7 +22,6 @@ def read_day_info(row):
         return_dict['day_of_week'] = day_of_week
     else:
         raise Exception("Read in a row from class (one day's data).  Expected Day of week but nothing there")
-    print('row length is this ' + str(len(row)))
     if len(row) >= 5:
         if row[4]:
             link = row[4]
@@ -33,7 +32,8 @@ def read_day_info(row):
                 return_dict['ids'] = ids
             if row[5] and not row[4]:
                 raise Exception("Day {} has assignment IDs (col F) as if this day and assignments were posted already.  "
-                                "But no link (col E).  Something screwy.".format(row[0]))
+                                "But no link (col E).  Something screwy.  Try deleting column F for this day, it"
+                                "may look blank but may have a space or whatever in there.".format(row[0]))
     return return_dict
 
 # abc = read_day_info([12, '9/20/2018', 'Th',

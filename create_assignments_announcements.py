@@ -6,62 +6,19 @@ from generate_sheets_credential import generate_sheets_credential
 from generate_classroom_credential import generate_classroom_credential
 
 from helper_functions.get_google_drive_id import get_google_drive_id
-from helper_functions.unicode_text import unicode_text
 from helper_functions.date_to_ISO8601 import date_to_iso8601
 from helper_functions.get_all_sheets import get_all_sheets
-from helper_functions.get_due_time import get_due_time
 from helper_functions.read_course_id import read_course_id
 from helper_functions.read_course_daily_data_all import read_course_daily_data_all
 from helper_functions.is_in_past import is_in_past
 from helper_functions.read_day_info import read_day_info
 from helper_functions.read_lesson_plan import read_lesson_plan
-
+from helper_functions.post_announcement import post_announcement
+from helper_functions.post_assignment import post_assignment
+from helper_functions.update_sheet_with_id import update_sheet_with_id
 
 SPREADSHEET_ID = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA'
 
-
-def get_attachments(p_column):
-    print("entering {}".format(p_column))
-    p_attachments = []
-    p_counter = 4
-    p_share_mode = ''
-    while p_counter < len(p_column):
-        print(" {}  {}".format(p_counter, len(p_column)))
-        print(p_counter)
-        if p_counter <= len(p_column) and p_column[p_counter]:
-            p_link = p_column[p_counter]
-            if len(p_column) >= p_counter + 2:
-                # only assignments have share mode for links
-                p_share_mode = p_column[p_counter + 1]
-            p_google_drive_match = re.search('.google', p_link)
-            if p_google_drive_match:
-                print("matches google drive file")
-                p_link = get_google_drive_id(p_link)
-                if p_share_mode:
-                    p_material = {
-                        'driveFile': {
-                            'driveFile': {'id': p_link},
-                            'shareMode': p_share_mode,
-                        }
-                    }
-                else:
-                    p_material = {
-                        'driveFile': {
-                            'driveFile': {'id': p_link},
-                        }
-                    }
-
-            else:
-                # match regular p_link
-                p_material = {
-                    'p_link': {'url': p_link}
-                }
-            p_attachments.append(p_material)
-            p_counter += 2
-        elif not p_column[p_counter]:
-            p_counter = 9999
-            print("done")
-    return p_attachments
 
 # Get sheet service credential and service_classroom credential
 service_sheets = generate_sheets_credential()
@@ -81,6 +38,9 @@ for sheet in sheet_list:
     course_id = read_course_id(SPREADSHEET_ID, sheet, service_sheets)
     print("In create assignments/announcements, currently doing course with this ID: {}".format(course_id))
 
+    course_results = service_classroom.courses().get(id=course_id).execute()
+    course_section = course_results['section']
+
     # Read entire sheet for this particular course (every day's assignment)
     values = read_course_daily_data_all(SPREADSHEET_ID, sheet, service_sheets)
     print("In create assignments/announcements, read in all data for course {}.  Data is this: {}"
@@ -89,118 +49,142 @@ for sheet in sheet_list:
     # Iterate over sheets rows and write/edit classroom as necessary
     print("In create assignments/announcements.  Starting to iterating daily assignments/announcements " + sheet)
     for i, row in enumerate(values, 1):
-
+        if i > 180:
+            break
         # read the row
-        daily_info = read_day_info(row)
-
-        print(daily_info)
+        day_info = read_day_info(row)
+        print(day_info)
 
         # Skip days in the past, days with no data, days with no rows
-        if is_in_past(daily_info['date']):  # In the past
-            print("This day: {} is in the past, skipping ".format(daily_info['date']))
+        if is_in_past(day_info['date']):  # In the past
+            print("This day: {} is in the past, skipping ".format(day_info['date']))
             continue
         elif not row:  # Empty row
             print("No row here, skipping")
             continue
         elif len(row) == 3:  # no announcements or anything
-            print("This day: {} has no data yet, skipping".format(daily_info['date']))
+            # print("This day: {} has no lesson, skipping".format(day_info['date']))
             continue
-        # Crash out if ID's has spaces in it but no ID
-        elif len(row) == 6 and not re.search(r'\d', row[5]):
-            print("shoulD BE HERE")
+        elif len(row) == 6 and not re.search(r'\d', row[5]):  # Crash out if ID's do not contain numbers
             raise Exception("This day: {} has row length of 6, but no numbers in the ID column (F).\n "
                             " Are there spaces or something goofy going on in ID column?  \nTry deleting"
-                            " the entire cell and try again".format(daily_info['date']))
-        # Do rows with new assignments/
-        elif len(row) == 5:  #
+                            " the entire cell and try again".format(day_info['date']))
+        elif len(row) == 5:  # Do new rows (i.e. not previously posted, no IDs)
             print("Posting a new lesson that hasn't been posted before")
-            link_spreadsheet_id = get_google_drive_id(daily_info['link'])
-            print(link_spreadsheet_id)
+            link_spreadsheet_id = get_google_drive_id(day_info['link'])
             assignments_announcements = read_lesson_plan(link_spreadsheet_id, service_sheets)
-            print(assignments_announcements)
-        #    raise Exception("stop here")
+            all_ids = ''
+            single_id = ''
+            assignment_counter = 0
+            for assignment_announcement in assignments_announcements:
+                if assignment_announcement['assignment_or_announcement'] == 'announcement':
+                    single_id = post_announcement(i, assignment_announcement['text'], day_info['date'], course_id,
+                                                  service_classroom)
 
-            id_string = ''
-
-            for column_dict in lesson_columns:
-                if column_dict['announcement_or_assignment'] == 'announcement':
-                    print("announcement")
-                print(column)
-
-
-
-            # if columns:
-            #     print('woooo' + str(len(columns)))
-            #     while counter < len(columns):
-            #         text = columns[counter][3]
-            #         text = unicode_text(text)
-            #         attachments = get_attachments(columns[counter])
-            #         if columns[counter][0] == 'announcement':
-
-            #             announcement = {
-            #                 'text': '\U0001D403\U0001D400\U0001D418 ' + day + '/180 \n' + text,
-            #                 'state': 'DRAFT',
-            #                 'scheduledTime': year + '-' + month + '-' + dom + 'T08:00:00-04:00',
-            #                 'materials': [],
-            #             }
-            #             print(announcement)
-            #             # Look for links or gdrive files
-            #             announcement['materials'] = attachments
-            #             announcement = service_classroom.courses().announcements().create(courseId=course_id,
-            #                                                                               body=announcement).execute()
-            #             # Update id_string with assignment ID
-            #             announcement_id = announcement.get('id')
-            #             id_string += announcement_id + ','
-            #             #    update_cell_with_id(SPREADSHEET_ID, announcement_id, i, service_sheets, sheet)
-            #         else:
-            #             print("assignment incoming")
-            #             print(row)
-            #             title = columns[counter][1]
-            #             title = unicode_text(title)
-            #
-            #             # calculate the due date
-            #             post_date = str(month) + '-' + str(dom) + '-' + str(year)
-            #             days_to_complete = columns[counter][2]
-            #             print("days to complete" + str(days_to_complete))
-            #             due_date_obj = get_due_date(post_date, days_to_complete, SPREADSHEET_ID, service_sheets)
-            #             print("{}".format(due_date_obj))
-            #             new_scheduled_time = date_to_iso8601(month, dom, year)
-            #             hours, minutes = get_due_time(days_to_complete)
-            #             print("hours and minutes" + str(hours) + " " + str(minutes))
-            #             description = text
-            #             assignment = {
-            #                 'title': title,
-            #                 'description': description,
-            #                 'materials': [],
-            #                 'dueDate': {"year": due_date_obj.year,
-            #                             "month": due_date_obj.month,
-            #                             "day": due_date_obj.day,
-            #                             },
-            #                 'dueTime': {"hours": hours,
-            #                             "minutes": minutes,
-            #                             "seconds": 0},
-            #                 'scheduledTime': new_scheduled_time,
-            #                 'workType': 'ASSIGNMENT',
-            #                 'state': 'DRAFT',
-            #             }
-            #             print(attachments)
-            #             assignment['materials'] = attachments
-            #
-            #             print(assignment)
-            #             assignment = service_classroom.courses().courseWork().create(courseId=course_id,
-            #                                                                          body=assignment).execute()
-            #             print('Assignment created with ID {0}'.format(assignment.get('id')))
-            #             assignment_id = assignment.get('id')
-            #             id_string += assignment_id + ','
-            #             #   update_cell_with_id(SPREADSHEET_ID, assignment_id, i, service_sheets, sheet)
-            #         counter += 1
-            #         print('counter is ' + str(counter))
-            #     print('id string is ' + id_string)
-            #     update_cell_with_id(SPREADSHEET_ID, id_string, i, service_sheets, sheet)
-            #
-            # print('end of loop')
-
+                    # print("announcement for day: {}. text is: {}, ID is {}".format(i, assignment_announcement['text'],
+                    #                                                               single_id))
+                if assignment_announcement['assignment_or_announcement'] == 'assignment':
+                    single_id = post_assignment(assignment_announcement['topic'], assignment_announcement['title'],
+                                                assignment_announcement['days_to_complete'],
+                                                assignment_announcement['text'], assignment_announcement['attachments'],
+                                                day_info['date'], assignment_counter, course_section,
+                                                course_id, SPREADSHEET_ID, service_sheets, service_classroom)
+                    assignment_counter += 1
+                all_ids += single_id + ','
+            update_sheet_with_id(SPREADSHEET_ID, all_ids, i, service_sheets, sheet)
         elif len(row) == 6:  # previously found assignment!
+            print("Found previously posted announcements/assignments")
+
+            # basic concept: do everything again.
+            # For announcements, if day to be scheduled is different, delete the old and post the new.
+            #                    if day to be scheduled is th esame, do nothing.
+            # For assignments, if day to be scheduled is different, change announcement.
+            #                  If announcement or assignment doesn't exist, then it's already posted; do nothing.
+
+            announcement_data_to_repost = []
+            announcement_ids_to_delete = []
+
+            # Get link of sheet and read in lesson
+            link_spreadsheet_id = get_google_drive_id(day_info['link'])
+            assignments_announcements = read_lesson_plan(link_spreadsheet_id, service_sheets)
+
+            # prepare just i case
+            all_ids = ''
+            single_id = ''
+            assignment_counter = 0
+            is_assignment = False
+            is_announcement = False
+            # loop over all posted assignments
+            posted_ids = day_info['ids'].split(',')
+            for posted_id in posted_ids:
+                if posted_id == ' ' or posted_id == '':   # skip single space or blankones
+                    continue
+                else:
+                    announcement = {}
+                    print("Encountered this old assignment/announcement {}.  Checking it out.".format(posted_id))
+                    try:
+                        announcement = service_classroom.courses().announcements().get(courseId=course_id,
+                                                                                       id=posted_id).execute()
+                        is_announcement = True
+                        print("found that old entry {} is an announcement!".format(posted_id))
+                    except:  # do assignments here
+                        print("Found that old entry is an assignment")
+
+                    if is_announcement:
+                        new_announcement_data = {}
+                        if announcement['state'] == 'PUBLISHED':
+                            print("Announcement with this ID {} has already been posted.\n"
+                                  "This might be wrong, or you might've posted it early.\n"
+                                  "In any case, skipping this ID.".format(posted_id))
+                            continue
+                        elif announcement['state'] == 'DRAFT':
+                            # Some bug in classroom API where announcements can't have their text be changed.
+                            # Since announcement needs to have text changed to reflect new day AND schedule new day
+                            #  he code wipes old announcement and makes a new one (after all of the posted_ids are
+                            # iterated through, in case there is a crash somewhere before we get to the end.
+                            print("Announcement with this ID {} hasn't been PUBLISHED yet.  "
+                                  "Checking to see if it should be moved to new scheduled date.".format(posted_id))
+
+                            # For announcement, check to see if original posted day is the same as current posted day
+                            announcement_date = re.sub(r'T.+$', '', announcement['scheduledTime'], re.X | re.M | re.S)
+                            numbers = day_info['date'].split('/')
+                            today_date = date_to_iso8601(numbers[0], numbers[1], numbers[2], 0)
+                            today_date = re.sub(r'T.+$', '', today_date, re.X | re.M | re.S)
+
+                            if announcement_date == today_date:
+                                print("announcement {} in Classroom is on same day it is currently listed in sheet {}  "
+                                      "No change.  On to the next announcement/assignment".format(posted_id, sheet))
+                                continue
+                            else:  # posted day is on different day
+                                print("announcement {} in Classroom is on different day than is currently listed "
+                                      "in sheet {}. "
+                                      " Repost as new announcement and delete the old announcement.  "
+                                      .format(posted_id, sheet))
+                                new_announcement_data['day'] = day_info['day']
+                                new_announcement_data['text'] = announcement['text']
+                                new_announcement_data['date'] = day_info['date']
+                                new_announcement_data['text'] = re.sub(r'\U0001D403\U0001D400\U0001D418 [0-9]+/180',
+                                                                       '', announcement['text'],
+                                                                       re.X | re.M | re.S)
+                                print(new_announcement_data['text'])
+                                announcement_ids_to_delete.append(posted_id)
+                                announcement_data_to_repost.append(new_announcement_data)
+                        elif announcement['state'] == 'DELETED':
+                            raise Exception("The ID {} that was read in for this assignment has been deleted in Google "
+                                            "classroom.\n  Something is wrong, but not sure what.  Try erasing the ID\n"
+                                            "for this day and reposting the lesson.\n".format(posted_id))
+            if len(announcement_ids_to_delete) > 0:
+                for announcement_id in announcement_ids_to_delete:
+                    delete_result = service_classroom.courses().announcements().delete(courseId=course_id,
+                                                                                       id=announcement_id).execute()
+                    print("Deleted old announcement ID {}".format(announcement_id))
+                for data in announcement_data_to_repost:
+                    # p_day, p_text, p_date, p_course_id, p_service
+                    single_id = post_announcement(day_info['day'], data['text'], data['date'],
+                                                  course_id, service_classroom)
+                    all_ids += single_id + ','
+                update_sheet_with_id(SPREADSHEET_ID, all_ids, day_info['day'], service_sheets, sheet)
+            raise Exception("no moas")
 
             # Get day of assignment to be posted and prospective new_scheduled_time
             month, dom, year = row[1].split('/')
@@ -208,8 +192,6 @@ for sheet in sheet_list:
 
             # skip
             now = datetime.datetime.now()
-            print("now")
-            print(now)
 
             assignment_date_string = month + '/' + dom + '/' + year
             print(assignment_date_string)
@@ -226,18 +208,8 @@ for sheet in sheet_list:
             ids.pop()
             print(ids)
 
-            # Get link of sheet
-            link = row[4]
-            link_spreadsheet_id = get_google_drive_id(link)
-            print(link_spreadsheet_id)
 
-            # Read from daily sheet
-            RANGE_NAME = 'Sheet1!B2:BZ19'
-            print("Sheet name is this:" + str(sheet))
-            result = service_sheets.spreadsheets().values().get(majorDimension='COLUMNS',
-                                                                spreadsheetId=link_spreadsheet_id,
-                                                                range=RANGE_NAME, ).execute()
-            columns = result.get('values', [])
+
             counter = 0
 
             # Get day of assignment to be posted and prospective new_scheduled_time
@@ -255,10 +227,10 @@ for sheet in sheet_list:
                     assignment = service_classroom.courses().courseWork().get(courseId=course_id,
                                                                               id=p_id).execute()
                     value = assignment.get('scheduledTime', [])
-                    if not value:
-                        continue  # give up for now
-                        raise ValueError("broken values for dates.  "
-                                         "Check your dates, should be 9-5-2018 (or something similar)")
+                    # if not value:
+                    #     continue  # give up for now
+                    #     raise ValueError("broken values for dates.  "
+                    #                      "Check your dates, should be 9-5-2018 (or something similar)")
                     if new_scheduled_time == value:
                         print("found old assignment same day no change")
                     else:
@@ -292,64 +264,4 @@ for sheet in sheet_list:
                                                                                                'scheduledTime',
                                                                                     body=update).execute()
                 except:
-                    print("old announcement found")
-                    announcement = service_classroom.courses().announcements().get(courseId=course_id,
-                                                                                   id=p_id).execute()
-                    print("yes made it past assignment")
-                    value = announcement.get('scheduledTime', [])
-                    if not value:
-                        continue # give up for now
-                        raise ValueError("broken values fot dates. "
-                                         "Check your dates, should be 9-5-2018 (or something similar)")
-                    print(value)
-                    if new_scheduled_time == value:
-                        announcement_text = announcement.get('text', [])
-                        print(announcement_text)
-                        print("announcement same day no change")
-                    else:
-                        text = announcement.get('text', [])
-                        # Check to see if day change.  If so, need to re-post because Google classroom API not letting
-                        #  me patch the text
-                        same_day = re.search(day + '/180', text)
-                    #    print('day is {} text is {}'.format(day, text))
-                        if same_day is None:
-                            print("reposting announcement for day change")
-
-                            # Generate the new announcement from the old
-                            text = re.sub('[0-9]+\/180', day + '/180', text)
-                            materials = announcement.get('materials', [])
-                            scheduledTime = announcement.get('scheduledTime', [])
-                            announcement = {
-                                'text': text,
-                                'state': 'DRAFT',
-                                'scheduledTime': new_scheduled_time,
-                                'materials': materials,
-                            }
-                            print(announcement)
-
-                            # Post the new announcement generated from old and get ID, append to new string
-                            announcement = service_classroom.courses().announcements().create(courseId=course_id,
-                                                                                              body=announcement).execute()
-                            announcement_id = announcement.get('id')
-                            new_id_string = re.sub(p_id, announcement_id, id_string)
-                            print("new id string is " + str(new_id_string))
-                            print("new ID is " + announcement_id)
-                            # update cell with ID string
-                            update_cell_with_id(SPREADSHEET_ID, new_id_string, i, service_sheets, sheet)
-
-                            # delete the old announcement
-                            clean_announcement = service_classroom.courses().announcements().delete(courseId=course_id,
-                                                                                                    id=p_id).execute()
-
-                        else:
-                            # No need to change, just change scheduled time
-                            print("changing announcement day")
-                            update = {'scheduledTime': new_scheduled_time,
-                                      }
-                            announcement = service_classroom.courses().announcements().patch(courseId=course_id,
-                                                                                             id=p_id,
-                                                                                             updateMask='scheduledTime',
-                                                                                             body=update).execute()
-                print("finished going over old announcements/assignments")
-                print(value)
-
+                    print("yes")

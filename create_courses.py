@@ -1,3 +1,5 @@
+import googleapiclient
+
 from generate_sheets_credential import generate_sheets_credential
 from generate_classroom_credential import generate_classroom_credential
 
@@ -15,7 +17,7 @@ service_classroom = generate_classroom_credential()
 
 # Sample courses start at column C + D.  Real courses start at column E with a max of 12 courses.
 for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
-    RANGE_NAME = SHEET_NAME + '!' + column + '3:' + column + '9'
+    RANGE_NAME = SHEET_NAME + '!' + column + '3:' + column + '10'
 
     # Read course info
     result = service_sheets.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID,
@@ -24,12 +26,12 @@ for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
     value = result.get('values', [])
     if not value:
         continue   # no more courses
-    elif len(value[0]) == 6:
-        continue  # 6th row (courseID) is populated.  This means course already created.
+    elif len(value[0]) == 7:
+        continue  # 7th row (courseID) is populated.  This means course already created.
     else:
         # Course hasn't been created yet.  Create it now.
         print("In create_courses.py, creating this course: " + str(value[0][0] + ' Section: ' + str(value[0][1])))
-        course_name, course_section, course_description_heading, course_description, course_room = value[0]
+        course_name, course_section, course_description_heading, course_description, course_room, _ = value[0]
 
         # Write course to Google classroom
         course = {
@@ -39,10 +41,10 @@ for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
             'description': course_description,
             'room': course_room,
             'ownerId': 'me',
-            'courseState': 'PROVISIONED'
+            'courseState': 'ACTIVE'
         }
         course = service_classroom.courses().create(body=course).execute()
-        print('Course created in Google Classroom, you will need to open Google classroom and click "Accept": {0} ({1})'
+        print('Course created in Google Classroom: {} ({})'
               .format(course.get('name'), course.get('id')))
 
         # Course created, write course ID into sheet
@@ -50,8 +52,25 @@ for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
         body = {
             'values': values
         }
-        RANGE_NAME = SHEET_NAME + '!' + column + '8'
+        RANGE_NAME = SHEET_NAME + '!' + column + '9'
         result = service_sheets.spreadsheets().values().update(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME,
                                                                valueInputOption='USER_ENTERED', body=body).execute()
         print('{} cells in Google sheet with spreadsheetID {} updated with courseID {}.'
               .format(result.get('updatedCells'), SPREADSHEET_ID, course.get('id')))
+
+        # Topics
+        topics = value[0][5].split(',')
+        course_id = course.get('id')
+        for topic in topics:
+            body = {"name": topic}
+            try:
+                result = service_classroom.courses().topics().create(
+                    courseId=course_id,
+                    body=body).execute()
+                print('In course id {}, with course name {}, created topic {}'.format(course_id, value[0][1], topic))
+            except googleapiclient.errors.HttpError:
+                raise Exception("Possible errors.\n  If 'requested entity already exists', maybe already have topic {}."
+                                "\n If 'requested entity not found', then the course id {} may not exist.\n)."
+                    .format(topic, values))
+
+
