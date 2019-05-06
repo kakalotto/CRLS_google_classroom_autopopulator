@@ -202,7 +202,9 @@ for sheet in sheet_list:
                                       "in sheet {}. "
                                       " Reschedule assignment  "
                                       .format(posted_id, sheet))
-
+                                single_id = post_assignment_reschedule(assignment, day_info['date'], course_id,
+                                                                      posted_id, service_classroom,
+                                                                      SPREADSHEET_ID, service_sheets)
                         elif assignment['state'] == 'DELETED':
                                 raise Exception(
                                     "The ID {} that was read in for this assignment has been deleted in Google "
@@ -221,4 +223,3 @@ for sheet in sheet_list:
                     all_ids += single_id + ','
                 update_sheet_with_id(SPREADSHEET_ID, all_ids, day_info['day'], service_sheets, sheet)
             raise Exception("no moas")
-
