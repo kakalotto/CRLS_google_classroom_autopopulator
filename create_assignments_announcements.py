@@ -112,6 +112,7 @@ for sheet in sheet_list:
             assignments_announcements = read_lesson_plan(link_spreadsheet_id, service_sheets)
 
             # prepare just i case
+            update_cell = False
             all_ids = ''
             single_id = ''
             assignment_counter = 0
@@ -146,9 +147,8 @@ for sheet in sheet_list:
                             # Since announcement needs to have text changed to reflect new day AND schedule new day
                             #  he code wipes old announcement and makes a new one (after all of the posted_ids are
                             # iterated through, in case there is a crash somewhere before we get to the end.
-                            print("Announcement with this ID {} hasn't been PUBLISHED yet.  "
-                                  "Checking to see if it should be moved to new scheduled date.".format(posted_id))
-
+                            # print("Announcement with this ID {} hasn't been PUBLISHED yet.  "
+                            #       "Checking to see if it should be moved to new scheduled date.".format(posted_id))
                             if is_work_date_current_date(announcement['scheduledTime'], day_info['date']):
                                 print("announcement {} in Classroom is on same day it is currently listed in sheet {}  "
                                       "No change.  On to the next announcement/assignment".format(posted_id, sheet))
@@ -164,9 +164,9 @@ for sheet in sheet_list:
                                 new_announcement_data['text'] = re.sub(r'\U0001D403\U0001D400\U0001D418 [0-9]+/180',
                                                                        '', announcement['text'],
                                                                        re.X | re.M | re.S)
-                                print(new_announcement_data['text'])
                                 announcement_ids_to_delete.append(posted_id)
                                 announcement_data_to_repost.append(new_announcement_data)
+                                update_cell = True
                         elif announcement['state'] == 'DELETED':
                             raise Exception("The ID {} that was read in for this announcement has been deleted in "
                                             "Google classroom.\n  Something is wrong, but not sure what. \n "
@@ -191,8 +191,8 @@ for sheet in sheet_list:
                                   "In any case, skipping this ID.".format(posted_id))
                             continue
                         elif assignment['state'] == 'DRAFT':
-                            print("Assignment with this ID {} hasn't been PUBLISHED yet.  "
-                                  "Checking to see if it should be moved to new scheduled date.".format(posted_id))
+                            # print("Assignment with this ID {} hasn't been PUBLISHED yet.  "
+                            #       "Checking to see if it should be moved to new scheduled date.".format(posted_id))
                             if is_work_date_current_date(assignment['scheduledTime'], day_info['date']):
                                 print("assignment {} in Classroom is on same day it is currently listed in sheet {}  "
                                       "No change.  On to the next announcement/assignment".format(posted_id, sheet))
@@ -202,16 +202,23 @@ for sheet in sheet_list:
                                       "in sheet {}. "
                                       " Reschedule assignment  "
                                       .format(posted_id, sheet))
-                                single_id = post_assignment_reschedule(assignment, day_info['date'], course_id,
-                                                                      posted_id, service_classroom,
-                                                                      SPREADSHEET_ID, service_sheets)
+                                new_assignment_data['assignment'] = assignment
+                                new_assignment_data['date'] = day_info['date']
+                                # print("new assignment data")
+                                # print(new_assignment_data)
+                                # print("assignment data to rescheulde")
+                                # print(assignment_data_to_reschedule)
+                                assignment_data_to_reschedule.append(new_assignment_data)
+                                # print("in loop")
+                                # print(assignment_data_to_reschedule)
+                                update_cell = True
                         elif assignment['state'] == 'DELETED':
                                 raise Exception(
                                     "The ID {} that was read in for this assignment has been deleted in Google "
                                     "classroom.\n  Something is wrong, but not sure what.\n  "
                                     "Try erasing the ID for this day and reposting the lesson.\n".format(posted_id))
 
-            if all_ids != '':
+            if update_cell:
                 for announcement_id in announcement_ids_to_delete:
                     delete_result = service_classroom.courses().announcements().delete(courseId=course_id,
                                                                                        id=announcement_id).execute()
@@ -221,5 +228,18 @@ for sheet in sheet_list:
                     single_id = post_announcement(day_info['day'], data['text'], data['date'],
                                                   course_id, service_classroom)
                     all_ids += single_id + ','
+                # print("assignment data to rescheulde")
+                # print(assignment_data_to_reschedule)
+                for assignment in assignment_data_to_reschedule:
+                    single_id = post_assignment_reschedule(assignment['assignment'], assignment['date'], course_id,
+                                                           posted_id, service_classroom,
+                                                           SPREADSHEET_ID, service_sheets)
+                    # print(single_id)
+                    all_ids += single_id + ','
                 update_sheet_with_id(SPREADSHEET_ID, all_ids, day_info['day'], service_sheets, sheet)
-            raise Exception("no moas")
+                print(all_ids)
+            else:
+                print("No assignments on this day need to be moved.  No change to this day.")
+
+            #raise Exception("no moas")
+        print("All done with this class! {} ".format(sheet))

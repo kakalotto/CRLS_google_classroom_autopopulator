@@ -30,9 +30,10 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                 raise Exception("In lesson with spreadsheet ID {}, rows 3 - 5 must be empty"
                                 "for every announcement. \n"
                                 " Please check.\n"
-                                "Possibly, your file is in the old format.  New format is this:\n"
+                                "Possibly, your lesson file is in the old format with no topic.  New format is this:\n"
                                 "row 3: topic , row 4: Title text, row 5: Days to complete. \n"
                                 "Also, possible you selected 'announcement' when you meant 'assignment'."
+                                "Or else you put a topic with an announcement."
                                 .format(p_spreadsheet_id))
             column_dict['assignment_or_announcement'] = 'announcement'
         elif column[0] == 'assignment':
@@ -46,7 +47,8 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                 raise Exception("In lesson with spreadsheet ID {}, rows 3 - 5 must be filled out "
                                 "for every assignment. \n"
                                 " Please check and add topic, title text, and days to complete.\n"
-                                "Or else possibly, you selected 'assignment' when you meant 'announcement'. "
+                                "Or else possibly, you selected 'assignment' when you meant 'announcement'. \n"
+                                "Or else you put a topic with an announcement."
                                 .format(p_spreadsheet_id))
             else:
                 column_dict['assignment_or_announcement'] = 'assignment'

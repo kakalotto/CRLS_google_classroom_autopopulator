@@ -34,7 +34,7 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
     new_scheduled_time = date_to_iso8601(month, dom, year, p_offset)
 
     if p_topic not in topic_dict.keys():
-        raise Exception("The topic you want to post this under {}, is not in the list of topics for the class.\n"
+        raise Exception("The topic you want to post this under: {}, is not in the list of topics for the class.\n"
                         "Please add this topic into the class, or else change the topic of the assignment"
                         .format(p_topic))
     assignment = {
