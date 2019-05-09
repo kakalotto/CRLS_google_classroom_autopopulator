@@ -4,9 +4,10 @@
 
 def read_course_daily_data_all(spreadsheet_id, sheet, service):
     # Read entire sheet for this particular course
-    range_name = sheet + '!A3:F190'
+    range_name = sheet + '!A3:G190'
     result = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_name, ).execute()
     values = result.get('values', [])
+    print(values)
     if not values:
         raise ValueError("Tried to read from course {} on spreadsheet {}, but there were no values".
                          format(sheet, spreadsheet_id))

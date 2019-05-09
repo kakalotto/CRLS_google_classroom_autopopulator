@@ -25,8 +25,9 @@ def generate_school_dates(p_first_day, p_days_off):
     # Check to see if first day is 180 days different from first holiday.   If so, exit with error
     if current_day_datetime + 180 * one_day < days_off_datetime[0] \
             or current_day_datetime - 180 * one_day > days_off_datetime[0]:
-        raise Exception('day 1 is more than 180 days different from first holiday.  Check your years and dates in '
-                        'First day of school and Holidays columns in Calendar sheet')
+        raise Exception('day 1 {} is more than 180 days different from first holiday {}.   Check your years and dates in '
+                        'First day of school and Holidays columns in Calendar sheet '
+                        .format(current_day_datetime, days_off_datetime[0]))
 
     while len(p_school_dates_datetime) != 180:
         if current_day_datetime.isoweekday() == 7 or current_day_datetime.isoweekday() == 6 \
