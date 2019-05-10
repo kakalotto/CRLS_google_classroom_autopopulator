@@ -2,11 +2,13 @@
 
 
 def create_calendar(spreadsheet_id):
+    import googleapiclient
+
     from generate_sheets_credential import generate_sheets_credential
     from helper_functions.generate_school_dates import generate_school_dates
 
     #spreadsheet_id = '1Bows1MWZ8sQAbLZW9t7QTRD-NwNh8bYwua1n1eRvcAE'
-    spreadsheet_id = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA' # Test_APCSP_Computer_principles
+    # spreadsheet_id = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA' # Test_APCSP_Computer_principles
 
     SHEET_NAME = 'Calendar'
 
@@ -16,7 +18,11 @@ def create_calendar(spreadsheet_id):
     # Read in first day of school, assign to variable first_day
     print("In create_calendar, reading in first day of school")
     range_name = SHEET_NAME + '!F3:F3'  # Cell for first day of school, format 9/4/2018
-    result = service_sheets.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+    try:
+        result = service_sheets.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+    except googleapiclient.errors.HttpError:
+        raise Exception("Http error.  Is the spreadsheet ID correct?  Tried this one: {} ".format(spreadsheet_id))
+
     value = result.get('values', [])
     if not value:
         raise ValueError('Expected to see first day of school filled in in cell F3 of spreadsheet ID {}, '

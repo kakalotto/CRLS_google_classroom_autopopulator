@@ -30,6 +30,11 @@ for sheet in sheet_list:
     print("In snow day, currently doing course with this ID: {}".format(course_id))
     orig_values = read_course_daily_data_all(SPREADSHEET_ID, sheet, service_sheets)
     for i, row in enumerate(orig_values, 1):
+        day_info = read_day_info(row)
+        # Skip days in the past (including today), days with no data, days with no rows
+        if is_in_past(day_info['date']):  # In the past
+            #print("This day: {} is in the past, skipping ".format(day_info['date']))
+            continue
         if i > 180:
             break
         if len(row) == 7:
@@ -42,6 +47,10 @@ for sheet in sheet_list:
                                 'dates\n  Also, be sure you deleted the cell and did not just put a space.'
                                 .format(sheet))
     immovable_days_data_all_sheets.append(immovable_days_data)
+
+print("these are immovable days")
+for immovable_day_data in immovable_days_data_all_sheets:
+    print(immovable_day_data)
 
 
 create_calendar(SPREADSHEET_ID)
@@ -67,53 +76,60 @@ for sheet in sheet_list:
         print(immovable_day_data)
         immovable_date = row[1]
         for i, row in enumerate(new_values, 0):
-            day_info = read_day_info(row)
-            print('row' + str(row))
-            # Skip days in the past, days with no data, days with no rows
-            if is_in_past(day_info['date']):  # In the past
-                print("This day: {} is in the past, skipping ".format(day_info['date']))
-                continue
             if i > 179:
                 break
             if row[1] == immovable_day_data[1]:  # matching date
-                print("TRYING!")
+                print("TRYING! found match with immovable day")
                 print('rowmatch ' + str(row))
                 print("i in row match " + str(i))
-                print('values [i]' + str(values[i]))
                 print('immovable data ' + str(immovable_day_data))
-                    print("index that is immovable " + str(int(immovable_day_data[0]) - 1))
-                                print('index to swap' + str(i))
-                                print('new values [i]' + str(new_values[i]))
-                                print('new values [j]' + str(new_values[j]))
+                print("Looking for day that matches the ID of the immovable data)")
+                for j, row2 in enumerate(new_values, 0):
+                    print("row2 is " + str(row2))
+                    if len(row2) < 6:
+                        continue
+                    if immovable_day_data[5] == row2[5]:
+                        print("j in row match" + str(j))
+                        print("i in row match " + str(i))
+                        print("row switching is beginning!")
+                        print('row2 to swap ' + str(row2))
+                        print("row to swap " + str(row))
+                        print("index that is immovable " + str(int(immovable_day_data[0]) - 1))
 
-                                temp_values = copy.deepcopy(new_values[i])
-                                print("temp values " + str(temp_values))
-                                print("new values [j][3:] " + str(new_values[j][3:]))
-                                print("temp_values[3:]" + str(temp_values[3:]))
+                        print("index that is immovable " + str(int(immovable_day_data[0]) - 1))
+                        print('index to swap' + str(i))
+                        print('new values [i]' + str(new_values[i]))
+                        print('new values [j]' + str(new_values[j]))
 
-                                if len(new_values[i]) == len(new_values[j]):
-                                    new_values[i][3:] = new_values[j][3:]
-                                    new_values[j][3:] = temp_values[3:]
-                                else:
-                                    # zero place where it's going
-                                    while len(new_values[i]) > 3:
-                                        new_values[i].pop()
-                                    print("new_values i after pop " + str(new_values[i]))
-                                    for item in new_values[j][3:]:
-                                        new_values[i].append(item)
-                                    print("new_values i after append " + str(new_values[i]))
-                                    while len(new_values[j]) > 3:
-                                        new_values[j].pop()
-                                    print("new_values j after pop " + str(new_values[j]))
-                                    for item in temp_values[3:]:
-                                        new_values[j].append(item)
-                                    print("new_values j after append " + str(new_values[j]))
+                        temp_values = copy.deepcopy(new_values[i])
+                        print("temp values " + str(temp_values))
+                        print("new values [j][3:] " + str(new_values[j][3:]))
+                        print("temp_values[3:]" + str(temp_values[3:]))
 
-                                    print('after')
-                                    print('new values [i]' + str(new_values[i]))
-                                    print('new values [j]' + str(new_values[j]))
-                                    break
+                        if len(new_values[i]) == len(new_values[j]):
+                            new_values[i][3:] = new_values[j][3:]
+                            new_values[j][3:] = temp_values[3:]
+                        else:
+                            # zero place where it's going
+                            while len(new_values[i]) > 3:
+                                new_values[i].pop()
+                            print("new_values i after pop " + str(new_values[i]))
+                            for item in new_values[j][3:]:
+                                new_values[i].append(item)
+                            print("new_values i after append " + str(new_values[i]))
+                            while len(new_values[j]) > 3:
+                                new_values[j].pop()
+                            print("new_values j after pop " + str(new_values[j]))
+                            for item in temp_values[3:]:
+                                new_values[j].append(item)
+                            print("new_values j after append " + str(new_values[j]))
+
+                            print('after')
+                            print('new values [i]' + str(new_values[i]))
+                            print('new values [j]' + str(new_values[j]))
+                            break
         for new_value in new_values:
             print(new_value)
         all_sheets.append(new_values)
         sheet_counter += 1
+

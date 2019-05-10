@@ -53,11 +53,15 @@ for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
             'values': values
         }
         RANGE_NAME = SHEET_NAME + '!' + column + '9'
-        result = service_sheets.spreadsheets().values().update(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME,
+        try:
+            result = service_sheets.spreadsheets().values().update(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME,
                                                                valueInputOption='USER_ENTERED', body=body).execute()
-        print('{} cells in Google sheet with spreadsheetID {} updated with courseID {}.'
-              .format(result.get('updatedCells'), SPREADSHEET_ID, course.get('id')))
-
+            print('{} cells in Google sheet with spreadsheetID {} updated with courseID {}.'
+                  .format(result.get('updatedCells'), SPREADSHEET_ID, course.get('id')))
+        except googleapiclient.errors.HttpError:
+            raise Exception("Possible errors.\n  Did you put in the correct spreadsheet?  Spreadsheet should be "
+                            "something like '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA'\n"
+                            "Spreadsheet actually is {}.".format(SPREADSHEET_ID))
         # Topics
         topics = value[0][5].split(',')
         course_id = course.get('id')
