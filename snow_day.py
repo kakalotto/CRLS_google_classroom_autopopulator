@@ -81,22 +81,7 @@ for sheet in sheet_list:
                 print("i in row match " + str(i))
                 print('values [i]' + str(values[i]))
                 print('immovable data ' + str(immovable_day_data))
-                if row[5] == immovable_day_data[5] and len(row) >= 6:
-                    print("already in the right spot pass")
-                    pass
-                else:
-                    for j, row2 in enumerate(new_values, 0):
-                        print("row2 is " + str(row2))
-                        print('unmovable day is ' + str(immovable_day_data))
-                        if len(row2) > 5:
-                            if immovable_day_data[5] == row2[5]:
-                                print("j in row match" + str(j))
-                                print("i in row match " + str(i))
-
-                                print("row switching is beginning!")
-                                print('row2 to swap ' + str(row2))
-                                print("row to swap " + str(row))
-                                print("index that is immovable " + str(int(immovable_day_data[0]) - 1))
+                    print("index that is immovable " + str(int(immovable_day_data[0]) - 1))
                                 print('index to swap' + str(i))
                                 print('new values [i]' + str(new_values[i]))
                                 print('new values [j]' + str(new_values[j]))
