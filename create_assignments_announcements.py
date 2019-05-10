@@ -56,7 +56,6 @@ for sheet in sheet_list:
         # read the row
         day_info = read_day_info(row)
         print(day_info)
-
         # Skip days in the past, days with no data, days with no rows
         if is_in_past(day_info['date']):  # In the past
             print("This day: {} is in the past, skipping ".format(day_info['date']))
@@ -71,7 +70,7 @@ for sheet in sheet_list:
             raise Exception("This day: {} has row length of 6, but no numbers in the ID column (F).\n "
                             " Are there spaces or something goofy going on in ID column?  \nTry deleting"
                             " the entire cell and try again".format(day_info['date']))
-        elif len(row) == 5:  # Do new rows (i.e. not previously posted, no IDs)
+        elif len(row) == 5 or ( len(row) == 7 and not row[5]):  # Do new rows (i.e. not previously posted, no IDs)
             print("Posting a new lesson that hasn't been posted before")
             link_spreadsheet_id = get_google_drive_id(day_info['link'])
             assignments_announcements = read_lesson_plan(link_spreadsheet_id, service_sheets)
@@ -180,8 +179,9 @@ for sheet in sheet_list:
                             print("Found that old entry {} is an assignment!".format(posted_id))
                         except googleapiclient.errors.HttpError:  # posted_id isn't there at all?
                             raise Exception("Previously posted assignment/announcement {} is neither annoucement nor"
-                                            "assignment.  Did you copy+paste from somewhere else incorrectly?"
-                                            "  Or else, did you delete it from Google classroom manually?"
+                                            "assignment.  Did you copy+paste from somewhere else incorrectly?\n"
+                                            "  Or else, did you delete it from Google classroom manually?\n"
+                                            " Or else, did you restart and just forget to delete the old ID's\n"
                                             " Exiting.".format(posted_id))
                     if is_assignment:
                         new_assignment_data = {}
@@ -204,6 +204,7 @@ for sheet in sheet_list:
                                       .format(posted_id, sheet))
                                 new_assignment_data['assignment'] = assignment
                                 new_assignment_data['date'] = day_info['date']
+                                new_assignment_data['id'] = posted_id
                                 # print("new assignment data")
                                 # print(new_assignment_data)
                                 # print("assignment data to rescheulde")
@@ -232,7 +233,7 @@ for sheet in sheet_list:
                 # print(assignment_data_to_reschedule)
                 for assignment in assignment_data_to_reschedule:
                     single_id = post_assignment_reschedule(assignment['assignment'], assignment['date'], course_id,
-                                                           posted_id, service_classroom,
+                                                           assignment['id'], service_classroom,
                                                            SPREADSHEET_ID, service_sheets)
                     # print(single_id)
                     all_ids += single_id + ','
@@ -240,6 +241,4 @@ for sheet in sheet_list:
                 print(all_ids)
             else:
                 print("No assignments on this day need to be moved.  No change to this day.")
-
-            #raise Exception("no moas")
-        print("All done with this class! {} ".format(sheet))
+    print("All done with this class! {} ".format(sheet))

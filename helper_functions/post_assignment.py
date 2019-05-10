@@ -35,8 +35,10 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
 
     if p_topic not in topic_dict.keys():
         raise Exception("The topic you want to post this under: {}, is not in the list of topics for the class.\n"
-                        "Please add this topic into the class, or else change the topic of the assignment"
-                        .format(p_topic))
+                        "Please add this topic into the class, or else change the topic of the assignment.\n"
+                        "If you think the topic is actually there, maybe you put a space in front of it.\n"
+                        "In the courses tab, the topics are separated by commas, no spaces in between."
+                        .format(p_topic,))
     assignment = {
         'title': p_title,
         'description': p_text,
