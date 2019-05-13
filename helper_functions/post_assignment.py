@@ -60,7 +60,9 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
         assignment_id = assignment.get('id')
     except googleapiclient.errors.HttpError:
         raise Exception("'Request contains an invalid argument' - is the topic you want for this assignment one that "
-                        "exists in this class within Google classroom?")
+                        "exists in this class within Google classroom?\n"
+                        "Alternatively, if there is a message 'materials: Duplicate materials are not allowed', you"
+                        "probably have two of the same link on your lesson plan.")
     return assignment_id
 
 #
