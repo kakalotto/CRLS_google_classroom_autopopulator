@@ -9,7 +9,7 @@ from helper_functions.read_course_daily_data_all import read_course_daily_data_a
 from helper_functions.read_day_info import read_day_info
 from helper_functions.is_in_past import is_in_past
 
-SPREADSHEET_ID = '14MKspm87YWnayhiXhtoEL9IGPN-qN4n5-9_toAQJIpI'
+SPREADSHEET_ID = '1i9KozJhUkkfWsoy0Z-PocHto9BgL9qEKOsYLMXFaS7w'
 
 service_sheets = generate_sheets_credential()
 service_classroom = generate_classroom_credential()
@@ -153,10 +153,23 @@ for sheet in sheet_list:
     sheet_data = all_sheets[sheet_data_counter]
     datapoints = []
     for line in sheet_data:
-        if len(line) >= 4:
+        if len(line) == 7:
             partial = line[3:]
-        else:
-            partial = ['', '', '', '']
+        elif len(line) == 6:
+            partial = line[3:]
+            partial.append('')
+        elif len(line) == 5:
+            partial = line[3:]
+            partial.append('')
+            partial.append('')
+
+        elif len(line) == 4:
+            partial = line[3:]
+            partial.append('')
+            partial.append('')
+            partial.append('')
+        elif len(line) == 3:
+            partial = ['', '', '', '',]
         datapoints.append(partial)
 #    print(sheet)
     print(datapoints)
