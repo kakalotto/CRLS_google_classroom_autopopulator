@@ -229,7 +229,7 @@ def create_assignments_announcements(spreadsheet_id):
                                         "The ID {} that was read in for this assignment has been deleted in Google "
                                         "classroom.\n  Something is wrong, but not sure what.\n  "
                                         "Try erasing the ID for this day and reposting the lesson.\n".format(posted_id))
-
+                # print("xxx done with posted IDs")
                 if update_cell:
                     for announcement_id in announcement_ids_to_delete:
                         delete_result = service_classroom.courses().announcements().delete(courseId=course_id,
@@ -243,10 +243,12 @@ def create_assignments_announcements(spreadsheet_id):
                     # print("assignment data to rescheulde")
                     # print(assignment_data_to_reschedule)
                     for assignment in assignment_data_to_reschedule:
+                        print("xxx before posting reassignment")
                         single_id = post_assignment_reschedule(assignment['assignment'], assignment['date'], course_id,
                                                                assignment['id'], service_classroom,
                                                                spreadsheet_id, service_sheets)
-                        # print(single_id)
+                        print("aaa single_id")
+                        print(single_id)
                         all_ids += single_id + ','
                     update_sheet_with_id(spreadsheet_id, all_ids, day_info['day'], service_sheets, sheet)
                     print(all_ids)

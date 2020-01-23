@@ -20,16 +20,16 @@ def get_due_time(p_days_to_complete, p_section):
         p_minutes = 29
     else:
         if p1:
-            p_hours = 12
+            p_hours = 13
             p_minutes = 10
         if p2:
-            p_hours = 13
+            p_hours = 14
             p_minutes = 53
         if p3:
-            p_hours = 15
+            p_hours = 16
             p_minutes = 51
         if p4:
-            p_hours = 16
+            p_hours = 18
             p_minutes = 11
     return [p_hours, p_minutes]
 

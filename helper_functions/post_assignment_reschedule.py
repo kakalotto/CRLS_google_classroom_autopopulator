@@ -44,13 +44,14 @@ def post_assignment_reschedule(p_assignment, p_date, p_course_id, p_coursework_i
     strings = str(days_to_complete_obj).split(' ')
     days_to_complete = strings[0]  # gives a number like '4'
     days_to_complete = int(days_to_complete)
-    # print("THIS MANY DAYS TO COPLETE ORIGINALLY " + str(days_to_complete))
+    # print("xxx THIS MANY DAYS TO COPLETE ORIGINALLY " + str(days_to_complete))
 
     # Get ready to find new due date.  Find holidays
     holidays = read_in_holidays(p_spreadsheet_id, p_service_sheets)
     holidays_obj = []
     format_str = '%m/%d/%Y'
     for holiday in holidays:
+        # print("xxx holiday {} ".format(holiday))
         p_post_day_obj = datetime.datetime.strptime(holiday, format_str)
         holidays_obj.append(p_post_day_obj)
     # print(holidays_obj)
@@ -59,7 +60,9 @@ def post_assignment_reschedule(p_assignment, p_date, p_course_id, p_coursework_i
     new_count_days = 0
 
     # New scheduled time calculate from this_month, dom, and year
+    # print("xxx new scheduled time {} {} {}".format(this_month, this_dom, this_year))
     new_scheduled_time = date_to_iso8601(this_month, this_dom, this_year, 0)
+    # print("xxx new scheduled time iso format" + str(new_scheduled_time))
 
     # Use these variables to help figure out how many days you were allowed to do original assignment
     day_obj = scheduled_day_obj

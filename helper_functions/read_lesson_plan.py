@@ -25,9 +25,10 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
     column_dicts = []
     for column in columns:
         column_dict = {}
+        print("blah {}".format(column))
         if column[0] == 'announcement':
             if column[1] != '' or column[2] != '' or column[3] != '':
-                raise Exception("In lesson with spreadsheet ID {}, rows 3 - 5 must be empty"
+                 raise Exception("In lesson with spreadsheet ID {}, rows 3 - 5 must be empty"
                                 "for every announcement. \n"
                                 " Please check.\n"
                                 "Possibly, your lesson file is in the old format with no topic.  New format is this:\n"
