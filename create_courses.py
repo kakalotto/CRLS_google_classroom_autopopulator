@@ -7,12 +7,17 @@ print("Running create_courses.py")
 # Set up sheets service object
 service_sheets = generate_sheets_credential()
 
-SPREADSHEET_ID = '1uEmlRJjqEpsCj6wew44meJv3af0WQ7VRQFE4x-QU9FQ' # AP CSP test
+
+#SPREADSHEET_ID = '1uEmlRJjqEpsCj6wew44meJv3af0WQ7VRQFE4x-QU9FQ' # AP CSP test
 #SPREADSHEET_ID = '1RFSXj_IjfqVLv-njFmeI1e0LoVdglvFjQGxk1drxdqw'  # Game development
-SPREADSHEET_ID = '1o_YPtSYB75fk9-r79GhNVqTDdkWr0VZA497nrC4r1h0' # ICS 2021
+#SPREADSHEET_ID = '1o_YPtSYB75fk9-r79GhNVqTDdkWr0VZA497nrC4r1h0' # ICS 2021
 #SPREADSHEET_ID = '1HqwVlxXu-l1KCatU8lnYb9xD97djeA3BkO448K5HADk' # testing
-SPREADSHEET_ID = '1x0buDsw6pBjK1GJkZXc5mMo86dX7FnWj4daMn_5CyLc' # 2021 IT2/IT3
-SPREADSHEET_ID = '1ZenTcQlCQhbYvBvPOVq8XIB2FQgseIGHH4gTBTcw-KY' # 2021 level 1
+#SPREADSHEET_ID = '1x0buDsw6pBjK1GJkZXc5mMo86dX7FnWj4daMn_5CyLc' # 2021 IT2/IT3
+#SPREADSHEET_ID = '1ZenTcQlCQhbYvBvPOVq8XIB2FQgseIGHH4gTBTcw-KY' # 2021 level 1
+#SPREADSHEET_ID = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA' # AP CSP test
+#SPREADSHEET_ID = '1RFSXj_IjfqVLv-njFmeI1e0LoVdglvFjQGxk1drxdqw'  # Game development
+SPREADSHEET_ID = '1NmV9WVSJsVrrJIVRKat4oWnkWMBWCEuO-07eCesh4ow' # 2020 level 1
+
 SHEET_NAME = 'Courses'
 
 
