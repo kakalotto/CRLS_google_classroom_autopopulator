@@ -7,10 +7,14 @@ print("Running create_courses.py")
 # Set up sheets service object
 service_sheets = generate_sheets_credential()
 
-SPREADSHEET_ID = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA' # AP CSP test
+SPREADSHEET_ID = '1uEmlRJjqEpsCj6wew44meJv3af0WQ7VRQFE4x-QU9FQ' # AP CSP test
 #SPREADSHEET_ID = '1RFSXj_IjfqVLv-njFmeI1e0LoVdglvFjQGxk1drxdqw'  # Game development
-
+SPREADSHEET_ID = '1o_YPtSYB75fk9-r79GhNVqTDdkWr0VZA497nrC4r1h0' # ICS 2021
+#SPREADSHEET_ID = '1HqwVlxXu-l1KCatU8lnYb9xD97djeA3BkO448K5HADk' # testing
+SPREADSHEET_ID = '1x0buDsw6pBjK1GJkZXc5mMo86dX7FnWj4daMn_5CyLc' # 2021 IT2/IT3
+SPREADSHEET_ID = '1ZenTcQlCQhbYvBvPOVq8XIB2FQgseIGHH4gTBTcw-KY' # 2021 level 1
 SHEET_NAME = 'Courses'
+
 
 # Set up classroom service object
 service_classroom = generate_classroom_credential()
@@ -53,11 +57,15 @@ for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
             'values': values
         }
         RANGE_NAME = SHEET_NAME + '!' + column + '9'
-        result = service_sheets.spreadsheets().values().update(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME,
+        try:
+            result = service_sheets.spreadsheets().values().update(spreadsheetId=SPREADSHEET_ID, range=RANGE_NAME,
                                                                valueInputOption='USER_ENTERED', body=body).execute()
-        print('{} cells in Google sheet with spreadsheetID {} updated with courseID {}.'
-              .format(result.get('updatedCells'), SPREADSHEET_ID, course.get('id')))
-
+            print('{} cells in Google sheet with spreadsheetID {} updated with courseID {}.'
+                  .format(result.get('updatedCells'), SPREADSHEET_ID, course.get('id')))
+        except googleapiclient.errors.HttpError:
+            raise Exception("Possible errors.\n  Did you put in the correct spreadsheet?  Spreadsheet should be "
+                            "something like '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA'\n"
+                            "Spreadsheet actually is {}.".format(SPREADSHEET_ID))
         # Topics
         topics = value[0][5].split(',')
         course_id = course.get('id')

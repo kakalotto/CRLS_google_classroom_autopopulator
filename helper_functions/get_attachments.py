@@ -28,13 +28,16 @@
 # {'driveFile': {'driveFile': {'id': '1r-1HzMF7AKt2_OtQuCGmMzXPR6uM1NAR'}, 'shareMode': 'VIEW'}}]
 
 
-def get_attachments(p_column):
+def get_attachments(p_column, p_points):
     import re
 
     from helper_functions.get_google_drive_id import get_google_drive_id
 
     p_attachments = []
-    p_counter = 5
+    if p_points == 0:
+        p_counter = 5
+    else:
+        p_counter = 6
     p_share_mode = ''
     while p_counter < len(p_column):
         if p_counter <= len(p_column) and p_column[p_counter]:

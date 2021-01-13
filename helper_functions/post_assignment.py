@@ -4,7 +4,7 @@
 
 def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments, p_date, p_offset,
                     p_course_description,
-                    p_course_id, p_spreadsheet_id, p_service_sheet, p_service_classroom):
+                    p_course_id, p_spreadsheet_id, p_service_sheet, p_service_classroom, p_points):
 
     import googleapiclient
 
@@ -35,8 +35,10 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
 
     if p_topic not in topic_dict.keys():
         raise Exception("The topic you want to post this under: {}, is not in the list of topics for the class.\n"
-                        "Please add this topic into the class, or else change the topic of the assignment"
-                        .format(p_topic))
+                        "Please add this topic into the class, or else change the topic of the assignment.\n"
+                        "If you think the topic is actually there, maybe you put a space in front of it.\n"
+                        "In the courses tab, the topics are separated by commas, no spaces in between."
+                        .format(p_topic,))
     assignment = {
         'title': p_title,
         'description': p_text,
@@ -52,13 +54,16 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
         'scheduledTime': new_scheduled_time,
         'workType': 'ASSIGNMENT',
         'state': 'DRAFT',
+        'maxPoints': p_points,
     }
     try:
         assignment = p_service_classroom.courses().courseWork().create(courseId=p_course_id, body=assignment).execute()
         assignment_id = assignment.get('id')
     except googleapiclient.errors.HttpError:
         raise Exception("'Request contains an invalid argument' - is the topic you want for this assignment one that "
-                        "exists in this class within Google classroom?")
+                        "exists in this class within Google classroom?\n"
+                        "Alternatively, if there is a message 'materials: Duplicate materials are not allowed', you"
+                        "probably have two of the same link on your lesson plan.")
     return assignment_id
 
 #
