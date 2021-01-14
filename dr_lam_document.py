@@ -522,5 +522,3 @@ for assignment in assignments:
 #     print("\n")
 #     print()
 
-'''
-. 
