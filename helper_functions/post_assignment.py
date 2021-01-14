@@ -4,7 +4,7 @@
 
 def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments, p_date, p_offset,
                     p_course_description,
-                    p_course_id, p_spreadsheet_id, p_service_sheet, p_service_classroom):
+                    p_course_id, p_spreadsheet_id, p_service_sheet, p_service_classroom, p_points):
 
     import googleapiclient
 
@@ -54,6 +54,7 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
         'scheduledTime': new_scheduled_time,
         'workType': 'ASSIGNMENT',
         'state': 'DRAFT',
+        'maxPoints': p_points,
     }
     try:
         assignment = p_service_classroom.courses().courseWork().create(courseId=p_course_id, body=assignment).execute()

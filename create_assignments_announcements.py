@@ -1,5 +1,5 @@
 def create_assignments_announcements(spreadsheet_id):
-    # it1cs1it2it3
+
     import re
 
     import googleapiclient
@@ -20,7 +20,6 @@ def create_assignments_announcements(spreadsheet_id):
     from helper_functions.is_work_date_current_date import is_work_date_current_date
     from helper_functions.post_assignment_reschedule import post_assignment_reschedule
 
-    # SPREADSHEET_ID = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA'
 
     # Get sheet service credential and service_classroom credential
     service_sheets = generate_sheets_credential()
@@ -51,6 +50,9 @@ def create_assignments_announcements(spreadsheet_id):
         # Iterate over sheets rows and write/edit classroom as necessary
         print("In create assignments/announcements.  Starting to iterating daily assignments/announcements " + sheet)
         for i, row in enumerate(values, 1):
+            if i < 0:
+                # how many to stkip
+                 continue
             if i > 180:
                 break
             # read the row
@@ -97,7 +99,8 @@ def create_assignments_announcements(spreadsheet_id):
                                                     assignment_announcement['text'],
                                                     assignment_announcement['attachments'],
                                                     day_info['date'], assignment_counter, course_section,
-                                                    course_id, spreadsheet_id, service_sheets, service_classroom)
+                                                    course_id, spreadsheet_id, service_sheets, service_classroom,
+                                                    assignment_announcement['points'],)
                         assignment_counter += 1
                     all_ids += single_id + ','
                 update_sheet_with_id(spreadsheet_id, all_ids, i, service_sheets, sheet)
@@ -109,6 +112,129 @@ def create_assignments_announcements(spreadsheet_id):
                 #                    if day to be scheduled is th esame, do nothing.
                 # For assignments, if day to be scheduled is different, change announcement.
                 #                  If announcement or assignment doesn't exist, then it's already posted; do nothing.
+
+
+                announcement_data_to_repost = []
+                announcement_ids_to_delete = []
+                assignment_data_to_reschedule = []
+
+                # Get link of sheet and read in lesson
+                # link_spreadsheet_id = get_google_drive_id(day_info['link'])
+                # assignments_announcements = read_lesson_plan(link_spreadsheet_id, service_sheets)
+
+                # prepare just i case
+                update_cell = False
+                all_ids = ''
+                single_id = ''
+                # assignment_counter = 0
+                # loop over all posted assignments
+                posted_ids = day_info['ids'].split(',')
+                posted_ids.pop()  # The last one is always an empty space somehow
+                for posted_id in posted_ids:
+                    is_assignment = False
+                    is_announcement = False
+                    if posted_id == ' ' or posted_id == '':   # skip single space or blankones
+                        continue
+                    else:
+                        announcement = {}
+                        assignment = {}
+                        print("Encountered this old assignment/announcement {}.  Checking it out.".format(posted_id))
+                        try:
+                            announcement = service_classroom.courses().announcements().get(courseId=course_id,
+                                                                                           id=posted_id).execute()
+                            is_announcement = True
+                            print("Found that old entry {} is an announcement!".format(posted_id))
+                        except googleapiclient.errors.HttpError:
+                            pass
+                        if is_announcement:
+                            new_announcement_data = {}
+                            if announcement['state'] == 'PUBLISHED':
+                                print("Announcement with this ID {} has already been posted.\n"
+                                      "This might be wrong, or you might've posted it early.\n"
+                                      "In any case, skipping this ID.".format(posted_id))
+                                continue
+                            elif announcement['state'] == 'DRAFT':
+                                # Some bug in classroom API where announcements can't have their text be changed.
+                                # Since announcement needs to have text changed to reflect new day AND schedule new day
+                                #  he code wipes old announcement and makes a new one (after all of the posted_ids are
+                                # iterated through, in case there is a crash somewhere before we get to the end.
+                                # print("Announcement with this ID {} hasn't been PUBLISHED yet.  "
+                                #      "Checking to see if it should be moved to new scheduled date.".format(posted_id))
+                                if is_work_date_current_date(announcement['scheduledTime'], day_info['date']):
+                                    print("announcement {} in Classroom is on same day it is currently listed in sheet "
+                                          "{}  "
+                                          "No change.  On to the next announcement/assignment".format(posted_id, sheet))
+                                    continue
+                                else:  # posted day is on different day
+                                    print("announcement {} in Classroom is on different day than is currently listed "
+                                          "in sheet {}. "
+                                          " Repost as new announcement and delete the old announcement.  "
+                                          .format(posted_id, sheet))
+                                    new_announcement_data['day'] = day_info['day']
+                                    new_announcement_data['text'] = announcement['text']
+                                    new_announcement_data['date'] = day_info['date']
+                                    new_announcement_data['text'] = re.sub(r'\U0001D403\U0001D400\U0001D418 [0-9]+/180',
+                                                                           '', announcement['text'],
+                                                                           re.X | re.M | re.S)
+                                    announcement_ids_to_delete.append(posted_id)
+                                    announcement_data_to_repost.append(new_announcement_data)
+                                    update_cell = True
+                            elif announcement['state'] == 'DELETED':
+                                raise Exception("The ID {} that was read in for this announcement has been deleted in "
+                                                "Google classroom.\n  Something is wrong, but not sure what. \n "
+                                                "Try erasing the ID for this day and reposting the lesson.\n"
+                                                .format(posted_id))
+                        else:  # not announcement, probably assignment
+                            try:
+                                assignment = service_classroom.courses().courseWork().get(courseId=course_id,
+                                                                                          id=posted_id).execute()
+                                is_assignment = True
+                                print("Found that old entry {} is an assignment!".format(posted_id))
+                            except googleapiclient.errors.HttpError:  # posted_id isn't there at all?
+                                raise Exception("Previously posted assignment/announcement {} is neither "
+                                                "annoucement nor"
+                                                "assignment.  Did you copy+paste from somewhere else incorrectly?\n"
+                                                "  Or else, did you delete it from Google classroom manually?\n"
+                                                " Or else, did you restart and just forget to delete the old ID's\n"
+                                                " Exiting.".format(posted_id))
+                        if is_assignment:
+                            new_assignment_data = {}
+                            if assignment['state'] == 'PUBLISHED':
+                                print("Announcement with this ID {} has already been posted.\n"
+                                      "This might be wrong, or you might've posted it early.\n"
+                                      "In any case, skipping this ID.".format(posted_id))
+                                continue
+                            elif assignment['state'] == 'DRAFT':
+                                # print("Assignment with this ID {} hasn't been PUBLISHED yet.  "
+                                #      "Checking to see if it should be moved to new scheduled date.".format(posted_id))
+                                if is_work_date_current_date(assignment['scheduledTime'], day_info['date']):
+                                    print("assignment {} in Classroom is on same day it is currently "
+                                          "listed in sheet {}  "
+                                          "No change.  On to the next announcement/assignment".format(posted_id, sheet))
+                                    continue
+                                else:  # posted day is on different day
+                                    print("assignment {} in Classroom is on different day than is currently listed "
+                                          "in sheet {}. "
+                                          " Reschedule assignment  "
+                                          .format(posted_id, sheet))
+                                    new_assignment_data['assignment'] = assignment
+                                    new_assignment_data['date'] = day_info['date']
+                                    new_assignment_data['id'] = posted_id
+                                    # print("new assignment data")
+                                    # print(new_assignment_data)
+                                    # print("assignment data to rescheulde")
+                                    # print(assignment_data_to_reschedule)
+                                    assignment_data_to_reschedule.append(new_assignment_data)
+                                    # print("in loop")
+                                    # print(assignment_data_to_reschedule)
+                                    update_cell = True
+                            elif assignment['state'] == 'DELETED':
+                                    raise Exception(
+                                        "The ID {} that was read in for this assignment has been deleted in Google "
+                                        "classroom.\n  Something is wrong, but not sure what.\n  "
+                                        "Try erasing the ID for this day and reposting the lesson.\n".format(posted_id))
+
+
 
                 announcement_data_to_repost = []
                 announcement_ids_to_delete = []
@@ -243,6 +369,7 @@ def create_assignments_announcements(spreadsheet_id):
                     # print("assignment data to rescheulde")
                     # print(assignment_data_to_reschedule)
                     for assignment in assignment_data_to_reschedule:
+
                         print("xxx before posting reassignment")
                         single_id = post_assignment_reschedule(assignment['assignment'], assignment['date'], course_id,
                                                                assignment['id'], service_classroom,
