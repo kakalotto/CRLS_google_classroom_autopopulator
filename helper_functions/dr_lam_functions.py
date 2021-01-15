@@ -1,10 +1,23 @@
+def add_regular_text(p_text, index_start, p_batch_requests):
+    batch = {
+        'insertText': {
+            'location': {
+                'index': index_start,
+            },
+            'text':  p_text
+        }
+    }
+    p_batch_requests.append(batch)
+    index_end = index_start + len(p_text)
+    return [index_start, index_end, p_batch_requests]
+
+
 def delete_entire_document(p_service, document_id, p_doc_content):
     import re
 
     matches = re.findall(r"'endIndex':\s([0-9]+)", str(p_doc_content), re.X | re.M | re.S)
     if matches:
         last_number = matches[-1]
-        print(last_number)
     last_number = int(last_number)
     last_number -= 1
     print(last_number)

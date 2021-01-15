@@ -83,7 +83,6 @@ for i, value in enumerate(sheet_values):
     text = "\n" + 'Day ' + str(day) + ' ' + date + " " + day_of_week + "\n"
     [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
 
-
     # Add "Due today:" header
     text = 'Due today:\n'
     [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
@@ -111,7 +110,7 @@ for i, value in enumerate(sheet_values):
                 }
                 batch_requests.append(due_today)
                 new_last_index += len(title_text)
-                
+
     ##batch_requests.append(due_today)
     # new_last_index += len(title_text)
 
