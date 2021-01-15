@@ -1,524 +1,227 @@
-DOCUMENT_ID = '1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EPOI'
-ORIGINAL_DOC_ID = '1N-kPKpq3qQXONAsUS7iveyJGAhE0OGoqXzYYTn38lRM'
-CLASSROOM_ID = 'MTY0OTY1NDEyNjg3'
-COURSE_CONTRACT = 'https://docs.google.com/document/d/1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/edit'
-ZOOM_LINK = 'https://zoom.us/j/4968074808?pwd=ZVBJQzQ4Uk1NREpGNEhLakJ4blExUT09#success'
-CLASSROOM_LINK = 'https://classroom.google.com/u/0/c/MTY0OTc4MDQwMjg4'
-ASSIGNED_LINK = 'https://classroom.google.com/u/0/a/not-turned-in/MTY0OTc4MDQwMjg4'
-ASPEN_LINK = 'https://aspen.cpsd.us'
-COURSE_ID = 164978040288
-
-
-def get_text(p_service, document_id):
-    document = p_service.documents().get(documentId=document_id).execute()
-    doc_content = document.get('body').get('content')
-    return doc_content
-
-
-def delete_entire_document(p_service, document_id, p_doc_content):
-    import re
-
-    matches = re.findall(r"'endIndex':\s([0-9]+)", str(p_doc_content), re.X | re.M | re.S)
-    if matches:
-        last_number = matches[-1]
-        print(last_number)
-    last_number = int(last_number)
-    last_number -= 1
-    print(last_number)
-    p_requests = [
-        {
-            'deleteContentRange': {
-                'range': {
-                    'startIndex': 1,
-                    'endIndex': last_number,
-                }
-
-            }
-
-        },
-    ]
-    if last_number > 2:
-        result = p_service.documents().batchUpdate(documentId=document_id, body={'requests': p_requests}).execute()
-        return result
-    else:
-        return None
-
-
+from helper_functions.read_course_daily_data_all import read_course_daily_data_all
+import re
 from generate_docs_credential import generate_docs_credential
 from generate_sheets_credential import generate_sheets_credential
 from generate_classroom_credential import generate_classroom_credential
-
-from helper_functions.get_google_drive_id import get_google_drive_id
-from helper_functions.get_all_sheets import get_all_sheets
-from helper_functions.read_course_id import read_course_id
+from helper_functions.dr_lam_functions import delete_entire_document, get_final_index, get_text, add_regular_text
+from helper_functions.dr_lam_requests import requests_header, requests_links
 from helper_functions.read_course_daily_data_all import read_course_daily_data_all
-from helper_functions.is_in_past import is_in_past
-from helper_functions.read_day_info import read_day_info
-from helper_functions.read_lesson_plan import read_lesson_plan
-from helper_functions.post_announcement import post_announcement
-from helper_functions.post_assignment import post_assignment
-from helper_functions.update_sheet_with_id import update_sheet_with_id
-from helper_functions.is_work_date_current_date import is_work_date_current_date
-from helper_functions.post_assignment_reschedule import post_assignment_reschedule
 
-# Get sheet service credential and service_classroom credential
+DOCUMENT_ID = '1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EPOI'
+ORIGINAL_DOC_ID = '1N-kPKpq3qQXONAsUS7iveyJGAhE0OGoqXzYYTn38lRM'
+CLASSROOM_ID = 'MTY0OTY1NDEyNjg3'
+SPREADSHEET_ID = '1ZenTcQlCQhbYvBvPOVq8XIB2FQgseIGHH4gTBTcw-KY'
+SHEET_ID = 'APCSP_S1_P1'
+COURSE_CONTRACT = 'https://docs.google.com/document/d/1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/edit'
+ZOOM_LINK = 'https://zoom.us/j/4968074808?pwd=ZVBJQzQ4Uk1NREpGNEhLakJ4blExUT09#success'
+CLASSROOM_LINK = 'https://classroom.google.com/u/0/c/' + CLASSROOM_ID
+ASSIGNED_LINK = 'https://classroom.google.com/u/0/a/not-turned-in/' + CLASSROOM_ID
+MISSING_LINK = 'https://classroom.google.com/u/0/a/missing/' + CLASSROOM_ID
+ASPEN_LINK = 'https://aspen.cpsd.us'
+DUMMY = ''
+
+HEADER_TEXT = 'AP CSP S1 P1\n'
+COURSE_ID = 164978040288
+
 service_doc = generate_docs_credential()
+service_sheets = generate_sheets_credential()
+service_classroom = generate_classroom_credential()
 
 # Start over
 doc_contents = get_text(service_doc, DOCUMENT_ID)
 delete_entire_document(service_doc, DOCUMENT_ID, doc_contents)
 print("Deletion done")
-# Header
-header_text = 'AP CSP S1 P1\n'
 
-# ends at 14
-requests = [
-    {
-        'insertText': {
-            'location': {
-                'index': 1,
-            },
-            'text': header_text
-        }
-    },
-    {
-        'insertText': {
-            'location': {
-                'index': 14,
-            },
-            'text': 'Semester schedule and calendar\n\n\n'
-        }
-    },
-    {
-        'updateTextStyle': {
-            'range': {
-                'startIndex': 1,
-                'endIndex': 47
-            },
-            'textStyle': {
-                'bold': True,
-                'fontSize': {"magnitude": 16, "unit": "pt"},
-            },
-            'fields': '*'
-        }
-    },
-    {
-        "updateParagraphStyle": {
-            "range": {
-                "startIndex": 1,
-                "endIndex": 47
-            },
-            "paragraphStyle": {
-                "alignment": "CENTER"
-            },
-            "fields": "alignment"
-        }
-    },
-    {
-        'insertText': {
-            'location': {
-                'index': 47,
-            },
-            'text': 'This document contains the schedule of activities for the entire semester. It includes links and '
-                    'resources that you’ll need before, during, and after class. It should be your first point of '
-                    'reference when you need to know what to do. Please have it open during every class session.\n\n\n'
-                    'This document is automatically generated via computer script.  '
-                    'Schedules are subject to change.  Dates that are further out are less likely to be accurate.\n\n'
-        }
-    },
-    {
-        'insertText': {
-            'location': {
-                'index': 488,
-            },
-            'text': 'Please see the course contract for information on grading and class policies\n\n'
-        }
-    },
-    {
-        'updateTextStyle': {
-            'range': {
-                'startIndex': 503,
-                'endIndex': 518
-            },
-            'textStyle': {
-                'link': {
-                    'url': 'https://docs.google.com/document/d/1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/edit#bookmark=id.gs88mpq2vwt'
-                }
-            },
-            'fields': 'link'
-        }
-    },
-    {
-        'insertText': {
-            'location': {
-                'index': 566,
-            },
-            'text': 'Links\n\n'
-        }
-    },
-    {
-        'updateTextStyle': {
-            'range': {
-                'startIndex': 566,
-                'endIndex': 571
-            },
-            'textStyle': {
-                'bold': True,
-                'fontSize': {"magnitude": 16, "unit": "pt"},
-            },
-            'fields': '*'
-        }
-    },
-    {
-        'insertTable': {
-            'rows': 1,
-            'columns': 5,
-            'endOfSegmentLocation': {
-                'segmentId': ''
-            }
-        },
-    },
-
-]
-requests2 = [
-    {
-        'insertInlineImage': {
-            'location': {
-                'index': 577
-            },
-            'uri':
-                'http://crls-autograder.herokuapp.com/static/zoom.PNG',
-            'objectSize': {
-                'height': {
-                    'magnitude': 75,
-                    'unit': 'PT'
-                },
-                'width': {
-                    'magnitude': 75,
-                    'unit': 'PT'
-                }
-            }
-        }
-    },
-    {
-        'insertText': {
-            'location': {
-                'index': 578,
-            },
-            'text': '    Zoom'
-        }
-    },
-    {
-        'updateTextStyle': {
-            'range': {
-                'startIndex': 578,
-                'endIndex': 587
-            },
-            'textStyle': {
-                'link': {
-                    'url': ZOOM_LINK
-                }
-            },
-            'fields': 'link'
-        }
-    },
-    {
-        "updateParagraphStyle": {
-            "range": {
-                "startIndex": 578,
-                "endIndex": 587
-            },
-            "paragraphStyle": {
-                "alignment": "CENTER"
-            },
-            "fields": "alignment"
-        }
-    },
-
-
-
-    {
-        'insertInlineImage': {
-            'location': {
-                'index': 588
-            },
-            'uri':
-                'http://crls-autograder.herokuapp.com/static/classroom.PNG',
-            'objectSize': {
-                'height': {
-                    'magnitude': 75,
-                    'unit': 'PT'
-                },
-                'width': {
-                    'magnitude': 75,
-                    'unit': 'PT'
-                }
-            }
-        }
-    },
-    {
-        'insertText': {
-            'location': {
-                'index': 589,
-            },
-            'text': 'Google classroom'
-        }
-    },
-    {
-        'updateTextStyle': {
-            'range': {
-                'startIndex': 589,
-                'endIndex': 605
-            },
-            'textStyle': {
-                'link': {
-                    'url': CLASSROOM_LINK
-                }
-            },
-            'fields': 'link'
-        }
-    },
-    {
-        "updateParagraphStyle": {
-            "range": {
-                "startIndex": 589,
-                "endIndex": 600
-            },
-            "paragraphStyle": {
-                "alignment": "CENTER"
-            },
-            "fields": "alignment"
-        }
-    },
-    {
-        'insertInlineImage': {
-            'location': {
-                'index': 607
-            },
-            'uri':
-                'http://crls-autograder.herokuapp.com/static/assigned.PNG',
-            'objectSize': {
-                'height': {
-                    'magnitude': 75,
-                    'unit': 'PT'
-                },
-                'width': {
-                    'magnitude': 75,
-                    'unit': 'PT'
-                }
-            }
-        }
-    },
-    {
-        'insertText': {
-            'location': {
-                'index': 608,
-            },
-            'text': 'Google classroom assigned work'
-        }
-    },
-    {
-        'updateTextStyle': {
-            'range': {
-                'startIndex': 608,
-                'endIndex': 640
-            },
-            'textStyle': {
-                'link': {
-                    'url': ASSIGNED_LINK
-                }
-            },
-            'fields': 'link'
-        }
-    },
-    {
-        "updateParagraphStyle": {
-            "range": {
-                "startIndex": 608,
-                "endIndex": 620
-            },
-            "paragraphStyle": {
-                "alignment": "CENTER"
-            },
-            "fields": "alignment"
-        }
-    },
-
-
-    {
-        'insertInlineImage': {
-            'location': {
-                'index': 640
-            },
-            'uri':
-                'http://crls-autograder.herokuapp.com/static/missing.PNG',
-            'objectSize': {
-                'height': {
-                    'magnitude': 75,
-                    'unit': 'PT'
-                },
-                'width': {
-                    'magnitude': 75,
-                    'unit': 'PT'
-                }
-            }
-        }
-    },
-    {
-        'insertText': {
-            'location': {
-                'index': 641,
-            },
-            'text': 'Google classroom missing work'
-        }
-    },
-    {
-        'updateTextStyle': {
-            'range': {
-                'startIndex': 641,
-                'endIndex': 670
-            },
-            'textStyle': {
-                'link': {
-                    'url': ASSIGNED_LINK
-                }
-            },
-            'fields': 'link'
-        }
-    },
-    {
-        "updateParagraphStyle": {
-            "range": {
-                "startIndex": 641,
-                "endIndex": 655
-            },
-            "paragraphStyle": {
-                "alignment": "CENTER"
-            },
-            "fields": "alignment"
-        }
-    },
-
-    {
-        'insertInlineImage': {
-            'location': {
-                'index': 672
-            },
-            'uri':
-                'http://crls-autograder.herokuapp.com/static/aspen.PNG',
-            'objectSize': {
-                'height': {
-                    'magnitude': 75,
-                    'unit': 'PT'
-                },
-                'width': {
-                    'magnitude': 75,
-                    'unit': 'PT'
-                }
-            }
-        }
-    },
-    {
-        'insertText': {
-            'location': {
-                'index': 673,
-            },
-            'text': 'Aspen'
-        }
-    },
-    {
-        'updateTextStyle': {
-            'range': {
-                'startIndex': 673,
-                'endIndex': 681
-            },
-            'textStyle': {
-                'link': {
-                    'url': ASPEN_LINK
-                }
-            },
-            'fields': 'link'
-        }
-    },
-    {
-        "updateParagraphStyle": {
-            "range": {
-                "startIndex": 673,
-                "endIndex": 681
-            },
-            "paragraphStyle": {
-                "alignment": "CENTER"
-            },
-            "fields": "alignment"
-        }
-    },
-
-    # {
-    #     'insertText': {
-    #         'location': {
-    #             'index': 581,
-    #         },
-    #         'text': 'Google classroom missing\n\n'
-    #     }
-    # },
-    # {
-    #     'insertText': {
-    #         'location': {
-    #             'index': 600,
-    #         },
-    #         'text': 'Aspen\n\n'
-    #     }
-    # },
-]
-
-
-#
-# requests3 = [
-#     {
-#         'insertText': {
-#             'location': {
-#                  'index': offset,
-#             },
-#             'text': '    end of line'
-#         }
-#     },
-# ]
-
-print("starting request")
+# Write header to doc
+print("starting header printout")
+requests = requests_header(HEADER_TEXT)
 result = service_doc.documents().batchUpdate(documentId=DOCUMENT_ID, body={'requests': requests}).execute()
-print("request 1 done")
-abc = get_text(service_doc, DOCUMENT_ID)
+
+# Write links to doc
+print("starting links printout")
+requests = requests_links(ZOOM_LINK, ASPEN_LINK, CLASSROOM_LINK, ASSIGNED_LINK, MISSING_LINK)
+result2 = service_doc.documents().batchUpdate(documentId=DOCUMENT_ID, body={'requests': requests}).execute()
+
+# abc = get_text(service_doc, DOCUMENT_ID)
 # for item in abc:
 #     print(item)
 #     print("\n")
 #     print()
-result = service_doc.documents().batchUpdate(documentId=DOCUMENT_ID, body={'requests': requests2}).execute()
-#result = service_doc.documents().batchUpdate(documentId=DOCUMENT_ID, body={'requests': requests3}).execute()
 
-abc = get_text(service_doc, DOCUMENT_ID)
-for item in abc:
-    print(item)
-    print("\n")
-    print()
+# Read Google classroom for all of the course info
+# coursework = service_classroom.courses().courseWork()
+courseworks = service_classroom.courses().courseWork().list(courseId=COURSE_ID).execute().get('courseWork', [])
+for coursework in courseworks:
+    print(coursework)
+
+# Read Google sheets automator file for info about file names, etc...
+sheet_values = read_course_daily_data_all(SPREADSHEET_ID, SHEET_ID, service_sheets)
+print(sheet_values[0:5])
+
+# To get the last index, I need to both reead file.  This is just debugging
+doc_contents = get_text(service_doc, DOCUMENT_ID)
+print("LAST!!")
+last_index = get_final_index(doc_contents)
+
+# zero batch requests.  Last index, and
+batch_requests = []
+
+index_of_begin_dates = last_index
+initial_index = last_index
+previous_last = 0
+
+for i, value in enumerate(sheet_values):
+    if i > 89:
+        break
+    if len(value) == 3:
+        continue
+
+    # Add day and date header
+    day = value[0]
+    date = value[1]
+    day_of_week = value[2]
+    text = "\n" + 'Day ' + str(day) + ' ' + date + " " + day_of_week + "\n"
+    [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
 
 
-service_classroom = generate_classroom_credential()
-course_results = service_classroom.courses().get(id=COURSE_ID).execute()
-print(course_results)
-coursework = service_classroom.courses().courseWork()
-assignments = service_classroom.courses().courseWork().list(courseId=COURSE_ID).execute().get('courseWork', [])
+    # Add "Due today:" header
+    text = 'Due today:\n'
+    [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
+    new_last_index = last_index
 
-service_sheet = generate_sheets_credential()
+    # Look for what is actually due
+    for coursework in courseworks:
+        if 'dueDate' in coursework:
+            year = coursework['dueDate']['year']
+            month = coursework['dueDate']['month']
+            day = coursework['dueDate']['day']
+            mdy = str(month) + '/' + str(day) + '/' + str(year)
+            # print("DATE AND MDY" + str(date) + str(mdy))
 
-for assignment in assignments:
-    if 'title' in assignment:
-        print(assignment['title'])
-    else:
-        print("NO TITLE")
-    print(assignment)
-    # original_text = get_text(service_doc, ORIGINAL_DOC_ID)
-# for item in original_text:
-#     print(item)
-#     print("\n")
-#     print()
+            if mdy == date:
+                title = coursework['title']
+                title_text = title + '\n'
+                due_today = {
+                    'insertText': {
+                        'location': {
+                            'index': new_last_index,
+                        },
+                        'text': title_text
+                    }
+                }
+                batch_requests.append(due_today)
+                new_last_index += len(title_text)
+                
+    ##batch_requests.append(due_today)
+    # new_last_index += len(title_text)
 
+    newline = {
+        'insertText': {
+            'location': {
+                'index': new_last_index,
+            },
+            'text': '\n'
+        }
+    }
+    new_last_index += 1
+    batch_requests.append(newline)
+
+    all_assignments = value[3]
+    assignments = all_assignments.split('and ')
+    assignments_dictionary = {
+        'Create task practice 1': 'Create task practice',
+        'Create task practice 2': 'Create task practice',
+        'Create task practice 3': 'Create task practice',
+        'Create task practice 4': 'Create task practice',
+        'Create task practice 5': 'Create task practice',
+        'Create task practice 6': 'Create task practice',
+        'Create task 1': 'Create task',
+        'Create task 2': 'Create task',
+        'Create task 3': 'Create task',
+        'Create task 4': 'Create task',
+        'Create task 5': 'Create task',
+        'Create task 6': 'Create task',
+        'Create task 7': 'Create task',
+        'Create task 8': 'Create task',
+        'Create task 9': 'Create task',
+        'Create task 10': 'Create task',
+        'Create task 11': 'Create task',
+        'Create task 12': 'Create task',
+    }
+    for assignment in assignments:
+
+        # Get the assignment name
+        print("assignment " + str(assignment))
+        clean_assignment = re.sub(r'^\s+', r'', assignment)
+        clean_assignment = re.sub(r'\s+$', r'', assignment)
+
+
+        # Get ready to write the name of the assignment
+        index_assignment_start = new_last_index
+        assignment_text = clean_assignment + '\n'
+        assignment_dict = {
+            'insertText': {
+                'location': {
+                    'index': new_last_index,
+                },
+                'text': assignment_text
+            }
+        }
+        new_last_index += len(clean_assignment) + 1
+        batch_requests.append(assignment_dict)
+        last_index = new_last_index
+
+        # get the link to the assignment
+        for coursework in courseworks:
+            link = ''
+            if clean_assignment in assignments_dictionary:
+                clean_assignment = assignments_dictionary[clean_assignment]
+            if clean_assignment == coursework['title']:
+                print('MATCH! ' + coursework['title'])
+                link = coursework['alternateLink']
+                print("LINK!! " + link)
+
+        # Turn the written assignment into a link
+            link_request = {
+                               'updateTextStyle': {
+                                   'range': {
+                                       'startIndex': index_assignment_start,
+                                       'endIndex': last_index
+                                   },
+                                   'textStyle': {
+                                       'link': {
+                                           'url': link
+                                       }
+                                   },
+                                   'fields': 'link'
+                               }
+                           },
+            batch_requests.append(link_request)
+    last_index = new_last_index
+    print("new last index")
+    print(last_index)
+
+
+formatting = {
+    "updateParagraphStyle": {
+        "range": {
+            "startIndex": index_of_begin_dates,
+            "endIndex": last_index
+        },
+        "paragraphStyle": {
+            "alignment": "START"
+        },
+        "fields": "alignment"
+    }
+}
+batch_requests.append(formatting)
+
+print("TRYING THIS")
+# print(batch_requests)
+
+result = service_doc.documents().batchUpdate(documentId=DOCUMENT_ID, body={'requests': batch_requests}).execute()
+
+
+doc_contents = get_text(service_doc, DOCUMENT_ID)
+print("LAST END OF FILE")
+print(get_final_index(doc_contents))
