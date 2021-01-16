@@ -30,7 +30,6 @@
 
 def get_attachments(p_column, p_points):
     import re
-
     from helper_functions.get_google_drive_id import get_google_drive_id
 
     p_attachments = []
