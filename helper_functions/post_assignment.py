@@ -57,6 +57,25 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
         'maxPoints': p_points,
     }
     try:
+    #    assignment={'title': 'Day 11 survey',
+    #          'description': 'Fill out Google form at this link:\nhtt2EU',
+            #  'materials': [{'driveFile': {'driveFile': {'id': '1Vp3JYoP2VUtX5ERQmgN1UpGfptd_i5bP6VWxfDcxV30'}, 'shareMode': 'VIEW'}}],
+              #'materials': [{'form': {'formUrl': 'https://docs.google.com/forms/d/10PuyNa5SJ7UYI6-8XjExHMcgG8bwSq0LVVwzqAjUtaw/edit'}}],
+#              'materials': [{'link': {'url': 'https://docs.google.com/forms/d/e/1FAIpQLSd7JneuK3uNErq88nmM7tqc-jNEzUX4z363H6hz8ecEPOcCOQ/viewform'}}],
+
+     #         'materials': [{'form': {'formUrl': 'https://docs.google.com/forms/d/e/1FAIpQLSc-ySOSYg6-Uo3p_pGcl-_b2OX6SNkpWxKWKoZAKbSq2lTfIw/viewform', 'title': 'Blank Quiz', 'thumbnailUrl': 'https://lh4.googleusercontent.com/D3ZxyZiB95qaDDQ4pBOr_X_LTk_DlJVzfpRLJeGbDaMywkWev_ZVHniiYPpr4Cu4SjoBoIw=w90-h90-p'}}],
+
+#              'dueDate': {'year': 2021, 'month': 2, 'day': 4},
+#              'dueTime': {'hours': 13, 'minutes': 10, 'seconds': 0},
+#              'topicId': '233687113769',
+#     #         'scheduledTime': '2021-02-01T12:00:00Z',
+       #       'workType': 'ASSIGNMENT',
+#              'state': 'DRAFT',
+        #      'maxPoints': '9'
+         #           }
+
+        print("THIS IS BODY")
+        print(assignment)
         assignment = p_service_classroom.courses().courseWork().create(courseId=p_course_id, body=assignment).execute()
         assignment_id = assignment.get('id')
     except googleapiclient.errors.HttpError:

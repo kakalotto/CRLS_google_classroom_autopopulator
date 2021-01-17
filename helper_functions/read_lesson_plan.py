@@ -24,7 +24,7 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
     column_dicts = []
     for column in columns:
         column_dict = {}
-        print("blah {}".format(column))
+        # print("blah {}".format(column))
         if column[0] == 'announcement':
             if column[1] != '' or column[2] != '' or column[3] != '':
                 raise Exception("In lesson with spreadsheet ID {}, rows 3 - 5 must be empty"
@@ -38,10 +38,8 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
             column_dict['assignment_or_announcement'] = 'announcement'
         elif column[0] == 'assignment':
             if not str.isdigit(column[3]):
-                raise Exception("row 5 is not an integer in lesson with spreadsheet ID {}.\n"
-                                "This probably means you forgot to add the in Topic row 2 i.e."
-                                "\n you are still using the old-format without topics.\n"
-                                "row 2 should be: Topic (assignments only).   {}"
+                raise Exception("row 3 is not an integer in lesson with spreadsheet ID {}.\n"
+                                "This probably means you forgot to add days to finish.   {}"
                                 .format(p_spreadsheet_id, column[3]))
             if column[1] == '' or column[2] == '' or column[3] == '':
                 raise Exception("In lesson with spreadsheet ID {}, rows 3 - 5 must be filled out "
@@ -67,15 +65,20 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                                 "Please check.\n"
                                 "Possibly, your lesson file is in the old format with no topic."
                                 .format(p_spreadsheet_id))
-            if column[5] != '':
-                raise Exception("In lesson with spreadsheet ID {}, row 5 (points) should be empty if it's"
-                                "a materials.\n"
-                                "Please check.\n"
-                                "Possibly, your lesson file is in the old format with no topic."
-                                .format(p_spreadsheet_id))
+            if len(column) >= 7:  # attachments
+                if column[5] != '':
+                    raise Exception("In lesson with spreadsheet ID {}, row 5 (points) should be empty if it's"
+                                    "a materials.\n"
+                                    "Please check.\n"
+                                    "Possibly, your lesson file is in the old format with no topic."
+                                    .format(p_spreadsheet_id))
+                column_dict['attachments'] = get_attachments(column, 999)
+            elif len(column) == 5:
+                column_dict['attachments'] = []
             column_dict['topic'] = column[1]
             column_dict['title'] = column[2]
-            column_dict['attachments'] = get_attachments(column, 999)
+            column_dict['topic'] = column[1]
+            column_dict['assignment_or_announcement'] = 'materials'
         else:
             raise Exception("In lesson with spreadsheet ID {}, something in row 2 has something other than "
                             "'announcement' or 'assignment' or 'materials'.".format(p_spreadsheet_id))

@@ -26,9 +26,7 @@ def post_materials(p_topic, p_title, p_text, p_attachments, p_date, p_offset,
                         "If you think the topic is actually there, maybe you put a space in front of it.\n"
                         "In the courses tab, the topics are separated by commas, no spaces in between."
                         .format(p_topic,))
-    print("TOPIC ID IS " + str(topic_dict[p_topic]))
-
-    material = {
+    p_material = {
         'title': p_title,
         'description': p_text,
         'materials': p_attachments,
@@ -37,8 +35,9 @@ def post_materials(p_topic, p_title, p_text, p_attachments, p_date, p_offset,
         'state': 'DRAFT',
     }
     try:
-        material = p_service_classroom.courses().courseWorkMaterials().create(courseId=p_course_id, body=material).execute()
-        material_id = material.get('id')
+        material_obj = p_service_classroom.courses().courseWorkMaterials().create(courseId=p_course_id,
+                                                                                  body=p_material).execute()
+        material_id = material_obj.get('id')
     except googleapiclient.errors.HttpError:
         raise Exception("'Request contains an invalid argument' - is the topic you want for this assignment one that "
                         "exists in this class within Google classroom?\n"
@@ -48,27 +47,26 @@ def post_materials(p_topic, p_title, p_text, p_attachments, p_date, p_offset,
 
 
 from generate_classroom_credential import generate_classroom_credential
-from generate_sheets_credential import generate_sheets_credential
 
 service_classroom = generate_classroom_credential()
-# service_sheet = generate_sheets_credential()
 offset = 1
 #
 #def post_materials(p_topic, p_title, p_text, p_attachments, p_date, p_offset,
 #                   p_course_id, p_service_classroom,):
-abc = post_materials('Zoom link', 'test material', 'Test text', [], '1/16/2021', offset,
-                      '164978129388', service_classroom)
+#abc = post_materials('Administration', 'aaatest material', 'Test text', [], '1/18/2021', offset,
+#                       '233686385807', service_classroom)
 
 #course_id = 36500789911  # test_APCSP_Computer_Principles
-#abc = post_assignment(1, 'MCAS GOOD LUCK', '5/28/2019', course_id, service_classroom)
+#abc = post_assignment(1, 'MCAS GOOD LUCK', 5/28/2019', course_id, service_classroom)
 #print(abc)
-material = service_classroom.courses().courseWorkMaterials().list(courseId=164978129388).execute()
-print(material)
-# body = {'title': 'baaalahblah',
+#material = service_classroom.courses().courseWorkMaterials().list(courseId=233686385807).execute()
+#print(material)
+#body = {'title': 'baaalahblah',
 #         'description': "yes",
-#         'topicId': '164964185591'
+#         'topicId': '233687113769',
+#        'scheduledTime': '2021-01-19'
 #         }
+
+#material = service_classroom.courses().courseWorkMaterials().create(courseId='233686385807', body=body).execute()
 #
-# material = service_classroom.courses().courseWorkMaterials().create(courseId='164978129388', body=body).execute()
-#
-# print(material)
+#print(material)

@@ -44,7 +44,12 @@ def get_attachments(p_column, p_points):
             if len(p_column) >= p_counter + 2:  # only assignments have share mode for links
                 p_share_mode = p_column[p_counter + 1]
             p_google_drive_match = re.search('.google', p_link)  # Check for link being a Google link
-            if p_google_drive_match:
+            form = re.search('forms', p_link)
+            if form and not p_share_mode:
+                p_material = {
+                    'link': {'url': p_link}
+                }
+            elif p_google_drive_match:
                 p_link = get_google_drive_id(p_link)
                 if p_share_mode:  # This is for assignments
                     p_material = {

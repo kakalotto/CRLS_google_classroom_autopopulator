@@ -16,7 +16,8 @@ service_sheets = generate_sheets_credential()
 #SPREADSHEET_ID = '1ZenTcQlCQhbYvBvPOVq8XIB2FQgseIGHH4gTBTcw-KY' # 2021 level 1
 #SPREADSHEET_ID = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA' # AP CSP test
 #SPREADSHEET_ID = '1RFSXj_IjfqVLv-njFmeI1e0LoVdglvFjQGxk1drxdqw'  # Game development
-SPREADSHEET_ID = '1NmV9WVSJsVrrJIVRKat4oWnkWMBWCEuO-07eCesh4ow' # 2020 level 1
+#SPREADSHEET_ID = '1NmV9WVSJsVrrJIVRKat4oWnkWMBWCEuO-07eCesh4ow' # 2020 level 1
+SPREADSHEET_ID = '1HBh9DcDUaKiyH_X5w_-qCh-Aw_0JZD-Rtzg_PfiER3Y' # 2021 test
 
 SHEET_NAME = 'Courses'
 
