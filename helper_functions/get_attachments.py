@@ -38,7 +38,9 @@ def get_attachments(p_column, p_points):
     else:
         p_counter = 6
     p_share_mode = ''
+    print("jjj entire colun here" + str(p_column))
     while p_counter < len(p_column):
+
         if p_counter <= len(p_column) and p_column[p_counter]:
             p_link = p_column[p_counter]
             if len(p_column) >= p_counter + 2:  # only assignments have share mode for links
@@ -46,6 +48,7 @@ def get_attachments(p_column, p_points):
             p_google_drive_match = re.search('.google', p_link)  # Check for link being a Google link
             form = re.search('forms', p_link)
             if form and not p_share_mode:
+                print("FOUND A FORM")
                 p_material = {
                     'link': {'url': p_link}
                 }
@@ -65,6 +68,8 @@ def get_attachments(p_column, p_points):
                         }
                     }
             else:  # match non-Google link
+                print("FOUND BROKEN WHATEVA")
+
                 p_material = {
                     'p_link': {'url': p_link}
                 }

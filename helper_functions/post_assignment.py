@@ -74,8 +74,7 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
         #      'maxPoints': '9'
          #           }
 
-        print("THIS IS BODY")
-        print(assignment)
+        print("This is the assignment being posted: " + str(assignment))
         assignment = p_service_classroom.courses().courseWork().create(courseId=p_course_id, body=assignment).execute()
         assignment_id = assignment.get('id')
     except googleapiclient.errors.HttpError:

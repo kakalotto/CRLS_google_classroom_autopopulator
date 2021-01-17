@@ -50,7 +50,7 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                                 .format(p_spreadsheet_id))
             else:
                 column_dict['assignment_or_announcement'] = 'assignment'
-                if column[5].isdigit():
+                if column[5].isdigit() or column[5].replace(".", "", 1).isdigit():
                     column_dict['points'] = column[5]
                 else:
                     column_dict['points'] = 0
@@ -84,6 +84,7 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                             "'announcement' or 'assignment' or 'materials'.".format(p_spreadsheet_id))
         column_dict['text'] = column[4]
         column_dict['text'] = unicode_text(column[4])
+        print('fff final column ' + str(column_dict))
         column_dicts.append(column_dict)
     return column_dicts
 
