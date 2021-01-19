@@ -1,5 +1,5 @@
 def create_assignments_announcements(spreadsheet_id):
-    # it1cs1it2it3
+
     import re
 
     import googleapiclient
@@ -20,7 +20,6 @@ def create_assignments_announcements(spreadsheet_id):
     from helper_functions.is_work_date_current_date import is_work_date_current_date
     from helper_functions.post_assignment_reschedule import post_assignment_reschedule
 
-    # SPREADSHEET_ID = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA'
 
     # Get sheet service credential and service_classroom credential
     service_sheets = generate_sheets_credential()
@@ -51,6 +50,9 @@ def create_assignments_announcements(spreadsheet_id):
         # Iterate over sheets rows and write/edit classroom as necessary
         print("In create assignments/announcements.  Starting to iterating daily assignments/announcements " + sheet)
         for i, row in enumerate(values, 1):
+            if i < 0:
+                # how many to stkip
+                 continue
             if i > 180:
                 break
             # read the row
@@ -97,7 +99,8 @@ def create_assignments_announcements(spreadsheet_id):
                                                     assignment_announcement['text'],
                                                     assignment_announcement['attachments'],
                                                     day_info['date'], assignment_counter, course_section,
-                                                    course_id, spreadsheet_id, service_sheets, service_classroom)
+                                                    course_id, spreadsheet_id, service_sheets, service_classroom,
+                                                    assignment_announcement['points'],)
                         assignment_counter += 1
                     all_ids += single_id + ','
                 update_sheet_with_id(spreadsheet_id, all_ids, i, service_sheets, sheet)
@@ -229,7 +232,7 @@ def create_assignments_announcements(spreadsheet_id):
                                         "The ID {} that was read in for this assignment has been deleted in Google "
                                         "classroom.\n  Something is wrong, but not sure what.\n  "
                                         "Try erasing the ID for this day and reposting the lesson.\n".format(posted_id))
-                # print("xxx done with posted IDs")
+
                 if update_cell:
                     for announcement_id in announcement_ids_to_delete:
                         delete_result = service_classroom.courses().announcements().delete(courseId=course_id,
@@ -243,12 +246,10 @@ def create_assignments_announcements(spreadsheet_id):
                     # print("assignment data to rescheulde")
                     # print(assignment_data_to_reschedule)
                     for assignment in assignment_data_to_reschedule:
-                        print("xxx before posting reassignment")
                         single_id = post_assignment_reschedule(assignment['assignment'], assignment['date'], course_id,
                                                                assignment['id'], service_classroom,
                                                                spreadsheet_id, service_sheets)
-                        print("aaa single_id")
-                        print(single_id)
+                        # print(single_id)
                         all_ids += single_id + ','
                     update_sheet_with_id(spreadsheet_id, all_ids, day_info['day'], service_sheets, sheet)
                     print(all_ids)
