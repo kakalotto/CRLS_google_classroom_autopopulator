@@ -61,13 +61,14 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                 column_dict['days_to_complete'] = column[3]
                 column_dict['attachments'] = get_attachments(column, column_dict['points'])
         elif column[0] == 'materials':
+            print("MATERIALS! " + str(column))
             if column[3] != '':
                 raise Exception("In lesson with spreadsheet ID {}, row 3 (days to complete) sould be empty if it's"
                                 "a materials.\n"
                                 "Please check.\n"
                                 "Possibly, your lesson file is in the old format with no topic."
                                 .format(p_spreadsheet_id))
-            if column[5] != '':
+            if len(column) != 5 and column[5] != '':
                 raise Exception("In lesson with spreadsheet ID {}, row 5 (points) should be empty if it's"
                                 "a materials.\n"
                                 "Please check.\n"
