@@ -58,6 +58,7 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                 column_dict['title'] = column[2]
                 column_dict['days_to_complete'] = column[3]
                 column_dict['attachments'] = get_attachments(column, column_dict['points'])
+                print("FFF column dict" + str(column_dict))
         elif column[0] == 'materials':
             if column[3] != '':
                 raise Exception("In lesson with spreadsheet ID {}, row 3 (days to complete) sould be empty if it's"
