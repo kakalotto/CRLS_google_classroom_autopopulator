@@ -7,7 +7,6 @@ print("Running create_courses.py")
 # Set up sheets service object
 service_sheets = generate_sheets_credential()
 
-
 #SPREADSHEET_ID = '1uEmlRJjqEpsCj6wew44meJv3af0WQ7VRQFE4x-QU9FQ' # AP CSP test
 #SPREADSHEET_ID = '1RFSXj_IjfqVLv-njFmeI1e0LoVdglvFjQGxk1drxdqw'  # Game development
 #SPREADSHEET_ID = '1o_YPtSYB75fk9-r79GhNVqTDdkWr0VZA497nrC4r1h0' # ICS 2021
