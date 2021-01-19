@@ -117,6 +117,7 @@ def create_assignments_announcements(spreadsheet_id):
                 announcement_data_to_repost = []
                 announcement_ids_to_delete = []
                 assignment_data_to_reschedule = []
+                materials_data_to_reschedule = []
 
                 # Get link of sheet and read in lesson
                 # link_spreadsheet_id = get_google_drive_id(day_info['link'])
@@ -138,7 +139,9 @@ def create_assignments_announcements(spreadsheet_id):
                     else:
                         announcement = {}
                         assignment = {}
-                        print("Encountered this old assignment/announcement {}.  Checking it out.".format(posted_id))
+                        materials = {}
+                        print("Encountered this old assignment/announcement/material {}.  "
+                              "Checking it out.".format(posted_id))
                         try:
                             announcement = service_classroom.courses().announcements().get(courseId=course_id,
                                                                                            id=posted_id).execute()
@@ -184,19 +187,16 @@ def create_assignments_announcements(spreadsheet_id):
                                                 "Google classroom.\n  Something is wrong, but not sure what. \n "
                                                 "Try erasing the ID for this day and reposting the lesson.\n"
                                                 .format(posted_id))
-                        else:  # not announcement, probably assignment
+                        else:  # not announcement, probably assignment or material
                             try:
                                 assignment = service_classroom.courses().courseWork().get(courseId=course_id,
                                                                                           id=posted_id).execute()
+                                print("zzzz ASSIGNMENT")
+                                print(assignment)
                                 is_assignment = True
                                 print("Found that old entry {} is an assignment!".format(posted_id))
                             except googleapiclient.errors.HttpError:  # posted_id isn't there at all?
-                                raise Exception("Previously posted assignment/announcement {} is neither "
-                                                "annoucement nor"
-                                                "assignment.  Did you copy+paste from somewhere else incorrectly?\n"
-                                                "  Or else, did you delete it from Google classroom manually?\n"
-                                                " Or else, did you restart and just forget to delete the old ID's\n"
-                                                " Exiting.".format(posted_id))
+                                pass
                         if is_assignment:
                             new_assignment_data = {}
                             if assignment['state'] == 'PUBLISHED':
@@ -233,12 +233,63 @@ def create_assignments_announcements(spreadsheet_id):
                                     "The ID {} that was read in for this assignment has been deleted in Google "
                                     "classroom.\n  Something is wrong, but not sure what.\n  "
                                     "Try erasing the ID for this day and reposting the lesson.\n".format(posted_id))
+                        else:
+                            print("maybe a materials")
+                            try:
+                                materials = service_classroom.courses().courseWorkMaterials().get(courseId=course_id,
+                                                                                                  id=posted_id).execute()
+                                is_materials = True
+                                print("Found that old entry {} is a material!".format(posted_id))
 
-
+                            except googleapiclient.errors.HttpError:  # posted_id isn't there at all?
+                                raise Exception("Previously posted assignment/announcement {} is neither "
+                                                "annoucement nor"
+                                                "assignment.  Did you copy+paste from somewhere else incorrectly?\n"
+                                                "  Or else, did you delete it from Google classroom manually?\n"
+                                                " Or else, did you restart and just forget to delete the old ID's\n"
+                                                " Exiting.".format(posted_id))
+                            if is_materials:
+                                new_materials_data = {}
+                                if materials['state'] == 'PUBLISHED':
+                                    print("Material with this ID {} has already been posted.\n"
+                                          "This might be wrong, or you might've posted it early.\n"
+                                          "In any case, skipping this ID.".format(posted_id))
+                                    continue
+                                elif materials['state'] == 'DRAFT':
+                                    # print("Assignment with this ID {} hasn't been PUBLISHED yet.  "
+                                    #      "Checking to see if it should be moved to new scheduled date.".format(posted_id))
+                                    if is_work_date_current_date(materials['scheduledTime'], day_info['date']):
+                                        print("materials {} in Classroom is on same day it is currently "
+                                              "listed in sheet {}  "
+                                              "No change.  On to the next announcement/assignment".format(posted_id,
+                                                                                                          sheet))
+                                        continue
+                                    else:  # posted day is on different day
+                                        print("materials {} in Classroom is on different day than is currently listed "
+                                              "in sheet {}. "
+                                              " Reschedule assignment  "
+                                              .format(posted_id, sheet))
+                                        new_materials_data['assignment'] = assignment
+                                        new_materials_data['date'] = day_info['date']
+                                        new_materials_data['id'] = posted_id
+                                        # print("new assignment data")
+                                        # print(new_materials_data)
+                                        # print("assignment data to rescheulde")
+                                        # print(assignment_data_to_reschedule)
+                                        materials_data_to_reschedule.append(new_materials_data)
+                                        # print("in loop")
+                                        # print(assignment_data_to_reschedule)
+                                        update_cell = True
+                                elif materials['state'] == 'DELETED':
+                                    raise Exception(
+                                        "The ID {} that was read in for this materials has been deleted in Google "
+                                        "classroom.\n  Something is wrong, but not sure what.\n  "
+                                        "Try erasing the ID for this day and reposting the lesson.\n".format(posted_id))
 
                 announcement_data_to_repost = []
                 announcement_ids_to_delete = []
                 assignment_data_to_reschedule = []
+                materials_data_to_reschedule = []
 
                 # Get link of sheet and read in lesson
                 # link_spreadsheet_id = get_google_drive_id(day_info['link'])
@@ -260,10 +311,11 @@ def create_assignments_announcements(spreadsheet_id):
                     else:
                         announcement = {}
                         assignment = {}
-                        print("Encountered this old assignment/announcement {}.  Checking it out.".format(posted_id))
+                        materials = {}
+                        print("Encountered this old assignment/announcement/material {}.  "
+                              "Checking it out.".format(posted_id))
                         try:
-                            announcement = service_classroom.courses().announcements().get(courseId=course_id,
-                                                                                           id=posted_id).execute()
+                            announcement = service_classroom.courses().announcements().get(courseId=course_id,                                                                                           id=posted_id).execute()
                             is_announcement = True
                             print("Found that old entry {} is an announcement!".format(posted_id))
                         except googleapiclient.errors.HttpError:
@@ -313,12 +365,7 @@ def create_assignments_announcements(spreadsheet_id):
                                 is_assignment = True
                                 print("Found that old entry {} is an assignment!".format(posted_id))
                             except googleapiclient.errors.HttpError:  # posted_id isn't there at all?
-                                raise Exception("Previously posted assignment/announcement {} is neither "
-                                                "annoucement nor"
-                                                "assignment.  Did you copy+paste from somewhere else incorrectly?\n"
-                                                "  Or else, did you delete it from Google classroom manually?\n"
-                                                " Or else, did you restart and just forget to delete the old ID's\n"
-                                                " Exiting.".format(posted_id))
+                                pass
                         if is_assignment:
                             new_assignment_data = {}
                             if assignment['state'] == 'PUBLISHED':
@@ -355,6 +402,58 @@ def create_assignments_announcements(spreadsheet_id):
                                     "The ID {} that was read in for this assignment has been deleted in Google "
                                     "classroom.\n  Something is wrong, but not sure what.\n  "
                                     "Try erasing the ID for this day and reposting the lesson.\n".format(posted_id))
+                        else:
+                            try:
+                                materials = service_classroom.courses().courseWorkMaterials().get(courseId=course_id,
+                                                                                                  id=posted_id).execute()
+                                is_materials = True
+                                print("Found that old entry {} is a material!".format(posted_id))
+
+                            except googleapiclient.errors.HttpError:  # posted_id isn't there at all?
+                                raise Exception("Previously posted assignment/announcement {} is neither "
+                                                "annoucement nor"
+                                                "assignment.  Did you copy+paste from somewhere else incorrectly?\n"
+                                                "  Or else, did you delete it from Google classroom manually?\n"
+                                                " Or else, did you restart and just forget to delete the old ID's\n"
+                                                " Exiting.".format(posted_id))
+                            if is_materials:
+                                new_materials_data = {}
+                                if materials['state'] == 'PUBLISHED':
+                                    print("Material with this ID {} has already been posted.\n"
+                                          "This might be wrong, or you might've posted it early.\n"
+                                          "In any case, skipping this ID.".format(posted_id))
+                                    continue
+                                elif materials['state'] == 'DRAFT':
+                                    # print("Assignment with this ID {} hasn't been PUBLISHED yet.  "
+                                    #      "Checking to see if it should be moved to new scheduled date.".format(posted_id))
+                                    if is_work_date_current_date(materials['scheduledTime'], day_info['date']):
+                                        print("materials {} in Classroom is on same day it is currently "
+                                              "listed in sheet {}  "
+                                              "No change.  On to the next announcement/assignment".format(posted_id,
+                                                                                                          sheet))
+                                        continue
+                                    else:  # posted day is on different day
+                                        print("materials {} in Classroom is on different day than is currently listed "
+                                              "in sheet {}. "
+                                              " Reschedule assignment  "
+                                              .format(posted_id, sheet))
+                                        new_materials_data['assignment'] = assignment
+                                        new_materials_data['date'] = day_info['date']
+                                        new_materials_data['id'] = posted_id
+                                        # print("new assignment data")
+                                        # print(new_materials_data)
+                                        # print("assignment data to rescheulde")
+                                        # print(assignment_data_to_reschedule)
+                                        materials_data_to_reschedule.append(new_materials_data)
+                                        # print("in loop")
+                                        # print(assignment_data_to_reschedule)
+                                        update_cell = True
+                                elif materials['state'] == 'DELETED':
+                                    raise Exception(
+                                        "The ID {} that was read in for this materials has been deleted in Google "
+                                        "classroom.\n  Something is wrong, but not sure what.\n  "
+                                        "Try erasing the ID for this day and reposting the lesson.\n".format(posted_id))
+
                 # print("xxx done with posted IDs")
                 if update_cell:
                     for announcement_id in announcement_ids_to_delete:
