@@ -17,6 +17,7 @@ def generate_classroom_credential():
               'https://www.googleapis.com/auth/classroom.coursework.students',
               'https://www.googleapis.com/auth/classroom.rosters',
               'https://www.googleapis.com/auth/classroom.topics',
+              'https://www.googleapis.com/auth/classroom.courseworkmaterials',
               ]
 
 

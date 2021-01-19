@@ -10,9 +10,9 @@ def generate_docs_credential():
     from google_auth_oauthlib.flow import InstalledAppFlow
     from google.auth.transport.requests import Request
     import httplib2
-    
-    scopes = ['https://www.googleapis.com/auth/documents.readonly']
 
+    scopes = ['https://www.googleapis.com/auth/documents.readonly',
+              'https://www.googleapis.com/auth/drive']
     creds = None
     # The file token_sheets.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -25,6 +25,7 @@ def generate_docs_credential():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
+            flow = InstalledAppFlow.from_client_secrets_file('credentials_docs_old.json', scopes)
             flow = InstalledAppFlow.from_client_secrets_file('credentials_docs.json', scopes)
             creds = flow.run_local_server()
             # Save the credentials for the next run
