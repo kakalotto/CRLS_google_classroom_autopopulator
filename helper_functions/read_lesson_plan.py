@@ -50,11 +50,7 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                                 .format(p_spreadsheet_id))
             else:
                 column_dict['assignment_or_announcement'] = 'assignment'
-<<<<<<< HEAD
-                if column[5].isdigit():
-=======
                 if column[5].isdigit() or column[5].replace(".", "", 1).isdigit():
->>>>>>> 3b0fc77477d5e52af86d3e26f643129632237631
                     column_dict['points'] = column[5]
                 else:
                     column_dict['points'] = 0
@@ -62,9 +58,7 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                 column_dict['title'] = column[2]
                 column_dict['days_to_complete'] = column[3]
                 column_dict['attachments'] = get_attachments(column, column_dict['points'])
-<<<<<<< HEAD
 
-=======
         elif column[0] == 'materials':
             if column[3] != '':
                 raise Exception("In lesson with spreadsheet ID {}, row 3 (days to complete) sould be empty if it's"
@@ -86,7 +80,6 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
             column_dict['title'] = column[2]
             column_dict['topic'] = column[1]
             column_dict['assignment_or_announcement'] = 'materials'
->>>>>>> 3b0fc77477d5e52af86d3e26f643129632237631
         else:
             raise Exception("In lesson with spreadsheet ID {}, something in row 2 has something other than "
                             "'announcement' or 'assignment' or 'materials'.".format(p_spreadsheet_id))

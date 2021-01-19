@@ -21,10 +21,7 @@ def create_assignments_announcements(spreadsheet_id):
     from helper_functions.is_work_date_current_date import is_work_date_current_date
     from helper_functions.post_assignment_reschedule import post_assignment_reschedule
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 3b0fc77477d5e52af86d3e26f643129632237631
     # Get sheet service credential and service_classroom credential
     service_sheets = generate_sheets_credential()
     service_classroom = generate_classroom_credential()
@@ -54,14 +51,9 @@ def create_assignments_announcements(spreadsheet_id):
         # Iterate over sheets rows and write/edit classroom as necessary
         print("In create assignments/announcements.  Starting to iterating daily assignments/announcements " + sheet)
         for i, row in enumerate(values, 1):
-<<<<<<< HEAD
-            if i < 0:
-                # how many to stkip
-                 continue
-=======
+
             if i < 0:  # how many to stkip
                 continue
->>>>>>> 3b0fc77477d5e52af86d3e26f643129632237631
             if i > 180:
                 break
             # read the row
@@ -106,15 +98,12 @@ def create_assignments_announcements(spreadsheet_id):
                                                     day_info['date'], assignment_counter, course_section,
                                                     course_id, spreadsheet_id, service_sheets, service_classroom,
                                                     assignment_announcement['points'],)
-<<<<<<< HEAD
-=======
                         assignment_counter += 1
                     if assignment_announcement['assignment_or_announcement'] == 'materials':
                         single_id = post_materials(assignment_announcement['topic'], assignment_announcement['title'],
                                                    assignment_announcement['text'],
                                                    assignment_announcement['attachments'], day_info['date'],
                                                    assignment_counter, course_id, service_classroom)
->>>>>>> 3b0fc77477d5e52af86d3e26f643129632237631
                         assignment_counter += 1
                     all_ids += single_id + ','
                 update_sheet_with_id(spreadsheet_id, all_ids, i, service_sheets, sheet)
@@ -467,10 +456,6 @@ def create_assignments_announcements(spreadsheet_id):
                                         "classroom.\n  Something is wrong, but not sure what.\n  "
                                         "Try erasing the ID for this day and reposting the lesson.\n".format(posted_id))
 
-<<<<<<< HEAD
-=======
-                # print("xxx done with posted IDs")
->>>>>>> 3b0fc77477d5e52af86d3e26f643129632237631
                 if update_cell:
                     for announcement_id in announcement_ids_to_delete:
                         delete_result = service_classroom.courses().announcements().delete(courseId=course_id,
@@ -484,11 +469,7 @@ def create_assignments_announcements(spreadsheet_id):
                     # print("assignment data to rescheulde")
                     # print(assignment_data_to_reschedule)
                     for assignment in assignment_data_to_reschedule:
-<<<<<<< HEAD
-=======
 
-                        print("xxx before posting reassignment")
->>>>>>> 3b0fc77477d5e52af86d3e26f643129632237631
                         single_id = post_assignment_reschedule(assignment['assignment'], assignment['date'], course_id,
                                                                assignment['id'], service_classroom,
                                                                spreadsheet_id, service_sheets)
