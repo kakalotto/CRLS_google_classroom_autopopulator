@@ -57,9 +57,10 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
         'maxPoints': p_points,
     }
     try:
-
+        print(" posting this " + str(assignment))
         assignment = p_service_classroom.courses().courseWork().create(courseId=p_course_id, body=assignment).execute()
         assignment_id = assignment.get('id')
+        print("posting this assignment" + str(assignment))
     except googleapiclient.errors.HttpError:
         raise Exception("'Request contains an invalid argument' - is the topic you want for this assignment one that "
                         "exists in this class within Google classroom?\n"

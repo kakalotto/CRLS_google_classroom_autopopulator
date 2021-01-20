@@ -51,10 +51,13 @@ def create_assignments_announcements(spreadsheet_id):
         # Iterate over sheets rows and write/edit classroom as necessary
         print("In create assignments/announcements.  Starting to iterating daily assignments/announcements " + sheet)
         for i, row in enumerate(values, 1):
-
+            print("day is this! " + str(i))
             if i < 0:  # how many to stkip
                 continue
-            if i > 180:
+            if i < 94:  # how many to stkip
+                continue
+
+            if i > 98:
                 break
             # read the row
             day_info = read_day_info(row)
@@ -69,11 +72,12 @@ def create_assignments_announcements(spreadsheet_id):
             elif len(row) == 3:  # no announcements or anything
                 # print("This day: {} has no lesson, skipping".format(day_info['date']))
                 continue
-            elif len(row) == 6 and not re.search(r'\d', row[5]):  # Crash out if ID's do not contain numbers
+            elif len(row) == 6 and not re.search(r'(\d|)', row[5]):  # Crash out if ID's do not contain numbers
                 raise Exception("This day: {} has row length of 6, but no numbers in the ID column (F).\n "
                                 " Are there spaces or something goofy going on in ID column?  \nTry deleting"
                                 " the entire cell and try again".format(day_info['date']))
-            elif len(row) == 5 or (len(row) == 7 and not row[5]):  # Do new rows (i.e. not previously posted, no IDs)
+            elif len(row) == 5 or (len(row) == 7 and not row[5]) or len(row) == 8:
+                # Do new rows (i.e. not previously posted, no IDs) row = 8 is comment but otherwise blank
                 print("Posting a new lesson that hasn't been posted before")
                 try:
                     link_spreadsheet_id = get_google_drive_id(day_info['link'])

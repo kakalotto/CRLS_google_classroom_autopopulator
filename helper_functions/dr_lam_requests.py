@@ -1,396 +1,85 @@
-def requests_header(p_header_text):
-    p_requests = [
-        {
-            'insertText': {
-                'location': {
-                    'index': 1,
-                },
-                'text': p_header_text
-            }
-        },
-        {
-            'insertText': {
-                'location': {
-                    'index': 14,
-                },
-                'text': 'Semester schedule and calendar\n\n\n'
-            }
-        },
-        {
-            'updateTextStyle': {
-                'range': {
-                    'startIndex': 1,
-                    'endIndex': 47
-                },
-                'textStyle': {
-                    'bold': True,
-                    'fontSize': {"magnitude": 16, "unit": "pt"},
-                },
-                'fields': '*'
-            }
-        },
-        {
-            "updateParagraphStyle": {
-                "range": {
-                    "startIndex": 1,
-                    "endIndex": 47
-                },
-                "paragraphStyle": {
-                    "alignment": "CENTER"
-                },
-                "fields": "alignment"
-            }
-        },
-        {
-            'insertText': {
-                'location': {
-                    'index': 47,
-                },
-                'text': 'This document contains the schedule of activities for the entire semester. It includes links and '
-                        'resources that you’ll need before, during, and after class. It should be your first point of '
-                        'reference when you need to know what to do. Please have it open during every class session.\n\n\n'
-                        'This document is automatically generated via computer script.  '
-                        'Schedules are subject to change.  Dates that are further out are less likely to be accurate.\n\n'
-            }
-        },
-        {
-            "updateParagraphStyle": {
-                "range": {
-                    "startIndex": 47,
-                    "endIndex": 489
-                },
-                "paragraphStyle": {
-                    "alignment": "START"
-                },
-                "fields": "alignment"
-            }
-        },
-        {
-            'insertText': {
-                'location': {
-                    'index': 488,
-                },
-                'text': 'Please see the course contract for information on grading and class policies\n\n'
-            }
-        },
-        {
-            'updateTextStyle': {
-                'range': {
-                    'startIndex': 503,
-                    'endIndex': 518
-                },
-                'textStyle': {
-                    'link': {
-                        'url': 'https://docs.google.com/document/d/1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/edit#bookmark=id.gs88mpq2vwt'
-                    }
-                },
-                'fields': 'link'
-            }
-        },
-        {
-            'insertText': {
-                'location': {
-                    'index': 566,
-                },
-                'text': 'Links\n\n'
-            }
-        },
-        {
-            'updateTextStyle': {
-                'range': {
-                    'startIndex': 566,
-                    'endIndex': 571
-                },
-                'textStyle': {
-                    'bold': True,
-                    'fontSize': {"magnitude": 16, "unit": "pt"},
-                },
-                'fields': '*'
-            }
-        },
-        {
-            'insertTable': {
-                'rows': 1,
-                'columns': 5,
-                'endOfSegmentLocation': {
-                    'segmentId': ''
-                }
-            },
-        },
-    ]
-    return p_requests
+def requests_header(p_header_text, p_course_contract):
+    from helper_functions.dr_lam_functions import add_title, add_regular_text, align_center, align_start, add_link
+
+    p_batch_requests = []
+    last_index = 1
+
+    [previous_last_index, last_index, p_batch_requests] = add_regular_text(p_header_text, last_index, p_batch_requests)
+    p_batch_requests = add_title(previous_last_index, last_index, p_batch_requests)
+    p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
+
+    p_text = 'Schedule and calendar\n\n'
+    [previous_last_index, last_index, p_batch_requests] = add_regular_text(p_text, last_index, p_batch_requests)
+    p_batch_requests = add_title(previous_last_index, last_index, p_batch_requests)
+    p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
+
+    p_text = 'This document contains the schedule of activities for the entire semester. It includes links and ' \
+             'resources that you’ll need before, during, and after class. It should be your first point of ' \
+             'reference when you need to know what to do. Please have it open during every class session.\n\n\n' \
+             'This document is automatically generated via computer script.  ' \
+             'Schedules are subject to change.  Dates that are further out are less likely to be accurate.\n\n'
+    [previous_last_index, last_index, p_batch_requests] = add_regular_text(p_text, last_index, p_batch_requests)
+    p_batch_requests = align_start(previous_last_index, last_index, p_batch_requests)
+
+    p_text = 'Please see the '
+    [previous_last_index, last_index, p_batch_requests] = add_regular_text(p_text, last_index, p_batch_requests)
+    p_batch_requests = align_start(previous_last_index, last_index, p_batch_requests)
+
+    p_text = 'course contract'
+    [previous_last_index, last_index, p_batch_requests] = add_regular_text(p_text, last_index, p_batch_requests)
+    p_batch_requests = add_link(p_course_contract, previous_last_index, last_index, p_batch_requests)
+    p_text = ' for information on grading and class policies.\n'
+    [previous_last_index, last_index, p_batch_requests] = add_regular_text(p_text, last_index, p_batch_requests)
+
+    return p_batch_requests
 
 
-def requests_links(p_zoom_link, p_aspen_link, p_classroom_link, p_assigned_link, p_missing_link):
-    requests = [
-        {
-            'insertInlineImage': {
-                'location': {
-                    'index': 577
-                },
-                'uri':
-                    'http://crls-autograder.herokuapp.com/static/zoom.PNG',
-                'objectSize': {
-                    'height': {
-                        'magnitude': 75,
-                        'unit': 'PT'
-                    },
-                    'width': {
-                        'magnitude': 75,
-                        'unit': 'PT'
-                    }
-                }
-            }
-        },
-        {
-            'insertText': {
-                'location': {
-                    'index': 578,
-                },
-                'text': '    Zoom'
-            }
-        },
-        {
-            'updateTextStyle': {
-                'range': {
-                    'startIndex': 578,
-                    'endIndex': 587
-                },
-                'textStyle': {
-                    'link': {
-                        'url': p_zoom_link
-                    }
-                },
-                'fields': 'link'
-            }
-        },
-        {
-            "updateParagraphStyle": {
-                "range": {
-                    "startIndex": 578,
-                    "endIndex": 587
-                },
-                "paragraphStyle": {
-                    "alignment": "CENTER"
-                },
-                "fields": "alignment"
-            }
-        },
+def requests_links(last_index, p_classroom_id, p_zoom_links):
+    from helper_functions.dr_lam_functions import add_image, add_link, add_regular_text, align_center
+    zoom_img = 'http://crls-autograder.herokuapp.com/static/zoom.PNG'
+    classroom_img = 'http://crls-autograder.herokuapp.com/static/classroom.PNG'
+    assigned_img = 'http://crls-autograder.herokuapp.com/static/assigned.PNG'
+    missing_img = 'http://crls-autograder.herokuapp.com/static/missing.PNG'
+    aspen_img = 'http://crls-autograder.herokuapp.com/static/aspen.PNG'
+    classroom_link ='https://classroom.google.com/u/0/c/' + p_classroom_id
+    assigned_link = 'https://classroom.google.com/u/0/a/not-turned-in/' + p_classroom_id
+    missing_link = 'https://classroom.google.com/u/0/a/missing/' + p_classroom_id
+    aspen_link = 'https://aspen.cpsd.us'
 
-        {
-            'insertInlineImage': {
-                'location': {
-                    'index': 588
-                },
-                'uri':
-                    'http://crls-autograder.herokuapp.com/static/classroom.PNG',
-                'objectSize': {
-                    'height': {
-                        'magnitude': 75,
-                        'unit': 'PT'
-                    },
-                    'width': {
-                        'magnitude': 75,
-                        'unit': 'PT'
-                    }
-                }
-            }
-        },
-        {
-            'insertText': {
-                'location': {
-                    'index': 589,
-                },
-                'text': 'Google classroom'
-            }
-        },
-        {
-            'updateTextStyle': {
-                'range': {
-                    'startIndex': 589,
-                    'endIndex': 605
-                },
-                'textStyle': {
-                    'link': {
-                        'url': p_classroom_link
-                    }
-                },
-                'fields': 'link'
-            }
-        },
-        {
-            "updateParagraphStyle": {
-                "range": {
-                    "startIndex": 589,
-                    "endIndex": 600
-                },
-                "paragraphStyle": {
-                    "alignment": "CENTER"
-                },
-                "fields": "alignment"
-            }
-        },
-        {
-            'insertInlineImage': {
-                'location': {
-                    'index': 607
-                },
-                'uri':
-                    'http://crls-autograder.herokuapp.com/static/assigned.PNG',
-                'objectSize': {
-                    'height': {
-                        'magnitude': 75,
-                        'unit': 'PT'
-                    },
-                    'width': {
-                        'magnitude': 75,
-                        'unit': 'PT'
-                    }
-                }
-            }
-        },
-        {
-            'insertText': {
-                'location': {
-                    'index': 608,
-                },
-                'text': 'Google classroom assigned work'
-            }
-        },
-        {
-            'updateTextStyle': {
-                'range': {
-                    'startIndex': 608,
-                    'endIndex': 640
-                },
-                'textStyle': {
-                    'link': {
-                        'url': p_assigned_link
-                    }
-                },
-                'fields': 'link'
-            }
-        },
-        {
-            "updateParagraphStyle": {
-                "range": {
-                    "startIndex": 608,
-                    "endIndex": 620
-                },
-                "paragraphStyle": {
-                    "alignment": "CENTER"
-                },
-                "fields": "alignment"
-            }
-        },
+    p_batch_requests = []
+    [previous_last_index, last_index, p_batch_requests] = add_image(zoom_img, last_index - 10, p_batch_requests)
+    for i, zoom_link in enumerate(p_zoom_links, 1):
+        [previous_last_index, last_index, p_batch_requests] = \
+            add_regular_text('Zoom link ' + str(i) + '\n', last_index , p_batch_requests)
+        p_batch_requests = add_link(zoom_link, previous_last_index , last_index, p_batch_requests)
+        p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
 
-        {
-            'insertInlineImage': {
-                'location': {
-                    'index': 640
-                },
-                'uri':
-                    'http://crls-autograder.herokuapp.com/static/missing.PNG',
-                'objectSize': {
-                    'height': {
-                        'magnitude': 75,
-                        'unit': 'PT'
-                    },
-                    'width': {
-                        'magnitude': 75,
-                        'unit': 'PT'
-                    }
-                }
-            }
-        },
-        {
-            'insertText': {
-                'location': {
-                    'index': 641,
-                },
-                'text': 'Google classroom missing work'
-            }
-        },
-        {
-            'updateTextStyle': {
-                'range': {
-                    'startIndex': 641,
-                    'endIndex': 670
-                },
-                'textStyle': {
-                    'link': {
-                        'url': p_missing_link
-                    }
-                },
-                'fields': 'link'
-            }
-        },
-        {
-            "updateParagraphStyle": {
-                "range": {
-                    "startIndex": 641,
-                    "endIndex": 655
-                },
-                "paragraphStyle": {
-                    "alignment": "CENTER"
-                },
-                "fields": "alignment"
-            }
-        },
+    last_index += 2 # Skip ahead to next cell
+    [previous_last_index, last_index, p_batch_requests] = add_image(classroom_img, last_index, p_batch_requests)
+    [previous_last_index, last_index, p_batch_requests] = \
+        add_regular_text('Google classroom\n', last_index, p_batch_requests)
+    p_batch_requests = add_link(classroom_link, previous_last_index, last_index, p_batch_requests)
+    p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
 
-        {
-            'insertInlineImage': {
-                'location': {
-                    'index': 672
-                },
-                'uri':
-                    'http://crls-autograder.herokuapp.com/static/aspen.PNG',
-                'objectSize': {
-                    'height': {
-                        'magnitude': 75,
-                        'unit': 'PT'
-                    },
-                    'width': {
-                        'magnitude': 75,
-                        'unit': 'PT'
-                    }
-                }
-            }
-        },
-        {
-            'insertText': {
-                'location': {
-                    'index': 673,
-                },
-                'text': 'Aspen'
-            }
-        },
-        {
-            'updateTextStyle': {
-                'range': {
-                    'startIndex': 673,
-                    'endIndex': 681
-                },
-                'textStyle': {
-                    'link': {
-                        'url': p_aspen_link
-                    }
-                },
-                'fields': 'link'
-            }
-        },
-        {
-            "updateParagraphStyle": {
-                "range": {
-                    "startIndex": 673,
-                    "endIndex": 681
-                },
-                "paragraphStyle": {
-                    "alignment": "CENTER"
-                },
-                "fields": "alignment"
-            }
-        },
+    last_index += 2 # Skip ahead to next cell
+    [previous_last_index, last_index, p_batch_requests] = add_image(assigned_img, last_index, p_batch_requests)
+    [previous_last_index, last_index, p_batch_requests] = \
+        add_regular_text('Google classroom assigned work\n', last_index, p_batch_requests)
+    p_batch_requests = add_link(assigned_link, previous_last_index, last_index, p_batch_requests)
+    p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
 
-    ]
-    return requests
+    last_index += 2 # Skip ahead to next cell
+    [previous_last_index, last_index, p_batch_requests] = add_image(missing_img, last_index, p_batch_requests)
+    [previous_last_index, last_index, p_batch_requests] = \
+        add_regular_text('Google classroom missing work\n', last_index, p_batch_requests)
+    p_batch_requests = add_link(missing_link, previous_last_index, last_index, p_batch_requests)
+    p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
+
+    last_index += 2 # Skip ahead to next cell
+    [previous_last_index, last_index, p_batch_requests] = add_image(aspen_img, last_index, p_batch_requests)
+    [previous_last_index, last_index, p_batch_requests] = \
+        add_regular_text('Aspen\n', last_index, p_batch_requests)
+    p_batch_requests = add_link(aspen_link, previous_last_index, last_index, p_batch_requests)
+    p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
+    
+    return p_batch_requests
