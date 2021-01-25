@@ -73,10 +73,10 @@ def dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EPOI
     for i, value in enumerate(sheet_values):
         if len(value) == 3:
             continue
-        if i < 93:
-            continue
-        if i > 96:
-            break
+        # if i < 93:
+        #     continue
+        # if i > 96:
+        #     break
         #     break
         # Add day and date header
         day = value[0]

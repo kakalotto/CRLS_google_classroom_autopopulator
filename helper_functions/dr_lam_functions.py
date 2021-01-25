@@ -186,13 +186,13 @@ def get_assignment_link(assignments_dict, assignment_name, p_courseworks, p_mate
     link = ''
     if assignment_name in assignments_dict:
         assignment_name = assignments_dict[assignment_name]
-    print('starting ' + str(assignment_name))
+    #print('starting ' + str(assignment_name))
     # print("materials "  )
     # print(p_materials)
     for coursework in p_courseworks:
         title = coursework['title']
         smiley_assignment_name = assignment_name + ' :-)'
-        print("assignment name '" + assignment_name + "' title '" + title)
+        # print("assignment name '" + assignment_name + "' title '" + title)
         if assignment_name == title or smiley_assignment_name == title:
             link = coursework['alternateLink']
             return link

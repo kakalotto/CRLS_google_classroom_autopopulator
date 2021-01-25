@@ -1,11 +1,11 @@
 from dr_lam_document import dr_lam_document
 
 DOCUMENT_ID = '12thEXqiR-M2ligPF5Y2g4VR7jYRR4si2pwpkEeNRSqE'
-CLASSROOM_ID = 'MjM0MDcxNjg2NzQw'
+CLASSROOM_ID = 'MjM0MzU5NDg1Njg2'
 SPREADSHEET_ID = '1HBh9DcDUaKiyH_X5w_-qCh-Aw_0JZD-Rtzg_PfiER3Y'
 SHEET_ID = 'APCSP_S2_P1'
 HEADER_TEXT = 'AP CSP\n'
-COURSE_ID = 234297641199
+COURSE_ID = 234359485686
 COURSE_CONTRACT = 'https://docs.google.com/document/d/1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/edit'
 ZOOM_LINK_1 = 'https://zoom.us/j/4968074808?pwd=ZVBJQzQ4Uk1NREpGNEhLakJ4blExUT09#success'
 ZOOM_LINK_2 = 'https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'
