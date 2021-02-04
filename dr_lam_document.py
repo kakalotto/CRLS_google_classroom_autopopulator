@@ -71,7 +71,10 @@ def dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EPOI
     index_of_begin_dates = last_index
 
     for i, value in enumerate(sheet_values):
+        print("value" + str(value))
         if len(value) == 3:
+            continue
+        if i < 88:
             continue
         # if i < 93:
         #     continue
@@ -108,7 +111,7 @@ def dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EPOI
                     link = get_assignment_link(assignments_dictionary, coursework['title'], courseworks, materials)
                     batch_requests = add_link(link, previous_last, last_index, batch_requests)
         if nothing_due:
-            [_, last_index, batch_requests] = add_regular_text('Nothing due yet! (Only checked for posted assignments)!'
+            [_, last_index, batch_requests] = add_regular_text('Nothing due yet! '
                                                                '\n', last_index, batch_requests)
     
         # Print out Today header:

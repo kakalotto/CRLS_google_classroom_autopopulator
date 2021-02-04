@@ -29,9 +29,9 @@ path_were_the_Google_webdriver_is_stored = r'C:\Users\dimmyfinster\Dropbox\dimmy
 flag = " :-)"
 
 # Check into ASPEN and GC, fill this dictionary:
-ASPEN_vs_Gclassroom_dictionary = {'IT1/CS1':'T604-001',
+ASPEN_vs_Gclassroom_dictionary = {#'IT1/CS1':'T604-001',
                                  #'AP Computer Science Principles P4':'T608-003',
-                                 #   'Murphy S1 P1 Intro to CS' : 'M415-001',
+                                    'Murphy S1 P1 Intro to CS' : 'M415-001',
                                  # 'IT3 2020-2021':'T986-001',
                                  # 'IT2 2020-2021': 'T746-001',
                                  # 'T527A-001: SY2020-21 TC Web Design & Development':'T527A-001',

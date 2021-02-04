@@ -2,6 +2,7 @@ from mccormick_test import create_oss_sheet
 
 # Fill out all these
 student_name = 'Eric Wu'
+template_link = ''
 advisory_zoom_link = 'https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'
 cm_zoom_link = 'https://zoom.us/j/93032197658?pwd=ZGdJbTlTcDF6RVdPSnFKeVhucExndz09'
 period1_course_id = '164978129388'

@@ -25,6 +25,7 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
     for column in columns:
         column_dict = {}
         # print("blah {}".format(column))
+        print("COLUMN " + str(column) + " id " + p_spreadsheet_id)
         if column[0] == 'announcement':
             if column[1] != '' or column[2] != '' or column[3] != '':
                 raise Exception("In lesson with spreadsheet ID {}, rows 3 - 5 must be empty"
@@ -94,7 +95,7 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                             "'announcement' or 'assignment' or 'materials'.".format(p_spreadsheet_id))
         column_dict['text'] = column[4]
         column_dict['text'] = unicode_text(column[4])
-        print('fff final column ' + str(column_dict))
+        # print('fff final column ' + str(column_dict))
         column_dicts.append(column_dict)
     return column_dicts
 

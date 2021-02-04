@@ -41,11 +41,14 @@ def get_attachments(p_column, p_points):
     while p_counter < len(p_column):
         if p_counter <= len(p_column) and p_column[p_counter]:
             p_link = p_column[p_counter]
-            print(" ooo p_link is " + str(p_link))
+            print(" starting.  ooo p_link is " + str(p_link) + "countter is " + str(p_counter))
+            print("column is " + str(p_column))
             if len(p_column) >= p_counter + 2:  # only assignments have share mode for links
                 p_share_mode = p_column[p_counter + 1]
             p_google_drive_match = re.search('.google', p_link)  # Check for link being a Google link
             form = re.search('forms', p_link)
+            if form:
+                print("FOUND FORM")
             if form and not p_share_mode:
                 print("FOUND A FORM")
                 p_material = {

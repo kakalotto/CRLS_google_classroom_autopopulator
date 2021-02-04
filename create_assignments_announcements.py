@@ -54,12 +54,17 @@ def create_assignments_announcements(spreadsheet_id):
             print("day is this! " + str(i))
             if i < 0:  # how many to stkip
                 continue
-            if i < 94:  # how many to stkip
+            if i < 130:  # how many to stkip
+                print("skipping")
                 continue
 
-            if i > 98:
-                break
-            # read the row
+
+
+
+            # if i > 134:  # how many to stkip
+            #     print("skipping")
+            #     continue
+            #read the row
             day_info = read_day_info(row)
             print(day_info)
             # Skip days in the past, days with no data, days with no rows
@@ -71,6 +76,12 @@ def create_assignments_announcements(spreadsheet_id):
                 continue
             elif len(row) == 3:  # no announcements or anything
                 # print("This day: {} has no lesson, skipping".format(day_info['date']))
+                continue
+            elif len(row) == 8 and not row[4]:
+                print("stuff with some notes but no assignment, continue")
+                continue
+            elif len(row) == 7 and not row[5]:
+                print("do not move day, but no assignment. continue")
                 continue
             elif len(row) == 6 and not re.search(r'(\d|)', row[5]):  # Crash out if ID's do not contain numbers
                 raise Exception("This day: {} has row length of 6, but no numbers in the ID column (F).\n "
