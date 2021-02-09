@@ -54,10 +54,12 @@ def create_assignments_announcements(spreadsheet_id):
             print("day is this! " + str(i))
             if i < 0:  # how many to stkip
                 continue
-            if i < 130:  # how many to stkip
-                print("skipping")
-                continue
-
+            # if i < 132:  # how many to stkip
+            #     print("skipping")
+            #     continue
+            # if i > 134:  # how many to stkip
+            #     print("skipping")
+            #     continue
 
 
 
@@ -87,7 +89,10 @@ def create_assignments_announcements(spreadsheet_id):
                 raise Exception("This day: {} has row length of 6, but no numbers in the ID column (F).\n "
                                 " Are there spaces or something goofy going on in ID column?  \nTry deleting"
                                 " the entire cell and try again".format(day_info['date']))
-            elif len(row) == 5 or (len(row) == 7 and not row[5]) or len(row) == 8:
+            elif (len(row) == 5 or len(row) == 7 or len(row) == 8):
+                if len(row) == 7 or len(row) == 8:
+                    if row[5]:
+                        continue
                 # Do new rows (i.e. not previously posted, no IDs) row = 8 is comment but otherwise blank
                 print("Posting a new lesson that hasn't been posted before")
                 try:
@@ -122,7 +127,7 @@ def create_assignments_announcements(spreadsheet_id):
                         assignment_counter += 1
                     all_ids += single_id + ','
                 update_sheet_with_id(spreadsheet_id, all_ids, i, service_sheets, sheet)
-            elif len(row) == 6:  # previously found assignment!
+            elif len(row) == 6 or len(row) == 8:  # previously found assignment!
                 print("Found previously posted announcements/assignments")
 
                 # basic concept: do everything again.

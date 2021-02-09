@@ -7,7 +7,7 @@ SHEET_ID = 'APCSP_S2_P1'
 HEADER_TEXT = 'AP CSP\n'
 COURSE_ID = 247697843639
 COURSE_CONTRACT = 'https://docs.google.com/document/d/1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/edit'
-ZOOM_LINK_1 = 'https://zoom.us/j/4968074808?pwd=ZVBJQzQ4Uk1NREpGNEhLakJ4blExUT09#success'
+ZOOM_LINK_1 = 'https://zoom.us/j/4968074808?pwd=ZVBJQzQ4Uk1NREpGNEhLakJ4blExUT09 '
 ZOOM_LINK_2 = 'https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'
 ZOOM_LINK_3 = 'https://us02web.zoom.us/j/7890036306?pwd=WlpkV1JKUXZlQ3orYTd2dFBhZkdzdz09'
 ZOOM_LINKS = [ZOOM_LINK_1, ZOOM_LINK_2, ZOOM_LINK_3]
