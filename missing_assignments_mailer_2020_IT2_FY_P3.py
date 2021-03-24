@@ -28,7 +28,7 @@ def create_message(sender, to, subject, message_text):
     return {'raw': base64.urlsafe_b64encode(message.as_string())}
 
 
-course_id = 247697843639
+course_id = 164899277959
 service_classroom = generate_classroom_credential()
 
 
@@ -37,40 +37,31 @@ student_dict = {'21nlei@cpsd.us': '103026788979009218908',
 
 '''
 
-{'id': '108001275956982622720', 'name': {'givenName': 'AMEIR', 'familyName': 'DAWSON', 'fullName': 'AMEIR DAWSON'}}
-{'id': '108001275956982622720', 'name': {'givenName': 'ZOE', 'familyName': 'SIEGELNICKEL', 'fullName': 'ZOE SIEGELNICKEL'}}
-{'id': '103072792655643970842', 'name': {'givenName': 'THEODORE', 'familyName': 'WOODWARD', 'fullName': 'THEODORE WOODWARD'}}
-{'id': '108395054813353959432', 'name': {'givenName': 'LONSO', 'familyName': 'IRR', 'fullName': 'LONSO IRR'}}
-{'id': '116969031591258211573', 'name': {'givenName': 'EMAN', 'familyName': 'ABDUREZAK', 'fullName': 'EMAN ABDUREZAK'}}
-{'id': '104076916696146047444', 'name': {'givenName': 'DEREK', 'familyName': 'PRICE', 'fullName': 'DEREK PRICE'}}
-{'id': '117853584363396485494', 'name': {'givenName': 'ANWESHA', 'familyName': 'MAITY', 'fullName': 'ANWESHA MAITY'}}
-{'id': '112008539441208883957', 'name': {'givenName': 'FAROOZ', 'familyName': 'KHAN-TRUNNELL', 'fullName': 'FAROOZ KHAN-TRUNNELL'}}
-{'id': '117699940410151230499', 'name': {'givenName': 'JIAMING', 'familyName': 'WANG', 'fullName': 'JIAMING WANG'}}
-{'id': '103833412767890898981', 'name': {'givenName': 'Elias', 'familyName': 'Regina', 'fullName': 'Elias Regina'}}
+{'id': '117019328754907443769', 'name': {'givenName': 'THOMAS', 'familyName': 'BREWITT', 'fullName': 'THOMAS BREWITT'}}
+{'id': '100437299855115523930', 'name': {'givenName': 'MOHAMMED', 'familyName': 'MUSAWWIR', 'fullName': 'MOHAMMED MUSAWWIR'}}
+{'id': '115899787127900489710', 'name': {'givenName': 'Nobel', 'familyName': 'Temam', 'fullName': 'Nobel Temam'}}
+{'id': '107372429037627570808', 'name': {'givenName': 'FERNANDO', 'familyName': 'PANEPINTO HATTORI', 'fullName': 'FERNANDO PANEPINTO HATTORI'}}
+{'id': '117781278118817502289', 'name': {'givenName': 'SKYLER', 'familyName': 'MARKS', 'fullName': 'SKYLER MARKS'}}
+{'id': '117580555014802942323', 'name': {'givenName': 'JONAH', 'familyName': 'JAFFE', 'fullName': 'JONAH JAFFE'}}
+{'id': '112667830524174574890', 'name': {'givenName': 'Biruk', 'familyName': 'Alemu', 'fullName': 'Biruk Alemu'}}
+{'id': '115853813505606026479', 'name': {'givenName': 'Eden', 'familyName': 'Wegayhu', 'fullName': 'Eden Wegayhu'}}
 {'id': '102475404831589545837', 'name': {'givenName': 'Sauvik', 'familyName': 'Roy', 'fullName': 'Sauvik Roy'}}
-{'id': '113300105166289299368', 'name': {'givenName': 'MEKEYAS', 'familyName': 'MEKURIA', 'fullName': 'MEKEYAS MEKURIA'}}
-{'id': '112700773999980928897', 'name': {'givenName': 'CHLOE', 'familyName': 'YANG', 'fullName': 'CHLOE YANG'}}
-{'id': '114034608136063461848', 'name': {'givenName': 'ANTHONY', 'familyName': 'ARIAS-ESTRADA', 'fullName': 'ANTHONY ARIAS-ESTRADA'}}
-{'id': '111434302568014093638', 'name': {'givenName': 'GRACE', 'familyName': 'VALASKOVIC', 'fullName': 'GRACE VALASKOVIC'}}
-{'id': '110461501134972561443', 'name': {'givenName': 'Jeiran', 'familyName': 'Kvaitchadze', 'fullName': 'Jeiran Kvaitchadze'}}
+{'id': '114590111590307965499', 'name': {'givenName': 'Matias', 'familyName': 'Stringa', 'fullName': 'Matias Stringa'}}
+{'id': '116668099320993692987', 'name': {'givenName': 'JUSTIN-CORI', 'familyName': 'AZEVEDO', 'fullName': 'JUSTIN-CORI AZEVEDO'}}
+{'id': '116104146147212808913', 'name': {'givenName': 'RYAN', 'familyName': 'GUERRERO', 'fullName': 'RYAN GUERRERO'}}
 '''
 email_dict = {
-'108001275956982622720': '24adawson@cpsd.us',
-'108001275956982622720': '23zsiegelnickel@cpsd.us',
-'103072792655643970842': '21twoodward@cpsd.us',
-'108395054813353959432': '23lirr@cpsd.us',
-'116969031591258211573': '23eabdurezak@cpsd.us',
-'104076916696146047444': '23dprice@cpsd.us',
-'117853584363396485494': '22amaity@cpsd.us',
-'112008539441208883957': '24fkhan-trunnell@cpsd.us',
-'117699940410151230499': '23jwang@cpsd.us',
-'103833412767890898981': '24eregina@cpsd.us',
-'102475404831589545837': '22sroy@cpsd.us',
-'113300105166289299368': '23mmekuria@cpsd.us',
-'112700773999980928897': '23cyang@cpsd.us',
-'114034608136063461848': '24aarias-estrada@cpsd.us',
-'111434302568014093638': '21gvalaskovic@cpsd.us',
-'110461501134972561443': '24jkvaitchadze@cpsd.us',
+ '100437299855115523930': '23mmusawwir@cpsd.us',
+ '115899787127900489710': '21ntemam@cpsd.us',
+ '107372429037627570808': '22fpanepintohattori@cpsd.us',
+ '117781278118817502289': '22smarks@cpsd.us',
+ '117580555014802942323': '21jjaffe@cpsd.us',
+ '112667830524174574890': '22balemu@cpsd.us',
+ '115853813505606026479': '20ewegayhu@cpsd.us',
+ '102475404831589545837': '22sroy@cpsd.us',
+ '114590111590307965499': '23mstringa@cpsd.us',
+ '116668099320993692987': '22jazevedo@cpsd.us',
+ '116104146147212808913': '21rguerrero@cpsd.us',
 }
 
 students = service_classroom.courses().students().list(courseId=course_id,).execute()
@@ -116,7 +107,7 @@ for student in students:
                 if work['state'] != 'TURNED_IN' and work['late'] is True:
                     d1 = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
                     d2 = datetime.datetime.now()
-                    q2 = datetime.datetime(2020, 11, 14)
+                    q2 = datetime.datetime(2021, 2, 4)
                     if d2 >= d1 and d1 > q2:
                         link = work['alternateLink']
                         coursework_id = work['courseWorkId']
@@ -152,8 +143,8 @@ for message in messages:
         msg_text = message[key]
         email_message = MIMEMultipart()
         email_message['to'] = email_address
-        email_message['cc'] = 'ewu@cpsd.us,mkann@cpsd.us'
-        email_message['subject'] = 'AP CSP assignments report'
+        email_message['cc'] = 'ewu@cpsd.us'
+        email_message['subject'] = 'Cybersecurity/IT2 assignments report'
         email_message.attach(MIMEText(msg_text, 'plain'))
         raw_string = base64.urlsafe_b64encode(email_message.as_bytes()).decode()
 
