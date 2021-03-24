@@ -29,9 +29,10 @@ path_were_the_Google_webdriver_is_stored = r'C:\Users\dimmyfinster\Dropbox\dimmy
 flag = " :-)"
 
 # Check into ASPEN and GC, fill this dictionary:
-ASPEN_vs_Gclassroom_dictionary = {'IT1/CS1':'T604-001',
+ASPEN_vs_Gclassroom_dictionary = {#'IT1/CS1':'T604-001',
                                  #'AP Computer Science Principles P4':'T608-003',
-                                 #   'Murphy S1 P1 Intro to CS' : 'M415-001',
+                                 'AP Computer Science Principles S2P4':'T608-IP-004',
+                                #    'Murphy S1 P1 Intro to CS' : 'M415-001',
                                  # 'IT3 2020-2021':'T986-001',
                                  # 'IT2 2020-2021': 'T746-001',
                                  # 'T527A-001: SY2020-21 TC Web Design & Development':'T527A-001',
@@ -69,8 +70,8 @@ def create_Gclassroom_service():
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token_classroom_martinez.pickle'):
-        with open('token_classroom_martinez.pickle', 'rb') as token:
+    if os.path.exists('token_classroom.pickle'):
+        with open('token_classroom.pickle', 'rb') as token:
             Gclassroom_creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not Gclassroom_creds or not Gclassroom_creds.valid:
@@ -81,7 +82,7 @@ def create_Gclassroom_service():
                 'credentials_classroom.json', Gclassroom_SCOPES)
             Gclassroom_creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('token_classroom_martinez.pickle', 'wb') as token:
+        with open('token_classroom.pickle', 'wb') as token:
             pickle.dump(Gclassroom_creds, token)
 
     # Once the credentials have been established we start accessing the google classroom
@@ -121,13 +122,19 @@ def obtain_Gclassrooms_dictionary_only_for_ASPEN_classes(service): # Names is th
                     print("trying this status " + str(state))
                     course['CourseWork'] = service.courses().courseWork().list(courseId=course['id'], courseWorkStates=state).execute().get('courseWork', [])
                     for courseWork in course['CourseWork']:
-                        # print("assignment is {}".format(courseWork))
+                        print("assignment is {}".format(courseWork))
                         ASPEN_coursework_categories = ['grade term','category','GB column name','Assignment name','Date assigned','Date due','Total points','Sequence number','extra credit points']
                         new_title = courseWork['title']
                         new_title = re.sub('Python ', 'py', new_title)
                         new_title = re.sub('Scratch ', 'Sc', new_title)
                         new_title = re.sub('Autograder', 'AG', new_title)
                         new_title = re.sub('Encryption', 'Encrp', new_title)
+                        new_title = re.sub(r'Final\sreview', 'Frev', new_title, re.X | re.S | re.M)
+                        print("New title is this " + str(new_title))
+                        if re.search("extra \s credit", new_title.lower(), re.X | re.M | re.S):
+                            continue
+                        if re.search("create \s task \s checkin", new_title.lower(), re.X | re.M | re.S):
+                            continue
                         print("TITLE IS " + str(new_title))
 
                         if len(new_title) >= 7:
@@ -178,7 +185,8 @@ def obtain_Gclassrooms_dictionary_only_for_ASPEN_classes(service): # Names is th
                         except:
                             ASPEN_due_date = date_assigned
 
-
+                        if 'maxpoints' not in courseWork:
+                            print("THIS ONE DOES NOT HAVE MAXPOINTS " + str(courseWork))
                         ASPEN_courseWork_values = {
                             'grade term': {'ASPEN_value': grade_term, 'num_of_tabs': 23},
                             'category': {'ASPEN_value': 'content_knowledge', 'num_of_tabs': 2},
