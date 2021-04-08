@@ -6,6 +6,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from generate_classroom_credential import generate_classroom_credential
+from selenium.webdriver.common.action_chains import ActionChains
 
 import re
 import time
@@ -13,6 +14,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import datetime
 import sqlite3
 from sqlite3 import Error
+
 
 def create_connection(db_file):
     """ create a database connection to the SQLite database
@@ -33,21 +35,22 @@ def create_table(p_db_conn):
     sql = 'CREATE TABLE IF NOT EXISTS recorded_scores (id varchar(60) PRIMARY KEY, assignment varchar(60),' \
           'name varchar(60), score integer NOT NULL );'
     try:
-            c = p_db_conn.cursor()
-            c.execute(sql)
+        c = p_db_conn.cursor()
+        c.execute(sql)
     except Error as e:
         print(e)
 
 
 def query_record(p_db_conn, p_id, p_score):
     sql = 'select * from recorded_scores WHERE id ="' + p_id + '" AND score =' + str(p_score)
+    p_rows = ''
     try:
-            cursor = p_db_conn.cursor()
-            cursor.execute(sql)
-            rows = cursor.fetchall()
+        cursor = p_db_conn.cursor()
+        cursor.execute(sql)
+        p_rows = cursor.fetchall()
     except Error as e:
         print(e)
-    return rows
+    return p_rows
 
 
 def insert_record(p_db_conn, p_id, p_score, p_assignment, p_name):
@@ -55,11 +58,12 @@ def insert_record(p_db_conn, p_id, p_score, p_assignment, p_name):
             str(p_score) + ' )'
     print(sql)
     try:
-            cursor = p_db_conn.cursor()
-            cursor.execute(sql)
-            p_db_conn.commit()
+        cursor = p_db_conn.cursor()
+        cursor.execute(sql)
+        p_db_conn.commit()
     except Error as e:
         print(e)
+
 
 def convert_assignment_name(p_name):
     """
@@ -97,11 +101,11 @@ def find_scholar_aspen_id(p_name, aspen_name_dict):
 
     # Check for last name match
     candidate_matches = []
-    for key in aspen_name_dict.keys():
-        a_name = key.lower()
+    for p_key in aspen_name_dict.keys():
+        a_name = p_key.lower()
         a_name_parts = a_name.split(', ')
         if re.search(g_name_parts[-1], a_name_parts[0]):
-            candidate_matches.append(key)
+            candidate_matches.append(p_key)
     if len(candidate_matches) == 1:
         # ony matched one, found it
         return aspen_name_dict[candidate_matches[0]]
@@ -127,33 +131,35 @@ def get_assignments_from_classroom(course_id, p_quarter_start_obj):
     from generate_classroom_credential import generate_classroom_credential
 
     # Read from Google classroom
-    service_classroom = generate_classroom_credential()
+    p_service_classroom = generate_classroom_credential()
 
     # Getting students
-    students = service_classroom.courses().students().list(courseId=course_id,).execute()
+    students = p_service_classroom.courses().students().list(courseId=course_id,).execute()
     students = students['students']
     gc_students = {}
+    print("In getting_assignments, getting students")
     for student in students:
-        student_id = student['userId']
-        student_profiles = service_classroom.userProfiles().get(userId=student_id,).execute()
+        p_student_id = student['userId']
+        student_profiles = p_service_classroom.userProfiles().\
+            get(userId=p_student_id,).execute()
         print(student_profiles)
         # print(student_profiles['emailAddress'])
-        gc_students[student_id] = student_profiles['name']['fullName']
+        gc_students[p_student_id] = student_profiles['name']['fullName']
     print(gc_students)
     print("Getting assignments")
-    courseworks = service_classroom.courses().courseWork().list(courseId=course_id).execute().get('courseWork', [])
+    p_courseworks = p_service_classroom.courses().\
+        courseWork().list(courseId=course_id).execute().get('courseWork', [])
     assignments_scores_to_aspen = {}
-    for coursework in courseworks:
-        print(coursework)
+    for coursework in p_courseworks:
         coursework_id = coursework['id']
         coursework_title = coursework['title']
         # print(coursework)
-
         if 'dueDate' in coursework:
             due_date = coursework['dueDate']
             due_date_obj = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
+            print(f"Coursework {coursework} duedate {due_date_obj} quarter {p_quarter_start_obj}")
             if due_date_obj > p_quarter_start_obj:
-                student_works = service_classroom.courses(). \
+                student_works = p_service_classroom.courses(). \
                     courseWork().studentSubmissions().list(courseId=COURSE_ID, courseWorkId=coursework_id).execute()
                 student_works = student_works['studentSubmissions']
                 for student_work in student_works:
@@ -164,24 +170,27 @@ def get_assignments_from_classroom(course_id, p_quarter_start_obj):
                             print(f"doing this one:  {student_work}")
                             print(coursework_title)
                             print(assignments_scores_to_aspen)
-                            student_id = student_work['userId']
-                            student_name = gc_students[student_id]
+                            coursework_title = re.sub(r'\s:-\)', '', coursework_title)
+                            p_student_id = student_work['userId']
+                            student_name = gc_students[p_student_id]
                             grade = student_work['assignedGrade']
-                           # print(f"grade {grade} student id {student_id} student name {student_name}")
+                            # print(f"grade {grade} student id {student_id} student name {student_name}")
 
                             if coursework_title in assignments_scores_to_aspen.keys():
-
                                 assignments_scores_to_aspen[coursework_title].append([student_name, grade])
                             else:
                                 assignments_scores_to_aspen[coursework_title] = [[student_name, grade]]
-            return assignments_scores_to_aspen
+    return assignments_scores_to_aspen
 
-COURSE = 'T986-IP-001'
-COURSE_ID = '164901642050'
-quarter_start_obj = datetime.datetime(2021, 2, 4)
+
+COURSE = 'T608-IP-004'
+COURSE_ID = 253721407705
+quarter = 4
+quarter_start_obj = datetime.datetime(2021, 4, 10)
 
 
 assignments_from_classroom_dict = get_assignments_from_classroom(COURSE_ID, quarter_start_obj)
+print("These are the assignments from Google classroom!")
 print(assignments_from_classroom_dict)
 chrome_options = Options()
 chrome_options.add_argument("Window-size=6500,12000")
@@ -228,6 +237,24 @@ time.sleep(1)
 #     driver.quit()
 submit4 = driver.find_element_by_xpath("//a[@title='List of assignment records']").click()
 
+submit51 = driver.find_element_by_xpath('//*[@id="filterMenu"]').click()
+window_before = driver.window_handles[0]
+
+submit6 = driver.find_element_by_xpath('//*[@id="filterMenu_Option2"]/td[2]').click()
+window_after = driver.window_handles[1]
+
+driver.switch_to.window(window_after)
+
+submit888 = driver.find_elements_by_xpath('//input')
+for element in submit888:
+    print(element.get_attribute('name'))
+submit7 = driver.find_element_by_xpath('//input[@name="value(prompt1)"]')
+# name="value(prompt1)"
+submit7.click()
+keys = 'Q' + str(quarter)
+submit7.send_keys(keys)
+submit8 = driver.find_element_by_xpath('//*[@id="submitButton"]').click()
+driver.switch_to.window(window_before)
 
 # find the table of assignments
 try:
@@ -261,7 +288,7 @@ while done is False:
         el = driver.find_element_by_xpath(xpath_string)
         assignment_name = el.text
         print(f"Element ID: {assignment_id} Element name {assignment_name}")
-        if re.search('-K$', assignment_name):
+        if re.search('-K$', assignment_name) or re.search('-C$', assignment_name) :
             aspen_assignment_ids[assignment_name] = assignment_id
     try:
         button = driver.find_element_by_xpath('//*[@id="topnextPageButton"]')
@@ -291,6 +318,24 @@ driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 time.sleep(1)
 # should do some try excep magic here
 submit4 = driver.find_element_by_xpath("//a[@title='Gradebook grade input']").click()
+
+# Select current quarter
+try:
+    element = WebDriverWait(driver, 10).\
+        until(ec.
+              presence_of_element_located((By.XPATH, "//select[@name='termFilter']")))
+except TimeoutException:
+    print("Did not find termfilter")
+    print("quitting")
+    driver.quit()
+
+
+submit5 = driver.find_element_by_xpath(
+    "//select[@name='termFilter']/option[text()='Q" + str(quarter) + "']").click()
+
+
+id_scholars = {}
+# scr = driver.find_element_by_xpath("//div[@class='scrollCell invisible-horizontal-scrollbar']")
 
 try:
     element = WebDriverWait(driver, 10).\
@@ -348,6 +393,8 @@ create_table(db_conn)
 for key in assignments_from_classroom_dict.keys():
     test_assignment = key
     scores = assignments_from_classroom_dict[key]
+    test_name = ''
+    test_score = 0
     for entry in scores:
         test_name = entry[0]
         test_score = entry[1]
@@ -365,28 +412,45 @@ for key in assignments_from_classroom_dict.keys():
 
     cell_id = aspen_assignment_ids[assignment_aspen] + '|' + scholar_aspen_id
     edit_cell_id = 'e' + cell_id
-    #print(cell_id)
-    #print(edit_cell_id)
+    completion_assignment = assignment_aspen
+    completion_assignment = re.sub('-K$', '-C', completion_assignment)
+    cell2_id = aspen_assignment_ids[completion_assignment] + '|' + scholar_aspen_id
+    edit_cell2_id = 'e' + cell2_id
+    # print(cell_id)
+    # print(edit_cell_id)
 
     rows = query_record(db_conn, cell_id, test_score)
     temp_words = cell_id.split('|')
     student_id = temp_words[1]
     test_name = ''
-    for key in id_scholars:
+    for key2 in id_scholars:
         # print(f"key {key} student {student_id} value {id_scholars[key]}")
-        if id_scholars[key] == student_id:
-            print(f"YES     key {key} student {student_id} value {id_scholars[key]}")
-            test_name = key
+        if id_scholars[key2] == student_id:
+            print(f"YES     key {key} student {student_id} value {id_scholars[key2]}")
+            test_name = key2
     print(f"This is what the query returns {rows} ")
     if len(rows) == 0:
-        insert_record(db_conn, cell_id, test_score, test_assignment, test_name)
-        print(f"adding  this record.  Assignment: {test_assignment} scholar: {test_name} score: {test_score}")
         grade_element = driver.find_element_by_id(cell_id)
+        # create action chain object
+        action = ActionChains(driver)
+        action.move_to_element(grade_element).perform()
+
         grade_element.click()
         grade_element2 = driver.find_element_by_id(edit_cell_id)
         grade_element2.send_keys(test_score)
         grade_element2.send_keys(Keys.RETURN)
 
+        grade_element3 = driver.find_element_by_id(cell2_id)
+        # create action chain object
+        action = ActionChains(driver)
+        action.move_to_element(grade_element3).perform()
+        grade_element3.click()
+        grade_element4 = driver.find_element_by_id(edit_cell2_id)
+        grade_element4.send_keys('1')
+        grade_element4.send_keys(Keys.RETURN)
+
+        insert_record(db_conn, cell_id, test_score, test_assignment, test_name)
+        print(f"adding  this record.  Assignment: {test_assignment} scholar: {test_name} score: {test_score}")
+
     else:
         print(f"Record is in the DB already.  Assignment: {test_assignment} scholar: {test_name} score: {test_score}")
-
