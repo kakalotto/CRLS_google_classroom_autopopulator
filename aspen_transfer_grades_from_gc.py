@@ -235,6 +235,7 @@ time.sleep(1)
 #     print(TimeoutException.message)
 #     print("quitting")
 #     driver.quit()
+print("Trying to switch to correct quarter")
 submit4 = driver.find_element_by_xpath("//a[@title='List of assignment records']").click()
 
 submit51 = driver.find_element_by_xpath('//*[@id="filterMenu"]').click()
@@ -256,7 +257,9 @@ submit7.send_keys(keys)
 submit8 = driver.find_element_by_xpath('//*[@id="submitButton"]').click()
 driver.switch_to.window(window_before)
 
+
 # find the table of assignments
+print("Trying to find table of assignments")
 try:
     element = WebDriverWait(driver, 10).\
         until(ec.presence_of_element_located((By.XPATH, "//div[@id='dataGrid']")))
@@ -333,6 +336,17 @@ except TimeoutException:
 submit5 = driver.find_element_by_xpath(
     "//select[@name='termFilter']/option[text()='Q" + str(quarter) + "']").click()
 
+# change to grade columns ALL
+try:
+    element = WebDriverWait(driver, 10).\
+        until(ec.presence_of_element_located
+                            ((By.XPATH, '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select')))
+except TimeoutException:
+    print("Did not find Pull down menu w/Grade columns in Aspen ")
+    print("quitting")
+    driver.quit()
+driver.find_element_by_xpath('//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select/option[1]').click()
+
 
 id_scholars = {}
 # scr = driver.find_element_by_xpath("//div[@class='scrollCell invisible-horizontal-scrollbar']")
@@ -405,52 +419,52 @@ for key in assignments_from_classroom_dict.keys():
 # test_score = 100
 # test_name = 'Shahnawaz Fakir'
 
-    assignment_aspen = convert_assignment_name(test_assignment)
-    # print(assignment_aspen_id)
-    scholar_aspen_id = find_scholar_aspen_id(test_name, id_scholars)
-    # print(scholar_aspen_id)
+        assignment_aspen = convert_assignment_name(test_assignment)
+        # print(assignment_aspen_id)
+        scholar_aspen_id = find_scholar_aspen_id(test_name, id_scholars)
+        # print(scholar_aspen_id)
 
-    cell_id = aspen_assignment_ids[assignment_aspen] + '|' + scholar_aspen_id
-    edit_cell_id = 'e' + cell_id
-    completion_assignment = assignment_aspen
-    completion_assignment = re.sub('-K$', '-C', completion_assignment)
-    cell2_id = aspen_assignment_ids[completion_assignment] + '|' + scholar_aspen_id
-    edit_cell2_id = 'e' + cell2_id
-    # print(cell_id)
-    # print(edit_cell_id)
+        cell_id = aspen_assignment_ids[assignment_aspen] + '|' + scholar_aspen_id
+        edit_cell_id = 'e' + cell_id
+        completion_assignment = assignment_aspen
+        completion_assignment = re.sub('-K$', '-C', completion_assignment)
+        cell2_id = aspen_assignment_ids[completion_assignment] + '|' + scholar_aspen_id
+        edit_cell2_id = 'e' + cell2_id
+        # print(cell_id)
+        # print(edit_cell_id)
 
-    rows = query_record(db_conn, cell_id, test_score)
-    temp_words = cell_id.split('|')
-    student_id = temp_words[1]
-    test_name = ''
-    for key2 in id_scholars:
-        # print(f"key {key} student {student_id} value {id_scholars[key]}")
-        if id_scholars[key2] == student_id:
-            print(f"YES     key {key} student {student_id} value {id_scholars[key2]}")
-            test_name = key2
-    print(f"This is what the query returns {rows} ")
-    if len(rows) == 0:
-        grade_element = driver.find_element_by_id(cell_id)
-        # create action chain object
-        action = ActionChains(driver)
-        action.move_to_element(grade_element).perform()
+        rows = query_record(db_conn, cell_id, test_score)
+        temp_words = cell_id.split('|')
+        student_id = temp_words[1]
+        test_name = ''
+        for key2 in id_scholars:
+            # print(f"key {key} student {student_id} value {id_scholars[key]}")
+            if id_scholars[key2] == student_id:
+                print(f"YES     key {key} student {student_id} value {id_scholars[key2]}")
+                test_name = key2
+        print(f"This is what the query returns {rows} ")
+        if len(rows) == 0:
+            grade_element = driver.find_element_by_id(cell_id)
+            # create action chain object
+            action = ActionChains(driver)
+            action.move_to_element(grade_element).perform()
 
-        grade_element.click()
-        grade_element2 = driver.find_element_by_id(edit_cell_id)
-        grade_element2.send_keys(test_score)
-        grade_element2.send_keys(Keys.RETURN)
+            grade_element.click()
+            grade_element2 = driver.find_element_by_id(edit_cell_id)
+            grade_element2.send_keys(test_score)
+            grade_element2.send_keys(Keys.RETURN)
 
-        grade_element3 = driver.find_element_by_id(cell2_id)
-        # create action chain object
-        action = ActionChains(driver)
-        action.move_to_element(grade_element3).perform()
-        grade_element3.click()
-        grade_element4 = driver.find_element_by_id(edit_cell2_id)
-        grade_element4.send_keys('1')
-        grade_element4.send_keys(Keys.RETURN)
+            grade_element3 = driver.find_element_by_id(cell2_id)
+            # create action chain object
+            action = ActionChains(driver)
+            action.move_to_element(grade_element3).perform()
+            grade_element3.click()
+            grade_element4 = driver.find_element_by_id(edit_cell2_id)
+            grade_element4.send_keys('1')
+            grade_element4.send_keys(Keys.RETURN)
 
-        insert_record(db_conn, cell_id, test_score, test_assignment, test_name)
-        print(f"adding  this record.  Assignment: {test_assignment} scholar: {test_name} score: {test_score}")
+            insert_record(db_conn, cell_id, test_score, test_assignment, test_name)
+            print(f"adding  this record.  Assignment: {test_assignment} scholar: {test_name} score: {test_score}")
 
-    else:
-        print(f"Record is in the DB already.  Assignment: {test_assignment} scholar: {test_name} score: {test_score}")
+        else:
+            print(f"Record is in the DB already.  Assignment: {test_assignment} scholar: {test_name} score: {test_score}")
