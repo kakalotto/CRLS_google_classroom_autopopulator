@@ -479,3 +479,4 @@ for key in assignments_from_classroom_dict.keys():
 
         else:
             print(f"Record is in the DB already.  Assignment: {test_assignment} scholar: {test_name} score: {test_score}")
+driver.quit()
