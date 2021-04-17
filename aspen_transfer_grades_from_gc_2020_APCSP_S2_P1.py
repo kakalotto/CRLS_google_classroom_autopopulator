@@ -367,7 +367,7 @@ height = 0
 try:
     element = WebDriverWait(driver, 10).\
         until(ec.
-              presence_of_element_located((By.XPATH, "//a")))
+              presence_of_element_located((By.XPATH, "//a[@href]")))
 except TimeoutException:
     print("Did not find a href elements ")
     print("quitting")
