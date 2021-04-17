@@ -183,8 +183,8 @@ def get_assignments_from_classroom(course_id, p_quarter_start_obj):
     return assignments_scores_to_aspen
 
 
-COURSE = 'T608-IP-004'
-COURSE_ID = 253721407705
+COURSE = 'T608-IP-001'
+COURSE_ID = 247697843639
 quarter = 4
 quarter_start_obj = datetime.datetime(2021, 4, 10)
 
@@ -429,6 +429,8 @@ for key in assignments_from_classroom_dict.keys():
 # test_name = 'Shahnawaz Fakir'
 
         assignment_aspen = convert_assignment_name(test_assignment)
+        if assignment_aspen == 'SKIP':
+            continue
         # print(assignment_aspen_id)
         scholar_aspen_id = find_scholar_aspen_id(test_name, id_scholars)
         # print(scholar_aspen_id)

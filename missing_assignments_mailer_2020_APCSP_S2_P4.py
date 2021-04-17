@@ -139,7 +139,7 @@ for message in messages:
         message[key] = email_address + '\n' + message[key]
 
 
-        # message[key] += '\n\nLast day to turn in assignments or extra credit is Friday 01/29/21\n\n'
+        message[key] += '\n\nLast day to turn in assignments for quarter 3 is Friday 04/9/21!!!!\n\n'
         # message[key] += 'Create task must be "finalized" by 1/29 and turned in the digital portfolio, even if ' \
         #                 'you are not taking the AP exam.  \n' \
         #                 'link: https://digitalportfolio.collegeboard.org/\n\n' \
