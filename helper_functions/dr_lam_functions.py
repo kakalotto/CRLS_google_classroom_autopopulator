@@ -22,6 +22,7 @@ def add_image(p_link, index_start, p_batch_requests, *, p_height=75, p_width=75)
     index_end = index_start + 1
     return [index_start, index_end, p_batch_requests]
 
+
 def add_regular_text(p_text, index_start, p_batch_requests):
     batch = {
         'insertText': {
@@ -48,6 +49,7 @@ def add_table(p_rows, p_columns, p_batch_requests):
     }
     p_batch_requests.append(batch)
     return p_batch_requests
+
 
 def add_bold_normal(index_start, index_end, p_batch_requests):
     batch = {
@@ -186,7 +188,7 @@ def get_assignment_link(assignments_dict, assignment_name, p_courseworks, p_mate
     link = ''
     if assignment_name in assignments_dict:
         assignment_name = assignments_dict[assignment_name]
-    #print('starting ' + str(assignment_name))
+    # print('starting ' + str(assignment_name))
     # print("materials "  )
     # print(p_materials)
     for coursework in p_courseworks:
@@ -197,7 +199,7 @@ def get_assignment_link(assignments_dict, assignment_name, p_courseworks, p_mate
             link = coursework['alternateLink']
             return link
     for material in p_materials:
-#        print("assignmenit name "  + str(assignment_name))
+        # print("assignmenit name "  + str(assignment_name))
         title = material['title']
 #        print("assignmenit name '"  + str(assignment_name) + "' title '" + str(title) + "'")
 
@@ -222,3 +224,21 @@ def get_text(p_service, document_id):
     document = p_service.documents().get(documentId=document_id).execute()
     doc_content = document.get('body').get('content')
     return doc_content
+
+
+def iter3obj_2_list(p_obj):
+    """
+    Args:
+        p_obj: an iter4 object
+
+    Returns:
+        A list of lists (converts iter4 ojbects to list)
+    """
+    return_list = []
+    for day in p_obj:
+        temp_list = []
+        temp_list.append(day[0])
+        temp_list.append(day[1])
+        temp_list.append(day[2])
+        return_list.append(temp_list)
+    return return_list
