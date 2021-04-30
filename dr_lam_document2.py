@@ -8,6 +8,7 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     import re
     import calendar
     import datetime
+    from copy import deepcopy
     from generate_docs_credential import generate_docs_credential
     from generate_sheets_credential import generate_sheets_credential
     from generate_classroom_credential import generate_classroom_credential
@@ -74,11 +75,11 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     index_of_begin_dates = last_index
 
     requests = []
-    requests = add_table(6, 5, requests)
+    requests = add_table(5, 5, requests)
     service_doc.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
     doc_contents = get_text(service_doc, document_id)
-    last_index = get_final_index(doc_contents) - 65
-    # 65 - first column 57 - 5th column 1st row.  # 55 - broken 54 = 1st column 2nd row
+    last_index = get_final_index(doc_contents) - 58
+    #
     print("beginning.  last_index " + str(last_index))
     [q_start, q_end] = quarter_dates(fy=True)
     print(f"q_start {q_start} qend {q_end}")
@@ -88,6 +89,12 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     dom_counter = 0
     cal_list_counter = 0
     print(cal_list)
+    [previous_last, last_index, batch_requests] = add_regular_text('\n\nBeginning\n\n', last_index, batch_requests)
+    batch_requests = add_bold_normal(previous_last, last_index, batch_requests)
+    print("Beginning last index " + str(last_index))
+    last_index += 4
+    # [previous_last, last_index, batch_requests] = add_regular_text('test start', last_index, batch_requests)
+    # batch_requests = add_italic_normal(previous_last, last_index, batch_requests)
     for i, value in enumerate(sheet_values):
         print("value" + str(value))
         if len(value) == 3:
@@ -114,14 +121,20 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
             print("Making new calendar here)")
 
             iter3_obj = calendar_obj.itermonthdays4(int(year), int(month))
+            old_cal_list = deepcopy(cal_list)
+            print("OLD CAL LIST")
+            print(old_cal_list)
             cal_list = iter3obj_2_list(iter3_obj)
+            print("NEW CAL LIST")
             print(cal_list)
+            print("OLD CAL LIST")
+            print(old_cal_list)
             requests = []
-            requests = add_table(6, 5, requests)
+            requests = add_table(5, 5, requests)
             service_doc.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
             print("last index before " + str(last_index))
-            for i in range(cal_list_counter, 36):
-                print(f"is is this {i} + index {last_index}")
+            for i in range(cal_list_counter, 35):
+                print(f"generating new calendar , i  is this {i} + last index {last_index} old_cal_list{old_cal_list[i]}")
                 if i == 4 or i == 11 or i == 18 or \
                         i == 25 or i == 32:
                     last_index += 3
@@ -134,7 +147,8 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
             [previous_last, last_index, batch_requests] = add_regular_text('blahblah\n\n', last_index, batch_requests)
             batch_requests = add_italic_normal(previous_last, last_index, batch_requests)
             print("Blahblah last index "  + str(last_index))
-            last_index += 8
+            last_index += 83
+            # last_index += 8
             print("last_index after" + str(last_index))
 #            last_index += 3
 #            doc_contents = get_text(service_doc, document_id)
