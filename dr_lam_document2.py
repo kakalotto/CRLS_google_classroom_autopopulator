@@ -107,7 +107,42 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
         month = date_list[0]
         dom = date_list[1]
         year = date_list[2]
+        print(f"New month? {month} {cal_month}")
+        if int(month) > cal_month or (int(month) == 1 and cal_month == 12):
+            # Make a new calendar here
+            cal_month = int(month)
+            print("Making new calendar here)")
 
+            iter3_obj = calendar_obj.itermonthdays4(int(year), int(month))
+            cal_list = iter3obj_2_list(iter3_obj)
+            print(cal_list)
+            requests = []
+            requests = add_table(6, 5, requests)
+            service_doc.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
+            print("last index before " + str(last_index))
+            for i in range(cal_list_counter, 36):
+                print(f"is is this {i} + index {last_index}")
+                if i == 4 or i == 11 or i == 18 or \
+                        i == 25 or i == 32:
+                    last_index += 3
+                elif i != 5 and i != 6 and i != 12 and \
+                        i != 13 and i != 19 and i != 20\
+                        and i != 26 and i != 27:
+                    last_index += 2
+                #last_index=1808
+
+            [previous_last, last_index, batch_requests] = add_regular_text('blahblah\n\n', last_index, batch_requests)
+            batch_requests = add_italic_normal(previous_last, last_index, batch_requests)
+            print("Blahblah last index "  + str(last_index))
+            last_index += 8
+            print("last_index after" + str(last_index))
+#            last_index += 3
+#            doc_contents = get_text(service_doc, document_id)
+##            print("FINAL INDEX")
+#            print(doc_contents)
+            #last_index = get_final_index(doc_contents) - 65
+            cal_list_counter = 0
+            print(f"last index after adding new talbe {last_index}")
         today_cal = cal_list[cal_list_counter]
         not_found = True
         print(f"THIS IS THE DAR LOOKING FOR {year} {month} {dom}")
@@ -207,13 +242,18 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
         text = '\nClass Notes:\n'
         [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
         batch_requests = add_italic_normal(previous_last, last_index, batch_requests)
-        notes = '\n'
+#        notes = '\n'
+     #   notes = ''
+        notes = ' '
         if len(value) >= 8:
             notes = value[7]
-        [_, last_index, batch_requests] = add_regular_text(notes + '\n\n', last_index, batch_requests)
+        [_, last_index, batch_requests] = add_regular_text(notes + '', last_index, batch_requests)
+
+#        [_, last_index, batch_requests] = add_regular_text(notes, last_index, batch_requests)
 
         # Go to the next cell after printing out today's stuff
         # last_index += 2
+        print("This is last index at end of day" + str(last_index))
 
     formatting = {
         "updateParagraphStyle": {
@@ -230,6 +270,6 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     batch_requests.append(formatting)
     
     print("Adding all of the days")
-    # print(batch_requests)
+    print(batch_requests)
     
     service_doc.documents().batchUpdate(documentId=document_id, body={'requests': batch_requests}).execute()
