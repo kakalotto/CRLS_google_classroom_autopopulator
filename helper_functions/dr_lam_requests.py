@@ -50,35 +50,35 @@ def requests_links(last_index, p_classroom_id, p_zoom_links):
     [previous_last_index, last_index, p_batch_requests] = add_image(zoom_img, last_index - 10, p_batch_requests)
     for i, zoom_link in enumerate(p_zoom_links, 1):
         [previous_last_index, last_index, p_batch_requests] = \
-            add_regular_text('Zoom link ' + str(i) + '\n', last_index , p_batch_requests)
+            add_regular_text('\nZoom link ' + str(i) + '\n', last_index , p_batch_requests)
         p_batch_requests = add_link(zoom_link, previous_last_index , last_index, p_batch_requests)
         p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
 
     last_index += 2 # Skip ahead to next cell
     [previous_last_index, last_index, p_batch_requests] = add_image(classroom_img, last_index, p_batch_requests)
     [previous_last_index, last_index, p_batch_requests] = \
-        add_regular_text('Google classroom\n', last_index, p_batch_requests)
+        add_regular_text('\nGoogle classroom\n', last_index, p_batch_requests)
     p_batch_requests = add_link(classroom_link, previous_last_index, last_index, p_batch_requests)
     p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
 
     last_index += 2 # Skip ahead to next cell
     [previous_last_index, last_index, p_batch_requests] = add_image(assigned_img, last_index, p_batch_requests)
     [previous_last_index, last_index, p_batch_requests] = \
-        add_regular_text('Google classroom assigned work\n', last_index, p_batch_requests)
+        add_regular_text('\nGoogle classroom assigned work\n', last_index, p_batch_requests)
     p_batch_requests = add_link(assigned_link, previous_last_index, last_index, p_batch_requests)
     p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
 
     last_index += 2 # Skip ahead to next cell
     [previous_last_index, last_index, p_batch_requests] = add_image(missing_img, last_index, p_batch_requests)
     [previous_last_index, last_index, p_batch_requests] = \
-        add_regular_text('Google classroom missing work\n', last_index, p_batch_requests)
+        add_regular_text('\nGoogle classroom missing work\n', last_index, p_batch_requests)
     p_batch_requests = add_link(missing_link, previous_last_index, last_index, p_batch_requests)
     p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
 
-    last_index += 2 # Skip ahead to next cell
+    last_index += 2  # Skip ahead to next cell
     [previous_last_index, last_index, p_batch_requests] = add_image(aspen_img, last_index, p_batch_requests)
     [previous_last_index, last_index, p_batch_requests] = \
-        add_regular_text('Aspen\n', last_index, p_batch_requests)
+        add_regular_text('\nAspen\n', last_index, p_batch_requests)
     p_batch_requests = add_link(aspen_link, previous_last_index, last_index, p_batch_requests)
     p_batch_requests = align_center(previous_last_index, last_index, p_batch_requests)
     

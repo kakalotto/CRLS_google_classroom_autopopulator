@@ -367,7 +367,7 @@ height = 0
 try:
     element = WebDriverWait(driver, 10).\
         until(ec.
-              presence_of_element_located((By.XPATH, "//a")))
+              presence_of_element_located((By.XPATH, "//a[@href]")))
 except TimeoutException:
     print("Did not find a href elements ")
     print("quitting")
@@ -479,3 +479,4 @@ for key in assignments_from_classroom_dict.keys():
 
         else:
             print(f"Record is in the DB already.  Assignment: {test_assignment} scholar: {test_name} score: {test_score}")
+driver.quit()
