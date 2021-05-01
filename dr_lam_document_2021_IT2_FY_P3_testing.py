@@ -4,7 +4,7 @@ DOCUMENT_ID = '1sJxkFFxZbJhq29odAWNb8SUtWq5tFPLZ1MZgRTfDWqc'
 CLASSROOM_ID = 'MTY0ODk5Mjc3OTU5'
 SPREADSHEET_ID = '1zf6ZEKAVlNfJxiZAkgjpChdVraiW19I5WeQGlBFU9FY'
 SHEET_ID = 'IT2'
-HEADER_TEXT = 'Cybersecurity/Info tech 2 testing\n'
+HEADER_TEXT = 'Cybersecurity/Info Tech 2 testing\n'
 COURSE_ID = 164899277959
 COURSE_CONTRACT = 'https://docs.google.com/document/d/1SO6sNLq6W7Bw2k7zYD6qxHuBSgCa0pYeRU14I6YJQTg/edit'
 ZOOM_LINK_1 = 'https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'
@@ -29,8 +29,8 @@ assignments_dictionary = {
     'Create task 11': 'Create task',
     'Create task 12': 'Create task',
 }
-
+fy=True
 
 dr_lam_document_2(document_id=DOCUMENT_ID, classroom_id=CLASSROOM_ID, spreadsheet_id=SPREADSHEET_ID, sheet_id=SHEET_ID,
                 header_text=HEADER_TEXT, course_id=COURSE_ID, zoom_links=ZOOM_LINKS,
-                assignments_dictionary=assignments_dictionary, course_contract_link=COURSE_CONTRACT)
+                assignments_dictionary=assignments_dictionary, course_contract_link=COURSE_CONTRACT, fy=fy)
