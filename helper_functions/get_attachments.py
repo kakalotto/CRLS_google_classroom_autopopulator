@@ -37,8 +37,8 @@ def get_attachments(p_column, p_points):
         p_counter = 5
     else:
         p_counter = 6
-    p_share_mode = ''
     while p_counter < len(p_column):
+        p_share_mode = ''
         if p_counter <= len(p_column) and p_column[p_counter]:
             p_link = p_column[p_counter]
             print(" starting.  ooo p_link is " + str(p_link) + "countter is " + str(p_counter))
@@ -55,6 +55,7 @@ def get_attachments(p_column, p_points):
                     'link': {'url': p_link}
                 }
             elif form and p_share_mode:
+                print("share mode! " + str(p_share_mode))
                 raise Exception("If it's a form, you should not have view/share mode.  share"
                                 "mode should be empty")
             elif p_google_drive_match:

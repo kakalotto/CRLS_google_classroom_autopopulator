@@ -117,7 +117,7 @@ for student in students:
                 if work['state'] != 'TURNED_IN' and work['late'] is True:
                     d1 = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
                     d2 = datetime.datetime.now()
-                    q2 = datetime.datetime(2020, 11, 14)
+                    q2 = datetime.datetime(2021, 4, 5)
                     if d2 >= d1 and d1 > q2:
                         link = work['alternateLink']
                         coursework_id = work['courseWorkId']
@@ -139,7 +139,7 @@ for message in messages:
         message[key] = email_address + '\n' + message[key]
 
 
-        message[key] += '\n\nLast day to turn in assignments for quarter 3 is Friday 04/9/21!!!!\n\n'
+        # message[key] += '\n\nLast day to turn in assignments for quarter 3 is Friday 04/9/21!!!!\n\n'
         # message[key] += 'Create task must be "finalized" by 1/29 and turned in the digital portfolio, even if ' \
         #                 'you are not taking the AP exam.  \n' \
         #                 'link: https://digitalportfolio.collegeboard.org/\n\n' \
@@ -158,5 +158,5 @@ for message in messages:
         email_message.attach(MIMEText(msg_text, 'plain'))
         raw_string = base64.urlsafe_b64encode(email_message.as_bytes()).decode()
 
-        send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
-        print(send_message)
+        #send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
+        #print(send_message)
