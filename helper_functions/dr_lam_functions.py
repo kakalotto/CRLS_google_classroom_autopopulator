@@ -37,16 +37,17 @@ def add_regular_text(p_text, index_start, p_batch_requests):
     return [index_start, index_end, p_batch_requests]
 
 
-def add_table(p_rows, p_columns, p_batch_requests):
+def add_table(p_rows, p_columns, p_index, p_batch_requests):
     batch = {
-        'insertTable': {
-            'rows': p_rows,
-            'columns': p_columns,
-            'endOfSegmentLocation': {
-                'segmentId': ''
-            }
-        },
-    }
+                'insertTable': {
+                    'rows': p_rows,
+                    'columns': p_columns,
+                    'location': {
+                        'index': p_index,
+                    }
+                }
+            },
+
     p_batch_requests.append(batch)
     return p_batch_requests
 
@@ -220,13 +221,25 @@ def get_final_index(p_doc_content):
     return last_number
 
 
+def insert_page_break(p_location, p_batch_requests):
+    batch = {
+        'insertPageBreak': {
+            'location': {
+                'index': p_location,
+            }
+        }
+    }
+    p_batch_requests.append(batch)
+    return [p_location + 1, p_batch_requests]
+
+
 def get_text(p_service, document_id):
     document = p_service.documents().get(documentId=document_id).execute()
     doc_content = document.get('body').get('content')
     return doc_content
 
 
-def iter3obj_2_list(p_obj):
+def iter4obj_2_list(p_obj):
     """
     Args:
         p_obj: an iter4 object

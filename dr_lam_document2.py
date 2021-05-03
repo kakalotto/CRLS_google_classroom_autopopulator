@@ -1,18 +1,20 @@
 def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EPOI', classroom_id='MTY0OTY1NDEyNjg3',
                       spreadsheet_id='1ZenTcQlCQhbYvBvPOVq8XIB2FQgseIGHH4gTBTcw-KY', sheet_id='APCSP_S1_P1',
                       header_text='AP CSP\n', course_id=164978040288,
-                      course_contract_link=
-                      'https://docs.google.com/document/d/1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/edit',
+                      course_contract_link='https://docs.google.com/document/d/'
+                                           '1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/edit',
                       zoom_links=None,
-                      assignments_dictionary=None):
+                      assignments_dictionary=None, fy=False):
     import re
     import calendar
     import datetime
+    from copy import deepcopy
     from generate_docs_credential import generate_docs_credential
     from generate_sheets_credential import generate_sheets_credential
     from generate_classroom_credential import generate_classroom_credential
     from helper_functions.dr_lam_functions import add_table, delete_entire_document, get_final_index, get_text, \
-        add_regular_text, add_bold_normal, add_italic_normal, add_link, get_assignment_link, iter3obj_2_list
+        add_regular_text, add_bold_normal, add_italic_normal, add_link, get_assignment_link, iter4obj_2_list, \
+        insert_page_break
     from helper_functions.dr_lam_requests import requests_header, requests_links
     from helper_functions.read_course_daily_data_all import read_course_daily_data_all
     from helper_functions.quarters import quarter_dates
@@ -33,28 +35,25 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     doc_contents = get_text(service_doc, document_id)
     delete_entire_document(service_doc, document_id, doc_contents)
 
+    # empty batch requests
+    batch_requests = []
+
     # Write header to doc
     print("starting header printout")
-    requests = requests_header(header_text, course_contract_link)
-    service_doc.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
-    doc_contents = get_text(service_doc, document_id)
-    
-    # Make a table
-    print("Making table")
-    requests = []
-    requests = add_table(1, 5, requests)
-    service_doc.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
-    doc_contents = get_text(service_doc, document_id)
-    last_index = get_final_index(doc_contents)
+    [last_index, batch_requests] = requests_header(header_text, course_contract_link)
 
-    # Write links to doc
+    # Make a table to put the links.  This table is 14 long
+    batch_requests = add_table(1, 5, last_index,  batch_requests)
+    last_index += 14 # This table is always size 14
+
+    # Write links to header table
     print("starting links printout")
-    requests = requests_links(last_index, classroom_id, zoom_links)
-    service_doc.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
-    
+    [last_index, batch_requests] = requests_links(last_index, classroom_id, zoom_links, batch_requests)
+    last_index += 2
+
     # Read Google classroom for all of the course info
-    # coursework = service_classroom.courses().courseWork()
     print("Getting assignments")
+    coursework = service_classroom.courses().courseWork()
     courseworks = service_classroom.courses().courseWork().list(courseId=course_id).execute().get('courseWork', [])
     print("Getting materials")
     materials = service_classroom.courses().\
@@ -63,32 +62,32 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     # Read Google sheets automator file for info about file names, etc...
     print("Reading info from Google sheets")
     sheet_values = read_course_daily_data_all(spreadsheet_id, sheet_id, service_sheets)
-    
-    # To get the last index, I need to both reead file.  This is just debugging
-    doc_contents = get_text(service_doc, document_id)
-    last_index = get_final_index(doc_contents)
 
-    # zero batch requests.  Last index, and
-    batch_requests = []
-    
     index_of_begin_dates = last_index
 
-    requests = []
-    requests = add_table(6, 5, requests)
-    service_doc.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
-    doc_contents = get_text(service_doc, document_id)
-    last_index = get_final_index(doc_contents) - 65
-    # 65 - first column 57 - 5th column 1st row.  # 55 - broken 54 = 1st column 2nd row
-    print("beginning.  last_index " + str(last_index))
-    [q_start, q_end] = quarter_dates(fy=True)
+    # Find the start of the quarter
+    [q_start, q_end] = quarter_dates(fy=fy)
     print(f"q_start {q_start} qend {q_end}")
-    iter3_obj = calendar_obj.itermonthdays4(q_start.year, q_start.month)
-    cal_list = iter3obj_2_list(iter3_obj)
+    iter4_obj = calendar_obj.itermonthdays4(q_start.year, q_start.month)
+    cal_list = iter4obj_2_list(iter4_obj)
     cal_month = q_start.month
-    dom_counter = 0
     cal_list_counter = 0
     print(cal_list)
+
+    # Add header for month and create the table
+    [last_index, batch_requests] = insert_page_break(last_index, batch_requests)
+    [previous_last, last_index, batch_requests] = add_regular_text('\n\n ' +  calendar.month_name[cal_month] +
+                                                                   '\n\n', last_index, batch_requests)
+    batch_requests = add_bold_normal(previous_last, last_index, batch_requests)
+    batch_requests = add_table(6, 5, last_index, batch_requests)
+    last_index += 4  # 5x5 table is always this size
+
+    print("last index before starting to fill the month " + str(last_index))
+
+    skip = False
     for i, value in enumerate(sheet_values):
+        if skip:
+            continue
         print("value" + str(value))
         if len(value) == 3:
             continue
@@ -107,27 +106,76 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
         month = date_list[0]
         dom = date_list[1]
         year = date_list[2]
+        # print(f"New month? {month} {cal_month}")
+        if int(month) > cal_month or (int(month) == 1 and cal_month == 12):
+            # Make a new calendar here
+            print("Making new calendar here!")
+            cal_month = int(month)
+            old_cal_list = deepcopy(cal_list)  # save the old cal list
 
+            # Skip to the end of the month
+            for i in range(cal_list_counter, 42):
+                print(f"generating new calendar and flushing.  "
+                      f"i is this {i} + last index {last_index}")
+                try:
+                    print(f"old_cal_list {old_cal_list[i]}")
+                except IndexError:
+                    print("past the list")
+                if i % 7 == 6:
+                    last_index += 3
+                elif i % 7 != 4 and i % 7 != 5:
+                    last_index += 2
+
+            print("index before new month " + str(last_index))
+            # Add header for month and create the table
+
+            [last_index, batch_requests] = insert_page_break(last_index, batch_requests)
+            [previous_last, last_index, batch_requests] = add_regular_text('\n\n ' + calendar.month_name[cal_month] +
+                                                                           '\n\n', last_index, batch_requests)
+            batch_requests = add_bold_normal(previous_last, last_index, batch_requests)
+            batch_requests = add_table(6, 5, last_index, batch_requests)
+            last_index += 4  # Jump ahead to the next calendar
+
+            # create the new cal list
+            iter4_obj = calendar_obj.itermonthdays4(int(year), int(month))
+            cal_list = iter4obj_2_list(iter4_obj)
+            cal_month = int(month)
+            cal_list_counter = 0
+            print("new calendar list")
+            for i, j in enumerate(cal_list):
+                 print(str(i) + " " + str(j))
+            print(cal_list)
+
+            # Reset the calendar list counter
+            cal_list_counter = 0
+            print(f"last index after adding new talbe {last_index}")
         today_cal = cal_list[cal_list_counter]
         not_found = True
-        print(f"THIS IS THE DAR LOOKING FOR {year} {month} {dom}")
+        print(f"THIS IS THE DATE LOOKING FOR {year} {month} {dom}")
         while not_found:
             print(f"Looking for!{today_cal[0]} month {today_cal[1]}  day {today_cal[2]}")
             if today_cal[0] == int(year) and today_cal[1] == int(month) and today_cal[2] == int(dom):
                 not_found = False
             else:
-                if cal_list_counter == 35:
+                if cal_list_counter == len(cal_list) - 1:
                     print("DONE!")
+                    not_found = False
+                    continue
                 print(f"cal_list_counter {cal_list_counter} index {last_index} "
                       f"date {today_cal}")
-                if cal_list_counter == 4 or cal_list_counter == 11 or cal_list_counter == 18 or \
-                        cal_list_counter == 25 or cal_list_counter == 32:
+                if cal_list_counter % 7 == 6:
                     last_index += 3
-                elif cal_list_counter != 5 and cal_list_counter != 6 and cal_list_counter != 12 and \
-                        cal_list_counter != 13 and cal_list_counter != 19 and cal_list_counter != 20\
-                        and cal_list_counter != 26 and cal_list_counter != 27:
+                elif cal_list_counter % 7 != 4 and cal_list_counter % 7 != 5:
                     last_index += 2
+                # if cal_list_counter == 4 or cal_list_counter == 11 or cal_list_counter == 18 or \
+                #         cal_list_counter == 25 or cal_list_counter == 32:
+                #     last_index += 3
+                # elif cal_list_counter != 5 and cal_list_counter != 6 and cal_list_counter != 12 and \
+                #         cal_list_counter != 13 and cal_list_counter != 19 and cal_list_counter != 20\
+                #         and cal_list_counter != 26 and cal_list_counter != 27:
+                #     last_index += 2
                 cal_list_counter += 1
+                print(cal_list_counter)
                 today_cal = cal_list[cal_list_counter]
 
         #
@@ -140,7 +188,7 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
         print(f"wooo {month} {dom} {year}")
         # for day in calendar_obj.itermonthdays2(2018, 9):
         #     print(day)
-        text = "\n" + 'Day ' + str(day) + ' ' + date + " " + day_of_week + "\n"
+        text = "\n" + ' ' + date + " " + day_of_week + ' Day ' +  str(day) + "\n"
         [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
         batch_requests = add_bold_normal(previous_last, last_index, batch_requests)
     
@@ -207,29 +255,34 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
         text = '\nClass Notes:\n'
         [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
         batch_requests = add_italic_normal(previous_last, last_index, batch_requests)
-        notes = '\n'
+#        notes = '\n'
+     #   notes = ''
+        notes = ' '
         if len(value) >= 8:
             notes = value[7]
-        [_, last_index, batch_requests] = add_regular_text(notes + '\n\n', last_index, batch_requests)
+        [_, last_index, batch_requests] = add_regular_text(notes + '', last_index, batch_requests)
+
+#        [_, last_index, batch_requests] = add_regular_text(notes, last_index, batch_requests)
 
         # Go to the next cell after printing out today's stuff
         # last_index += 2
-
-    formatting = {
-        "updateParagraphStyle": {
-            "range": {
-                "startIndex": index_of_begin_dates,
-                "endIndex": last_index
-            },
-            "paragraphStyle": {
-                "alignment": "START"
-            },
-            "fields": "alignment"
-        }
-    }
-    batch_requests.append(formatting)
+        print("This is last index at end of day" + str(last_index))
+    #
+    # formatting = {
+    #     "updateParagraphStyle": {
+    #         "range": {
+    #             "startIndex": index_of_begin_dates,
+    #             "endIndex": last_index
+    #         },
+    #         "paragraphStyle": {
+    #             "alignment": "START"
+    #         },
+    #         "fields": "alignment"
+    #     }
+    # }
+    # batch_requests.append(formatting)
     
     print("Adding all of the days")
-    # print(batch_requests)
+    print(batch_requests)
     
     service_doc.documents().batchUpdate(documentId=document_id, body={'requests': batch_requests}).execute()
