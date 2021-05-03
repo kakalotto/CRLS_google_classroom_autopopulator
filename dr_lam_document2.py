@@ -283,6 +283,6 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     # batch_requests.append(formatting)
     
     print("Adding all of the days")
-    print(batch_requests)
+    # print(batch_requests)
     
     service_doc.documents().batchUpdate(documentId=document_id, body={'requests': batch_requests}).execute()
