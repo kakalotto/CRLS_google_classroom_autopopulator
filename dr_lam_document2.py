@@ -72,7 +72,7 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     cal_list = iter4obj_2_list(iter4_obj)
     cal_month = q_start.month
     cal_list_counter = 0
-    print(cal_list)
+    # print(cal_list)
 
     # Add header for month and create the table
     [last_index, batch_requests] = insert_page_break(last_index, batch_requests)
@@ -151,9 +151,9 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
             print(f"last index after adding new talbe {last_index}")
         today_cal = cal_list[cal_list_counter]
         not_found = True
-        print(f"THIS IS THE DATE LOOKING FOR {year} {month} {dom}")
+        # print(f"THIS IS THE DATE LOOKING FOR {year} {month} {dom}")
         while not_found:
-            print(f"Looking for!{today_cal[0]} month {today_cal[1]}  day {today_cal[2]}")
+            # print(f"Looking for!{today_cal[0]} month {today_cal[1]}  day {today_cal[2]}")
             if today_cal[0] == int(year) and today_cal[1] == int(month) and today_cal[2] == int(dom):
                 not_found = False
             else:
@@ -161,8 +161,8 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
                     print("DONE!")
                     not_found = False
                     continue
-                print(f"cal_list_counter {cal_list_counter} index {last_index} "
-                      f"date {today_cal}")
+                # print(f"cal_list_counter {cal_list_counter} index {last_index} "
+                #       f"date {today_cal}")
                 if cal_list_counter % 7 == 6:
                     last_index += 3
                 elif cal_list_counter % 7 != 4 and cal_list_counter % 7 != 5:
@@ -175,17 +175,17 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
                 #         and cal_list_counter != 26 and cal_list_counter != 27:
                 #     last_index += 2
                 cal_list_counter += 1
-                print(cal_list_counter)
+                # print(cal_list_counter)
                 today_cal = cal_list[cal_list_counter]
 
         #
         # month_info = calendar_obj.itermonthdays4(year, month)
         # last_index=696
         # calendar_obj.itermonthdays2(year, month):
-        print("starting this one here " + str(last_index))
+        # print("starting this one here " + str(last_index))
         # 704  is at the last one 707 for next line
         day_of_week = value[2]
-        print(f"wooo {month} {dom} {year}")
+        # print(f"wooo {month} {dom} {year}")
         # for day in calendar_obj.itermonthdays2(2018, 9):
         #     print(day)
         text = "\n" + ' ' + date + " " + day_of_week + ' Day ' +  str(day) + "\n"
@@ -234,7 +234,7 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     
             # Get ready to write the name of the assignment
             index_assignment_start = last_index
-            print(f"last index  at beginning of write {last_index}")
+            # print(f"last index at beginning of write {last_index}")
             assignment_text = clean_assignment + '\n'
             assignment_dict = {
                 'insertText': {
@@ -266,7 +266,7 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
 
         # Go to the next cell after printing out today's stuff
         # last_index += 2
-        print("This is last index at end of day" + str(last_index))
+        # print("This is last index at end of day" + str(last_index))
     #
     # formatting = {
     #     "updateParagraphStyle": {
