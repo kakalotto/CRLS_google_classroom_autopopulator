@@ -61,7 +61,7 @@ def add_bold_normal(index_start, index_end, p_batch_requests):
             },
             'textStyle': {
                 'bold': True,
-                'fontSize': {"magnitude": 12, "unit": "pt"},
+                'fontSize': {"magnitude": 11, "unit": "pt"},
             },
             'fields': '*'
         }
@@ -79,7 +79,7 @@ def add_italic_normal(index_start, index_end, p_batch_requests):
             },
             'textStyle': {
                 'italic': True,
-                'fontSize': {"magnitude": 11, "unit": "pt"},
+                'fontSize': {"magnitude": 10, "unit": "pt"},
             },
             'fields': 'italic'
         }

@@ -163,4 +163,4 @@ for message in messages:
         raw_string = base64.urlsafe_b64encode(email_message.as_bytes()).decode()
 
         send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
-      #  print(send_message)
+        print(send_message)
