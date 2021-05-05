@@ -1,5 +1,5 @@
 # Input: service object for Google sheets
-# Output: list of holidays, format [ '9-4-2018', '3-22-2019' ]
+# Output: list of holidays, format [ '9/4/2018', '3/22/2019' ]
 
 def read_in_holidays(spreadsheet_id, service):
     
