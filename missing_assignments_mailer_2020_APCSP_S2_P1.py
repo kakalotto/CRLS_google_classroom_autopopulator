@@ -158,5 +158,5 @@ for message in messages:
         email_message.attach(MIMEText(msg_text, 'plain'))
         raw_string = base64.urlsafe_b64encode(email_message.as_bytes()).decode()
 
-        send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
+       # send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
       #  print(send_message)

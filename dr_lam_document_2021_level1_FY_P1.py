@@ -32,5 +32,5 @@ assignments_dictionary = {
 
 
 dr_lam_document_2(document_id=DOCUMENT_ID, classroom_id=CLASSROOM_ID, spreadsheet_id=SPREADSHEET_ID, sheet_id=SHEET_ID,
-                header_text=HEADER_TEXT, course_id=COURSE_ID, zoom_links=ZOOM_LINKS,
-                assignments_dictionary=assignments_dictionary, course_contract_link=COURSE_CONTRACT)
+                  header_text=HEADER_TEXT, course_id=COURSE_ID, zoom_links=ZOOM_LINKS,
+                  assignments_dictionary=assignments_dictionary, course_contract_link=COURSE_CONTRACT, fy='fy')

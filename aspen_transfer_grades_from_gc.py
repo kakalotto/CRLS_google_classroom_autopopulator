@@ -14,22 +14,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import datetime
 import sqlite3
 from sqlite3 import Error
-
-
-def create_connection(db_file):
-    """ create a database connection to the SQLite database
-        specified by db_file
-    :param db_file: database file
-    :return: Connection object or None
-    """
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-        return conn
-    except Error as e:
-        print(e)
-    return conn
-
+from helper_functions.db_functions import create_connection
 
 def create_table(p_db_conn):
     sql = 'CREATE TABLE IF NOT EXISTS recorded_scores (id varchar(60) PRIMARY KEY, assignment varchar(60),' \
