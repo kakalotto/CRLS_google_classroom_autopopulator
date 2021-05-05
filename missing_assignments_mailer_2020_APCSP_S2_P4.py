@@ -117,7 +117,7 @@ for student in students:
                 if work['state'] != 'TURNED_IN' and work['late'] is True:
                     d1 = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
                     d2 = datetime.datetime.now()
-                    q2 = datetime.datetime(2020, 11, 14)
+                    q2 = datetime.datetime(2021, 4, 5)
                     if d2 >= d1 and d1 > q2:
                         link = work['alternateLink']
                         coursework_id = work['courseWorkId']
@@ -158,5 +158,5 @@ for message in messages:
         email_message.attach(MIMEText(msg_text, 'plain'))
         raw_string = base64.urlsafe_b64encode(email_message.as_bytes()).decode()
 
-        send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
-        print(send_message)
+        #send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
+        #print(send_message)
