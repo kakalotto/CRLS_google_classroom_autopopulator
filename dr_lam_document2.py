@@ -18,6 +18,7 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     from helper_functions.dr_lam_requests import requests_header, requests_links
     from helper_functions.read_course_daily_data_all import read_course_daily_data_all
     from helper_functions.quarters import quarter_dates
+    from helper_functions.read_in_holidays import read_in_holidays
 
     if zoom_links is None:
         zoom_links = ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09']
@@ -43,8 +44,8 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     [last_index, batch_requests] = requests_header(header_text, course_contract_link)
 
     # Make a table to put the links.  This table is 14 long
-    batch_requests = add_table(1, 5, last_index,  batch_requests)
-    last_index += 14 # This table is always size 14
+    batch_requests = add_table(1, 5, last_index, batch_requests)
+    last_index += 14  # This table is always size 14
 
     # Write links to header table
     print("starting links printout")
@@ -56,12 +57,16 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     coursework = service_classroom.courses().courseWork()
     courseworks = service_classroom.courses().courseWork().list(courseId=course_id).execute().get('courseWork', [])
     print("Getting materials")
-    materials = service_classroom.courses().\
+    materials = service_classroom.courses(). \
         courseWorkMaterials().list(courseId=course_id).execute().get('courseWorkMaterial', [])
 
     # Read Google sheets automator file for info about file names, etc...
     print("Reading info from Google sheets")
     sheet_values = read_course_daily_data_all(spreadsheet_id, sheet_id, service_sheets)
+
+    # read in holidays
+    holidays = read_in_holidays(spreadsheet_id, service_sheets)
+    print(f"These are the holidays {holidays}")
 
     index_of_begin_dates = last_index
 
@@ -76,7 +81,7 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
 
     # Add header for month and create the table
     [last_index, batch_requests] = insert_page_break(last_index, batch_requests)
-    [previous_last, last_index, batch_requests] = add_regular_text('\n\n ' +  calendar.month_name[cal_month] +
+    [previous_last, last_index, batch_requests] = add_regular_text('\n\n ' + calendar.month_name[cal_month] +
                                                                    '\n\n', last_index, batch_requests)
     batch_requests = add_bold_normal(previous_last, last_index, batch_requests)
     batch_requests = add_table(6, 5, last_index, batch_requests)
@@ -85,12 +90,45 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     print("last index before starting to fill the month " + str(last_index))
 
     skip = False
+    holiday_counter = 0
+    new_sheet_values = []
     for i, value in enumerate(sheet_values):
+        date = value[1]
+        date_list = date.split('/')
+        month = date_list[0]
+        dom = date_list[1]
+        year = date_list[2]
+        sheet_value_date_obj = datetime.datetime(int(year), int(month), int(dom))
+
+        check_holiday = True
+        while holiday_counter < len(holidays) and check_holiday:
+            holiday = holidays[holiday_counter]
+            holiday_list = holiday.split('/')
+            holiday_month = holiday_list[0]
+            holiday_dom = holiday_list[1]
+            holiday_year = holiday_list[2]
+            holiday_obj = datetime.datetime(int(holiday_year), int(holiday_month), int(holiday_dom))
+            if holiday_obj < sheet_value_date_obj:
+                new_sheet_values.append(['0', holiday, 'dummy', 'dummy', 'dummy', 'dummy', 'dummy', 'dummy',
+                                         'dummy', 'dummy'])
+                holiday_counter += 1
+            else:
+                check_holiday = False
+                new_sheet_values.append(value)
+        if holiday_counter >= len(holidays):
+            new_sheet_values.append(value)
+    for value in new_sheet_values:
+        print(value)
+
+    for i, value in enumerate(new_sheet_values):
         if skip:
             continue
+        is_holiday = False
         print("value" + str(value))
         if len(value) == 3:
             continue
+        if len(value) == 10:
+            is_holiday = True
         # if i < 88:
         #     continue
         # if i < 93:
@@ -106,7 +144,9 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
         month = date_list[0]
         dom = date_list[1]
         year = date_list[2]
-        # print(f"New month? {month} {cal_month}")
+
+        # pr
+        # int(f"New month? {month} {cal_month}")
         if int(month) > cal_month or (int(month) == 1 and cal_month == 12):
             # Make a new calendar here
             print("Making new calendar here!")
@@ -143,12 +183,13 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
             cal_list_counter = 0
             print("new calendar list")
             for i, j in enumerate(cal_list):
-                 print(str(i) + " " + str(j))
+                print(str(i) + " " + str(j))
             print(cal_list)
 
             # Reset the calendar list counter
             cal_list_counter = 0
             print(f"last index after adding new talbe {last_index}")
+
         today_cal = cal_list[cal_list_counter]
         not_found = True
         print(f"THIS IS THE DATE LOOKING FOR {year} {month} {dom}")
@@ -167,13 +208,6 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
                     last_index += 3
                 elif cal_list_counter % 7 != 4 and cal_list_counter % 7 != 5:
                     last_index += 2
-                # if cal_list_counter == 4 or cal_list_counter == 11 or cal_list_counter == 18 or \
-                #         cal_list_counter == 25 or cal_list_counter == 32:
-                #     last_index += 3
-                # elif cal_list_counter != 5 and cal_list_counter != 6 and cal_list_counter != 12 and \
-                #         cal_list_counter != 13 and cal_list_counter != 19 and cal_list_counter != 20\
-                #         and cal_list_counter != 26 and cal_list_counter != 27:
-                #     last_index += 2
                 cal_list_counter += 1
                 print(cal_list_counter)
                 today_cal = cal_list[cal_list_counter]
@@ -188,85 +222,89 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
         print(f"wooo {month} {dom} {year}")
         # for day in calendar_obj.itermonthdays2(2018, 9):
         #     print(day)
-        text = "\n" + ' ' + date + " " + day_of_week + ' Day ' +  str(day) + "\n"
-        [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
-        batch_requests = add_bold_normal(previous_last, last_index, batch_requests)
-    
-        # Add "Due today:" header
-        text = 'Due today:\n'
-        [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
-        batch_requests = add_italic_normal(previous_last, last_index, batch_requests)
-    
-        # Look for what is actually due
-        nothing_due = True
-        for coursework in courseworks:
-            if 'dueDate' in coursework:
-                year = coursework['dueDate']['year']
-                month = coursework['dueDate']['month']
-                day = coursework['dueDate']['day']
-                mdy = str(month) + '/' + str(day) + '/' + str(year)
-                if mdy == date:
-                    nothing_due = False
-                    title = coursework['title']
-                    title_text = title + '\n'
-                    [previous_last, last_index, batch_requests] = \
-                        add_regular_text(title_text, last_index, batch_requests)
-                    link = get_assignment_link(assignments_dictionary, coursework['title'], courseworks, materials)
-                    batch_requests = add_link(link, previous_last, last_index, batch_requests)
-        if nothing_due:
-            [_, last_index, batch_requests] = add_regular_text('Nothing due yet! '
-                                                               '\n', last_index, batch_requests)
-    
-        # Print out Today header:
-        [previous_last, last_index, batch_requests] = add_regular_text('\nToday:\n', last_index, batch_requests)
-        batch_requests = add_italic_normal(previous_last, last_index, batch_requests)
-    
-        # Add Today's assignments
-        all_assignments = value[3]
-        assignments = all_assignments.split('and ')
-    
-        for assignment in assignments:
-    
-            # Get the assignment name
-            # print("assignment " + str(assignment))
-            clean_assignment = re.sub(r'^\s+', r'', assignment)
-            clean_assignment = re.sub(r'\s+$', r'', clean_assignment)
-    
-            # Get ready to write the name of the assignment
-            index_assignment_start = last_index
-            print(f"last index  at beginning of write {last_index}")
-            assignment_text = clean_assignment + '\n'
-            assignment_dict = {
-                'insertText': {
-                    'location': {
-                        'index': last_index,
-                    },
-                    'text': assignment_text
+        if is_holiday:
+            text = "\n" + ' ' + date + ' \nSchool holiday \n'
+            [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
+            batch_requests = add_bold_normal(previous_last, last_index, batch_requests)
+        else:
+            text = "\n" + ' ' + date + " " + day_of_week + ' Day ' + str(day) + "\n"
+            [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
+            batch_requests = add_bold_normal(previous_last, last_index, batch_requests)
+
+            # Add "Due today:" header
+            text = 'Due today:\n'
+            [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
+            batch_requests = add_italic_normal(previous_last, last_index, batch_requests)
+
+            # Look for what is actually due
+            nothing_due = True
+            for coursework in courseworks:
+                if 'dueDate' in coursework:
+                    year = coursework['dueDate']['year']
+                    month = coursework['dueDate']['month']
+                    day = coursework['dueDate']['day']
+                    mdy = str(month) + '/' + str(day) + '/' + str(year)
+                    if mdy == date:
+                        nothing_due = False
+                        title = coursework['title']
+                        title_text = title + '\n'
+                        [previous_last, last_index, batch_requests] = \
+                            add_regular_text(title_text, last_index, batch_requests)
+                        link = get_assignment_link(assignments_dictionary, coursework['title'], courseworks, materials)
+                        batch_requests = add_link(link, previous_last, last_index, batch_requests)
+            if nothing_due:
+                [_, last_index, batch_requests] = add_regular_text('Nothing due yet! '
+                                                                   '\n', last_index, batch_requests)
+
+            # Print out Today header:
+            [previous_last, last_index, batch_requests] = add_regular_text('\nToday:\n', last_index, batch_requests)
+            batch_requests = add_italic_normal(previous_last, last_index, batch_requests)
+
+            # Add Today's assignments
+            all_assignments = value[3]
+            assignments = all_assignments.split('and ')
+
+            for assignment in assignments:
+                # Get the assignment name
+                # print("assignment " + str(assignment))
+                clean_assignment = re.sub(r'^\s+', r'', assignment)
+                clean_assignment = re.sub(r'\s+$', r'', clean_assignment)
+
+                # Get ready to write the name of the assignment
+                index_assignment_start = last_index
+                print(f"last index  at beginning of write {last_index}")
+                assignment_text = clean_assignment + '\n'
+                assignment_dict = {
+                    'insertText': {
+                        'location': {
+                            'index': last_index,
+                        },
+                        'text': assignment_text
+                    }
                 }
-            }
-            last_index += len(clean_assignment) + 1
-            batch_requests.append(assignment_dict)
-    
-            # get the link to the assignment or material
-            link = get_assignment_link(assignments_dictionary, clean_assignment, courseworks, materials)
-            batch_requests = add_link(link, index_assignment_start, last_index, batch_requests)
+                last_index += len(clean_assignment) + 1
+                batch_requests.append(assignment_dict)
 
-        # Add "Class notes:" header
-        text = '\nClass Notes:\n'
-        [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
-        batch_requests = add_italic_normal(previous_last, last_index, batch_requests)
-#        notes = '\n'
-     #   notes = ''
-        notes = ' '
-        if len(value) >= 8:
-            notes = value[7]
-        [_, last_index, batch_requests] = add_regular_text(notes + '', last_index, batch_requests)
+                # get the link to the assignment or material
+                link = get_assignment_link(assignments_dictionary, clean_assignment, courseworks, materials)
+                batch_requests = add_link(link, index_assignment_start, last_index, batch_requests)
 
-#        [_, last_index, batch_requests] = add_regular_text(notes, last_index, batch_requests)
+            # Add "Class notes:" header
+            text = '\nClass Notes:\n'
+            [previous_last, last_index, batch_requests] = add_regular_text(text, last_index, batch_requests)
+            batch_requests = add_italic_normal(previous_last, last_index, batch_requests)
+            #        notes = '\n'
+            #   notes = ''
+            notes = ' '
+            if len(value) >= 8:
+                notes = value[7]
+            [_, last_index, batch_requests] = add_regular_text(notes + '', last_index, batch_requests)
 
-        # Go to the next cell after printing out today's stuff
-        # last_index += 2
-        print("This is last index at end of day" + str(last_index))
+            #        [_, last_index, batch_requests] = add_regular_text(notes, last_index, batch_requests)
+
+            # Go to the next cell after printing out today's stuff
+            # last_index += 2
+            print("This is last index at end of day" + str(last_index))
     #
     # formatting = {
     #     "updateParagraphStyle": {
@@ -281,8 +319,8 @@ def dr_lam_document_2(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EP
     #     }
     # }
     # batch_requests.append(formatting)
-    
+
     print("Adding all of the days")
     print(batch_requests)
-    
+
     service_doc.documents().batchUpdate(documentId=document_id, body={'requests': batch_requests}).execute()
