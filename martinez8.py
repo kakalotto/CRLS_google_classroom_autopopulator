@@ -162,10 +162,7 @@ def obtain_Gclassrooms_dictionary_only_for_ASPEN_classes(service): # Names is th
                 courses_dictionary[course['name']] = course
     return courses_dictionary
 Gclassrooms_dictionary = obtain_Gclassrooms_dictionary_only_for_ASPEN_classes(Gclassroom_service)
-print("Printing google classrooms dictionary now")
-for key in Gclassrooms_dictionary:
-    print(Gclassrooms_dictionary[key])
-    print()
+
 def print_Gclassrooms(Gclassrooms):
     for Gclassroom in Gclassrooms.keys():
         print(Gclassroom + " ---- " + str(Gclassrooms[Gclassroom]))
