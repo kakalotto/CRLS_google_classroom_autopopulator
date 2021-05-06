@@ -82,7 +82,7 @@ def goto_assignment(p_driver, p_aspen_class):
     p_driver.find_element_by_link_text("Assignments").click()
 
 
-def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_category='c'):
+def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_conn, p_category='c'):
     import datetime
     from selenium.webdriver.common.keys import Keys
     from selenium.webdriver.common.action_chains import ActionChains
@@ -195,7 +195,7 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_cat
     # raise ValueError("Debugging stop here")
 
 
-def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion):
+def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_db_conn):
 
     # get the name of the first category
     if p_content_knowledge_completion is False:
@@ -217,10 +217,10 @@ def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion):
         wait_for_element(p_driver, p_link_text='Scores')
     for coursework in p_courseworks:
         if p_content_knowledge_completion:
-            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_category='c')
-            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_category='k')
+            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn, p_category='c')
+            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn, p_category='k')
         else:
-            add_assignment(p_driver, coursework, p_content_knowledge_completion)
+            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn,)
 
 
 def check_new_aspen_names(p_dict, p_content_knowledge_completion):

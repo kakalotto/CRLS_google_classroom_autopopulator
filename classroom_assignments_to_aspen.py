@@ -9,7 +9,7 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
     from helper_functions.quarters import which_quarter_today
     from helper_functions.classroom_functions import get_assignments_from_classroom, class_name_2_id, \
         verify_due_date_exists, verify_points_exists
-    from helper_functions.db_functions import create_connection
+    from helper_functions.db_functions import create_connection, execute_sql, query_db
     import datetime
     import time
 
@@ -29,13 +29,31 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
         print(coursework['title'])
     print()
 
-    # db_filename = classroom_name + 'assignments_in_aspen.db'
-    # db_conn = create_connection(db_filename)
 
+    # DB stuff; create connection, add table if not there, select all, remove duplicates from coursework
+    print("Opening up the sqlite DB, which has info about classes that have already been put in Aspen.\n"
+          "If you need something to edit this manually: https://sqlitebrowser.org/")
+    db_filename = 'classroom_assignments_to_aspen' + p_gc_classname + '.db'
+    db_conn = create_connection(db_filename)
+    sql = 'CREATE TABLE IF NOT EXISTS aspen_assignments (id varchar(60) PRIMARY KEY);'
+    execute_sql(db_conn, sql)
+    sql = 'SELECT * FROM aspen_assignments;'
+    rows = query_db(db_conn, sql)
+    print(rows)
+    new_courseworks = []
+    for coursework in courseworks:
+        found = False
+        if coursework['title'] in rows:
+            found = True
+        if found is False:
+            new_courseworks.append(coursework)
+    courseworks = new_courseworks
+
+    print(courseworks)
     # Aspen
     driver = generate_driver()
     aspen_login(driver, username=username, password=password)
     goto_assignment(driver,p_aspen_classname)
-    add_assignments(driver, courseworks, content_knowledge_completion)
+    add_assignments(driver, courseworks, content_knowledge_completion, db_conn)
 
     time.sleep(5)
