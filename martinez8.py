@@ -198,10 +198,10 @@ def add_assignments_to_ASPEN(Gclassrooms, robot_path, service):
         print("we are at this course {}".format(course))
         print(colored("\t" + Gclassrooms[course]['name'], 'green'))
 
-        robot.find_element_by_link_text("Gradebook").click()
-        robot.find_element_by_link_text(ASPEN_vs_Gclassroom_dictionary[Gclassrooms[course]['name']]).click()
-        robot.find_element_by_link_text("Scores").click()
-        time.sleep(3)
+        # robot.find_element_by_link_text("Gradebook").click()
+        # robot.find_element_by_link_text(ASPEN_vs_Gclassroom_dictionary[Gclassrooms[course]['name']]).click()
+        # robot.find_element_by_link_text("Scores").click()
+        # time.sleep(3)
 
         for task in Gclassrooms[course]['CourseWork'].keys():
             print("Here is the current task: {}".format(task))
