@@ -12,8 +12,10 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
     from helper_functions.db_functions import create_connection, execute_sql, query_db
     import datetime
     import time
+    import re
 
-    # Get current quarter's start date
+    # Get current quarter's start date, get gc assignments, ignore assignments with no points, ignore assignments
+    # with smileyfaces
     today_quarter_obj = which_quarter_today()
     service_classroom = generate_classroom_credential()
     course_id = class_name_2_id(service_classroom, p_gc_classname)
@@ -28,6 +30,12 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
     for coursework in courseworks:
         print(coursework['title'])
     print()
+
+    new_courseworks = []
+    for coursework in courseworks:
+        if re.search(':-)', coursework['title']):
+            
+
 
 
     # DB stuff; create connection, add table if not there, select all, remove duplicates from coursework
