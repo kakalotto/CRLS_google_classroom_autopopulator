@@ -18,7 +18,7 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
     service_classroom = generate_classroom_credential()
     course_id = class_name_2_id(service_classroom, p_gc_classname)
     courseworks = get_assignments_from_classroom(service_classroom, course_id, today_quarter_obj)
-    check_new_aspen_names(courseworks)
+    check_new_aspen_names(courseworks, content_knowledge_completion)
     verify_due_date_exists(courseworks)
     if ignore_ungraded is False:
         verify_points_exists(courseworks)

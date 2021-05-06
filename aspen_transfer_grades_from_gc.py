@@ -16,6 +16,7 @@ import sqlite3
 from sqlite3 import Error
 from helper_functions.db_functions import create_connection
 
+
 def create_table(p_db_conn):
     sql = 'CREATE TABLE IF NOT EXISTS recorded_scores (id varchar(60) PRIMARY KEY, assignment varchar(60),' \
           'name varchar(60), score integer NOT NULL );'
