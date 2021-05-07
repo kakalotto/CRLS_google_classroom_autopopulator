@@ -82,12 +82,13 @@ def goto_assignment(p_driver, p_aspen_class):
     p_driver.find_element_by_link_text("Assignments").click()
 
 
-def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_category='c'):
+def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_conn, p_category='c'):
     import datetime
     from selenium.webdriver.common.keys import Keys
     from selenium.webdriver.common.action_chains import ActionChains
     import time
     from helper_functions import constants
+    from helper_functions.db_functions import execute_sql
 
     # get aspen assignment and column names
     assignment_name = p_coursework['title']
@@ -146,33 +147,16 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_cat
         total_points = p_coursework['maxPoints']
         extra_credit = str(round(int(total_points) * .05))
 
-    print(f"{assignment_name} {gb_column_name} {date_assigned} "
-          f" {aspen_date_due} {grade_term}  {category} {total_points} {extra_credit}")
-
-#    print("frames")
-#    a = p_driver.find_elements_by_css_selector("frame")
-#    print(len(a))
     wait_for_element(p_driver, p_xpath_el='/html/body')
     p_driver.find_element_by_xpath('/html/body').click()
-#    p_driver.find_element_by_class_name("menu pointer menuBarSegment c1Background").click()
-#    p_driver.find_element_by_css_selector("body").click()
-    #  send_keys(Keys.CONTROL, "a")
-
-#    time.sleep(15)
     while len(p_driver.window_handles) == 1:
         time.sleep(1)
         p_driver.find_element_by_xpath('/html/body').send_keys(Keys.CONTROL, "a")
-
-        # p_driver.find_element_by_css_selector("body").send_keys(Keys.CONTROL, "a")
-
-
-#        p_driver.find_element_by_xpath('/html/body').send_keys(Keys.CONTROL, "a")
     window_before = p_driver.window_handles[0]
     window_after = p_driver.window_handles[1]
 
     p_driver.switch_to.window(window_after)
 
-    print("this worked!")
     action = ActionChains(p_driver)
     field_value = {'propertyValue(gcdColCode)': gb_column_name, "propertyValue(gcdColName)": assignment_name,
                    'propertyValue(gcdTotalPoints)': total_points, 'propertyValue(gcdExtraCredPt)': extra_credit,
@@ -191,11 +175,16 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_cat
     p_driver.find_element_by_name('saveButton').click()
     p_driver.switch_to.window(window_before)
 
+    # Put it in the DB
+    sql = 'INSERT INTO aspen_assignments VALUES ("' + gb_column_name + '");'
+    execute_sql(p_db_conn, sql)
+
+
 #
     # raise ValueError("Debugging stop here")
 
 
-def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion):
+def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_db_conn):
 
     # get the name of the first category
     if p_content_knowledge_completion is False:
@@ -217,10 +206,10 @@ def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion):
         wait_for_element(p_driver, p_link_text='Scores')
     for coursework in p_courseworks:
         if p_content_knowledge_completion:
-            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_category='c')
-            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_category='k')
+            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn, p_category='c')
+            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn, p_category='k')
         else:
-            add_assignment(p_driver, coursework, p_content_knowledge_completion)
+            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn,)
 
 
 def check_new_aspen_names(p_dict, p_content_knowledge_completion):
@@ -240,6 +229,10 @@ def check_new_aspen_names(p_dict, p_content_knowledge_completion):
         proposed_names.append(aspen_name)
     for name in proposed_names:
         if proposed_names.count(name) > 1:
+            print(f"This name will conflict (two assignments that are the same after you shrink them)"
+                             f" Rename your Google classroom assignments.  Here is the shrunk name:\n{name}"
+                             f"\nand it appears this many times: {proposed_names.count(name)}")
+            input("Press enter to continue")
             raise ValueError(f"This name will conflict (two assignments that are the same after you shrink them)"
                              f" Rename your Google classroom assignments.  Here is the shrunk name:\n{name}"
                              f"\nand it appears this many times: {proposed_names.count(name)}")
@@ -272,6 +265,50 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     else:
         column_name = new_title
     return column_name
+
+
+def get_assignments_from_aspen(p_driver):
+    """
+    gets all assignments from aspen for a particular class.  Assumes that we're already in that class.
+    :param p_driver:   Selenium driver object
+    :return: list of Aspen assignment column names (string)
+    """
+    from selenium.common.exceptions import NoSuchElementException
+
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.common.action_chains import ActionChains
+    import time
+    from helper_functions import constants
+    from helper_functions.db_functions import execute_sql
+    print("Getting assignments from Aspen")
+    import re
+
+    # Navigate to assignments page
+    wait_for_element(p_driver, p_link_text='Assignments')
+    p_driver.find_element_by_link_text("Assignments").click()
+    wait_for_element(p_driver, p_xpath_el="//div[@id='dataGrid']", message='Did not find assignments')
+
+    # Extract assignments
+    done = False
+    aspen_column_names = []
+    while done is False:
+        rows = len(p_driver.find_elements_by_xpath("//tr[@class='listCell listRowHeight   ']"))
+        for i in range(2, rows + 2):
+            xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[8]'
+            gb_column_name_el = p_driver.find_element_by_xpath(xpath_string)
+            gb_column_name = gb_column_name_el.text
+            aspen_column_names.append(gb_column_name)
+        try:
+            button = p_driver.find_element_by_xpath('//*[@id="topnextPageButton"]')
+            disabled = button.get_attribute('disabled')
+            if disabled is None:
+                button.click()
+            elif disabled:
+                done = True
+        except NoSuchElementException:
+            done = True
+    return aspen_column_names
+
 
 
 def wait_for_element(p_driver, *, message='', timeout=10, p_link_text='', p_xpath_el='',

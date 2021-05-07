@@ -20,11 +20,17 @@ def class_name_2_id(p_service_classroom, name):
             count += 1
             save_index = index
     if count > 1:
+        print(f'Check your Google classroom.  You have two or more courses with the same name.\n'
+                         f'Here is the list of courses:\n{course_names}')
+        input("Press enter to continue")
         raise ValueError(f'Check your Google classroom.  You have two or more courses with the same name.\n'
                          f'Here is the list of courses:\n{course_names}')
     elif count == 1:
         course_id = courses[save_index]['id']
     else:
+        print(f'Could not find the name of the course you requested.  You requested this course:\n{name}\n'
+                         f'Here is the list of courses:\n{course_names}')
+        input("Press enter to continue")
         raise ValueError(f'Could not find the name of the course you requested.  You requested this course:\n{name}\n'
                          f'Here is the list of courses:\n{course_names}')
     return course_id
@@ -50,7 +56,11 @@ def get_assignments_from_classroom(p_service_classroom, p_course_id, p_quarter_s
             due_date = coursework['dueDate']
             due_date_obj = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
             if due_date_obj > p_quarter_start_obj:
+                print("Processing this assignment: " + str(coursework['title']))
                 final_courseworks.append(coursework)
+            else:
+                print("Skipping this assignment, due date was before start of this quarter: " +
+                      str(coursework['title']))
         else:
             final_courseworks.append(coursework)
     return final_courseworks
@@ -69,6 +79,9 @@ def verify_due_date_exists(p_courseworks):
         if 'dueDate' not in coursework:
             bad_courseworks.append(coursework['title'])
     if bad_courseworks:
+        print((f"Every assignment should have a due date.  Here are the assignments without  a date:"
+                         f" {bad_courseworks} "))
+        input("Press enter to continue.")
         raise ValueError(f"Every assignment should have a due date.  Here are the assignments without  a date:"
                          f" {bad_courseworks} ")
 
@@ -87,9 +100,38 @@ def verify_points_exists(p_courseworks):
         if 'maxPoints' not in coursework:
             bad_courseworks.append(coursework['title'])
     if bad_courseworks:
+        print(f"Every assignment should have a points.  Here are the assignments without points for the "
+                         f"assignment:"
+                         f" {bad_courseworks} ")
+        input("Press enter to continue.")
         raise ValueError(f"Every assignment should have a points.  Here are the assignments without points for the "
                          f"assignment:"
                          f" {bad_courseworks} ")
+
+
+def scrub_courseworks(p_courseworks, list_name, p_list, p_content_knowledge):
+    """
+    takes courseworks and if the assignment is in p_list, removes that from courseworks
+    :param p_courseworks: list of Google classroom coursework objects
+    :param list_name: name of list (for printouts) string
+    :param p_list: list of items that you don't want the column to be (list of str)
+    :param p_content_knowledge: Whether or not you are doing content knowledge aspen entries (changes length) Boolean
+    :return: new courseworks
+    """
+    from helper_functions.aspen_functions import convert_assignment_name
+
+    new_courseworks = []
+    for coursework in p_courseworks:
+        found = False
+        new_proposed_name = convert_assignment_name(coursework['title'], p_content_knowledge)
+        if new_proposed_name in p_list or new_proposed_name + '-C' in p_list or \
+                new_proposed_name + '-K' in p_list:
+            found = True
+            print("Skipping this assignment, is in " + str(list_name) + " already:" + str(coursework['title']))
+        if found is False:
+            # print("no match" + str(new_proposed_name))
+            new_courseworks.append(coursework)
+    return new_courseworks
 
 
 def get_assignments_from_classroom_and_students(p_service_classroom, course_id, p_quarter_start_obj):
@@ -101,6 +143,7 @@ def get_assignments_from_classroom_and_students(p_service_classroom, course_id, 
     """
 
     import datetime
+    import re
     # Getting students
     students = p_service_classroom.courses().students().list(courseId=course_id,).execute()
     students = students['students']
