@@ -58,7 +58,6 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
     execute_sql(db_conn, sql)
     sql = 'SELECT * FROM aspen_assignments;'
     rows = query_db(db_conn, sql)
-    previous_assignments = [x[0] for x in rows]
     # print(previous_assignments)
     courseworks = scrub_courseworks(courseworks, 'The assignment database', previous_assignments, content_knowledge_completion)
 

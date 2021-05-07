@@ -71,7 +71,7 @@ def goto_gradebook(p_driver, p_aspen_class):
     p_driver.find_element_by_link_text("Scores").click()
 
 
-def goto_assignment(p_driver, p_aspen_class):
+def goto_assignments(p_driver, p_aspen_class):
     """
     Goto Assignments.  Assumes are are at the aspen login.
     :param p_driver: Selenium driver object
@@ -83,6 +83,31 @@ def goto_assignment(p_driver, p_aspen_class):
     p_driver.find_element_by_link_text("Assignments").click()
 
 
+def goto_assignments_this_quarter(p_driver, p_aspen_class, p_quarter):
+    """
+    Goto Assignments and select this quarter.  Assumes are are past the aspen login.
+    :param p_driver: Selenium driver object
+    :param p_aspen_class: Name of the class in Aspen.
+    :return:
+    """
+    goto_assignments(p_driver, p_aspen_class)
+    p_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    wait_for_element(p_driver, p_xpath_el="//a[@title='List of assignment records']") # assignments on the left
+    wait_for_element(p_driver, p_xpath_el='//*[@id="filterMenu"]')  # funnel icon
+    p_driver.find_element_by_xpath('//*[@id="filterMenu"]').click()
+    wait_for_element(p_driver, p_xpath_el='//*[@id="filterMenu_Option2"]/td[2]') # term= pulldown
+    p_driver.find_element_by_xpath('//*[@id="filterMenu_Option2"]/td[2]').click()
+    window_before = p_driver.window_handles[0]
+    window_after = p_driver.window_handles[1]
+    p_driver.switch_to.window(window_after)
+    wait_for_element(p_driver, p_xpath_el='//input[@name="value(prompt1)"]')  # term ID field
+    term_id_field = p_driver.find_element_by_xpath('//input[@name="value(prompt1)"]')
+    term_id_field.click()  # Click in the popup termID field
+    term_id_field.send_keys(p_quarter)  # type in the quarter
+    wait_for_element(p_driver, p_xpath_el='//*[@id="submitButton"]')  # Submit button
+    p_driver.find_element_by_xpath('//*[@id="submitButton"]').click()
+    p_driver.switch_to.window(window_before)
+
 
 def goto_scores(p_driver, p_aspen_class):
     """
@@ -92,25 +117,13 @@ def goto_scores(p_driver, p_aspen_class):
     :return:
     """
     goto_gradebook(p_driver, p_aspen_class)
+    print("going to scores")
     wait_for_element(p_driver, p_link_text='Assignments') # just to be sure loading is done
     p_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     wait_for_element(p_driver, p_link_text='Scores') # just to be sure loading is done
     p_driver.find_element_by_link_text("Scores").click()
     wait_for_element(p_driver, p_link_text='Scores') # just to be sure loading is done
-
     #        wait.until(EC.invisibility_of_element_located((By.XPATH, '//img[contains(@src, "loading")]')))
-
-    #
-    # print("Trying to switch to correct quarter")
-    # submit4 = driver.find_element_by_xpath("//a[@title='List of assignment records']").click()
-    #
-    # submit51 = driver.find_element_by_xpath('//*[@id="filterMenu"]').click()
-    # window_before = driver.window_handles[0]
-    #
-    # submit6 = driver.find_element_by_xpath('//*[@id="filterMenu_Option2"]/td[2]').click()
-    # window_after = driver.window_handles[1]
-    #
-    # driver.switch_to.window(window_after)
 
 
 def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_conn, p_category='c'):
@@ -332,6 +345,49 @@ def get_assignments_from_aspen(p_driver):
         except NoSuchElementException:
             done = True
     return aspen_column_names
+
+
+def get_assignments_and_assignment_ids_from_aspen(p_driver):
+    """
+    gets all assignments from aspen for a particular class.  Assumes that we're already in that class.
+    :param p_driver:   Selenium driver object
+    :return: list of Aspen assignment column names (string)
+    """
+    from selenium.common.exceptions import NoSuchElementException
+    print("Getting assignments and IDs from Aspen")
+
+    # Navigate to assignments page
+    wait_for_element(p_driver, p_link_text='Assignments')
+    p_driver.find_element_by_link_text("Assignments").click()
+    wait_for_element(p_driver, p_xpath_el="//div[@id='dataGrid']", message='Did not find assignments')
+
+    p_aspen_assignment_ids = {}
+    done = False
+    while done is False:
+        wait_for_element(p_driver, p_xpath_el="//tr[@class='listCell listRowHeight   ']")
+        rows = len(p_driver.find_elements_by_xpath("//tr[@class='listCell listRowHeight   ']"))
+        print(f"rows {rows}")
+        # Looop over all rows in this table
+        for i in range(2, rows + 2):
+            xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[2]'
+            wait_for_element(p_driver, p_xpath_el=xpath_string)
+            aspen_assignment_id_el = p_driver.find_element_by_xpath(xpath_string)
+            aspen_assignment_id = aspen_assignment_id_el.get_attribute('id')
+            xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[8]'
+            wait_for_element(p_driver, p_xpath_el=xpath_string)
+            gb_column_name_el = p_driver.find_element_by_xpath(xpath_string)
+            gb_column_name = gb_column_name_el.text
+            p_aspen_assignment_ids[aspen_assignment_id] = gb_column_name
+        try:
+            button = p_driver.find_element_by_xpath('//*[@id="topnextPageButton"]')
+            disabled = button.get_attribute('disabled')
+            if disabled is None:
+                button.click()
+            elif disabled:
+                done = True
+        except NoSuchElementException:
+            done = True
+    return p_aspen_assignment_ids
 
 
 def wait_for_element(p_driver, *, message='', timeout=10, p_link_text='', p_xpath_el='',

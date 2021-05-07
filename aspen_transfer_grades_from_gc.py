@@ -209,18 +209,9 @@ submit3 = driver.find_element_by_xpath("//a[text()='" + COURSE + "']").click()
 print("found course looking for scores")
 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-# Click Scores
+# Click assignments
 time.sleep(1)
-# try:
-#     element = WebDriverWait(driver, 10).\
-#         until(ec.presence_of_element_located((By.XPATH, "//a[@title='Gradebook grade input']")))
-#    element = WebDriverWait(driver, 5).\
-#        until(ec.presence_of_element_located((By.XPATH, "//a[@href='javascript*']")))
-# except TimeoutException:
-#     print("Did not find scores in Aspen ")
-#     print(TimeoutException.message)
-#     print("quitting")
-#     driver.quit()
+
 print("Trying to switch to correct quarter")
 submit4 = driver.find_element_by_xpath("//a[@title='List of assignment records']").click()
 
@@ -235,14 +226,16 @@ driver.switch_to.window(window_after)
 submit888 = driver.find_elements_by_xpath('//input')
 for element in submit888:
     print(element.get_attribute('name'))
+
+
 submit7 = driver.find_element_by_xpath('//input[@name="value(prompt1)"]')
 # name="value(prompt1)"
 submit7.click()
+
 keys = 'Q' + str(quarter)
 submit7.send_keys(keys)
 submit8 = driver.find_element_by_xpath('//*[@id="submitButton"]').click()
 driver.switch_to.window(window_before)
-
 
 # find the table of assignments
 print("Trying to find table of assignments")
