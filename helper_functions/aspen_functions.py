@@ -124,7 +124,7 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_cat
         p_coursework['dueDate']['day'] = constants.summer.day
         p_coursework['dueDate']['year'] = constants.summer.year
 
-    # get aspen Due date  
+    # get aspen Due date
     aspen_date_due = str(p_coursework['dueDate']['month']) + "/" + str(p_coursework['dueDate']['day']) \
         + "/" + str(p_coursework['dueDate']['year'])
 
