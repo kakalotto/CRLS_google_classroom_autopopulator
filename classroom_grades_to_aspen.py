@@ -3,7 +3,7 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname,*, content_knowl
                               username='', password=''):
     from generate_classroom_credential import generate_classroom_credential
     from helper_functions.aspen_functions import generate_driver, aspen_login, goto_assignment, add_assignments, \
-        check_new_aspen_names, convert_assignment_name, get_assignments_from_aspen
+        check_new_aspen_names, convert_assignment_name, get_assignments_from_aspen, goto_scores
     from helper_functions.quarters import which_quarter_today
     from helper_functions.classroom_functions import get_assignments_from_classroom, class_name_2_id, \
         verify_due_date_exists, verify_points_exists, scrub_courseworks
@@ -21,4 +21,5 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname,*, content_knowl
     driver = generate_driver()
     aspen_login(driver, username=username, password=password)
     goto_assignment(driver, p_aspen_classname)
+    goto_scores(driver, p_aspen_classname)
     print("done!")

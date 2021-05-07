@@ -83,6 +83,36 @@ def goto_assignment(p_driver, p_aspen_class):
     p_driver.find_element_by_link_text("Assignments").click()
 
 
+
+def goto_scores(p_driver, p_aspen_class):
+    """
+    Goto Assignments.  Assumes are are past the aspen login.
+    :param p_driver: Selenium driver object
+    :param p_aspen_class: Name of the class in Aspen.
+    :return:
+    """
+    goto_gradebook(p_driver, p_aspen_class)
+    wait_for_element(p_driver, p_link_text='Assignments') # just to be sure loading is done
+    p_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    wait_for_element(p_driver, p_link_text='Scores') # just to be sure loading is done
+    p_driver.find_element_by_link_text("Scores").click()
+    wait_for_element(p_driver, p_link_text='Scores') # just to be sure loading is done
+
+    #        wait.until(EC.invisibility_of_element_located((By.XPATH, '//img[contains(@src, "loading")]')))
+
+    #
+    # print("Trying to switch to correct quarter")
+    # submit4 = driver.find_element_by_xpath("//a[@title='List of assignment records']").click()
+    #
+    # submit51 = driver.find_element_by_xpath('//*[@id="filterMenu"]').click()
+    # window_before = driver.window_handles[0]
+    #
+    # submit6 = driver.find_element_by_xpath('//*[@id="filterMenu_Option2"]/td[2]').click()
+    # window_after = driver.window_handles[1]
+    #
+    # driver.switch_to.window(window_after)
+
+
 def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_conn, p_category='c'):
     import datetime
     from selenium.webdriver.common.keys import Keys
