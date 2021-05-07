@@ -20,11 +20,17 @@ def class_name_2_id(p_service_classroom, name):
             count += 1
             save_index = index
     if count > 1:
+        print(f'Check your Google classroom.  You have two or more courses with the same name.\n'
+                         f'Here is the list of courses:\n{course_names}')
+        input("Press enter to continue")
         raise ValueError(f'Check your Google classroom.  You have two or more courses with the same name.\n'
                          f'Here is the list of courses:\n{course_names}')
     elif count == 1:
         course_id = courses[save_index]['id']
     else:
+        print(f'Could not find the name of the course you requested.  You requested this course:\n{name}\n'
+                         f'Here is the list of courses:\n{course_names}')
+        input("Press enter to continue")
         raise ValueError(f'Could not find the name of the course you requested.  You requested this course:\n{name}\n'
                          f'Here is the list of courses:\n{course_names}')
     return course_id
@@ -73,6 +79,9 @@ def verify_due_date_exists(p_courseworks):
         if 'dueDate' not in coursework:
             bad_courseworks.append(coursework['title'])
     if bad_courseworks:
+        print((f"Every assignment should have a due date.  Here are the assignments without  a date:"
+                         f" {bad_courseworks} "))
+        input("Press enter to continue.")
         raise ValueError(f"Every assignment should have a due date.  Here are the assignments without  a date:"
                          f" {bad_courseworks} ")
 
@@ -91,6 +100,10 @@ def verify_points_exists(p_courseworks):
         if 'maxPoints' not in coursework:
             bad_courseworks.append(coursework['title'])
     if bad_courseworks:
+        print(f"Every assignment should have a points.  Here are the assignments without points for the "
+                         f"assignment:"
+                         f" {bad_courseworks} ")
+        input("Press enter to continue.")
         raise ValueError(f"Every assignment should have a points.  Here are the assignments without points for the "
                          f"assignment:"
                          f" {bad_courseworks} ")
@@ -116,7 +129,7 @@ def scrub_courseworks(p_courseworks, list_name, p_list, p_content_knowledge):
             found = True
             print("Skipping this assignment, is in " + str(list_name) + " already:" + str(coursework['title']))
         if found is False:
-            print("no match" + str(new_proposed_name))
+            # print("no match" + str(new_proposed_name))
             new_courseworks.append(coursework)
     return new_courseworks
 

@@ -229,6 +229,10 @@ def check_new_aspen_names(p_dict, p_content_knowledge_completion):
         proposed_names.append(aspen_name)
     for name in proposed_names:
         if proposed_names.count(name) > 1:
+            print(f"This name will conflict (two assignments that are the same after you shrink them)"
+                             f" Rename your Google classroom assignments.  Here is the shrunk name:\n{name}"
+                             f"\nand it appears this many times: {proposed_names.count(name)}")
+            input("Press enter to continue")
             raise ValueError(f"This name will conflict (two assignments that are the same after you shrink them)"
                              f" Rename your Google classroom assignments.  Here is the shrunk name:\n{name}"
                              f"\nand it appears this many times: {proposed_names.count(name)}")

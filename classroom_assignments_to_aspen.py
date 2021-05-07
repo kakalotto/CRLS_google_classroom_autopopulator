@@ -62,9 +62,9 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
     courseworks = scrub_courseworks(courseworks, 'The assignment database', previous_assignments, content_knowledge_completion)
 
     # Print out for testing purposes
-    for coursework in courseworks:
-        print(coursework['title'])
-    print()
+    # for coursework in courseworks:
+    #     print(coursework['title'])
+    # print()
 
     if len(courseworks) == 0:
         print("No assignments to enter into Aspen!")
@@ -85,3 +85,4 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
         add_assignments(driver, courseworks, content_knowledge_completion, db_conn)
         driver.close()
     time.sleep(5)
+    input("press enter to finish")
