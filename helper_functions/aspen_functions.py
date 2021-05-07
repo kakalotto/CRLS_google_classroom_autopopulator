@@ -44,7 +44,7 @@ def aspen_login(p_driver, *, username='', password=''):
         wait_for_element(p_driver, p_xpath_el="//a[@title='Gradebook tab']", timeout=30,
                          message=f'Did not login sucessfully after 30 seconds')
         try:
-            WebDriverWait(p_driver, 30).until(ec.presence_of_element_located((By.XPATH, "")))
+            WebDriverWait(p_driver, 30).until(ec.presence_of_element_located((By.ID, "contextMenu")))
         except TimeoutException:
             print("Did not log in successfully after 30 seconds")
             print("quitting")
@@ -58,7 +58,8 @@ def goto_gradebook(p_driver, p_aspen_class):
     :param p_aspen_class: Name of the class in Aspen.
     :return:
     """
-    wait_for_element(p_driver, p_link_text='Gradebook')
+    # print("Trying to go to gradebook")
+    wait_for_element(p_driver, message='Trying to find gradebook but failed?', p_link_text='Gradebook')
     p_driver.find_element_by_link_text("Gradebook").click()
     # Do this twice, because Aspen is flaky
     wait_for_element(p_driver, p_link_text='Gradebook')

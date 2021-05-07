@@ -1,7 +1,7 @@
 import configparser
-from classroom_assignments_to_aspen import classroom_assignments_to_aspen
+from classroom_grades_to_aspen import classroom_grades_to_aspen
 
-config = configparser.ConfigParser()		
+config = configparser.ConfigParser()
 config.read("classroom_assignments_to_aspen.ini")
 
 login = config['LOGIN']
@@ -25,9 +25,6 @@ aspen6 = classes['aspen_class6']
 content_knowledge_completion_value = config.getboolean("OPTIONS", "content_knowledge_completion")
 ignore_ungraded_value = config.getboolean("OPTIONS", "ignore_ungraded")
 
-print(content_knowledge_completion_value)
-print(ignore_ungraded_value)
-
 all_classes = {}
 if gc1 and aspen1:
     all_classes[gc1] = aspen1
@@ -43,7 +40,7 @@ if gc6 and aspen6:
     all_classes[gc6] = aspen6
 
 for key in all_classes.keys():
-    classroom_assignments_to_aspen(key, all_classes[key],
-                                   content_knowledge_completion=content_knowledge_completion_value,
-                                   ignore_ungraded=ignore_ungraded_value,
-                                   username=username, password=password)
+    classroom_grades_to_aspen(key, all_classes[key],
+                              content_knowledge_completion=content_knowledge_completion_value,
+                              ignore_ungraded=ignore_ungraded_value,
+                              username=username, password=password)
