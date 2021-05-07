@@ -79,10 +79,10 @@ def verify_due_date_exists(p_courseworks):
             bad_courseworks.append(coursework['title'])
     if bad_courseworks:
         print((f"Every assignment should have a due date.  Here are the assignments without  a date:"
-               f" {bad_courseworks} "))
+               f" {bad_courseworks} \nProgram will exit now."))
         input("Press enter to continue.")
         raise ValueError(f"Every assignment should have a due date.  Here are the assignments without  a date:"
-                         f" {bad_courseworks} ")
+                         f" {bad_courseworks}  \nProgram will exit now.")
 
 
 def verify_points_exists(p_courseworks):
