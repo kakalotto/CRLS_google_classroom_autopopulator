@@ -21,7 +21,7 @@ def class_name_2_id(p_service_classroom, name):
             save_index = index
     if count > 1:
         print(f'Check your Google classroom.  You have two or more courses with the same name.\n'
-                         f'Here is the list of courses:\n{course_names}')
+              f'Here is the list of courses:\n{course_names}')
         input("Press enter to continue")
         raise ValueError(f'Check your Google classroom.  You have two or more courses with the same name.\n'
                          f'Here is the list of courses:\n{course_names}')
@@ -29,7 +29,7 @@ def class_name_2_id(p_service_classroom, name):
         course_id = courses[save_index]['id']
     else:
         print(f'Could not find the name of the course you requested.  You requested this course:\n{name}\n'
-                         f'Here is the list of courses:\n{course_names}')
+              f'Here is the list of courses:\n{course_names}')
         input("Press enter to continue")
         raise ValueError(f'Could not find the name of the course you requested.  You requested this course:\n{name}\n'
                          f'Here is the list of courses:\n{course_names}')
@@ -69,10 +69,9 @@ def get_assignments_from_classroom(p_service_classroom, p_course_id, p_quarter_s
 def verify_due_date_exists(p_courseworks):
     """
     Verifies every assignment has a due date
-    :param p_service_classroom:  Google classroom API coursework objects
+    :param p_courseworks:  courseworks list of coursework objects
     :return: NOne
     """
-    import datetime
 
     bad_courseworks = []
     for coursework in p_courseworks:
@@ -80,7 +79,7 @@ def verify_due_date_exists(p_courseworks):
             bad_courseworks.append(coursework['title'])
     if bad_courseworks:
         print((f"Every assignment should have a due date.  Here are the assignments without  a date:"
-                         f" {bad_courseworks} "))
+               f" {bad_courseworks} "))
         input("Press enter to continue.")
         raise ValueError(f"Every assignment should have a due date.  Here are the assignments without  a date:"
                          f" {bad_courseworks} ")
@@ -89,10 +88,9 @@ def verify_due_date_exists(p_courseworks):
 def verify_points_exists(p_courseworks):
     """
     Verifies every assignment has a due date
-    :param p_service_classroom:  Google classroom API coursework objects
+    :param p_courseworks:  list of google classroom coursework objects
     :return: NOne
     """
-    import datetime
 
     bad_courseworks = []
     for coursework in p_courseworks:
@@ -101,8 +99,8 @@ def verify_points_exists(p_courseworks):
             bad_courseworks.append(coursework['title'])
     if bad_courseworks:
         print(f"Every assignment should have a points.  Here are the assignments without points for the "
-                         f"assignment:"
-                         f" {bad_courseworks} ")
+              f"assignment:"
+              f" {bad_courseworks} ")
         input("Press enter to continue.")
         raise ValueError(f"Every assignment should have a points.  Here are the assignments without points for the "
                          f"assignment:"

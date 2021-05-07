@@ -230,8 +230,8 @@ def check_new_aspen_names(p_dict, p_content_knowledge_completion):
     for name in proposed_names:
         if proposed_names.count(name) > 1:
             print(f"This name will conflict (two assignments that are the same after you shrink them)"
-                             f" Rename your Google classroom assignments.  Here is the shrunk name:\n{name}"
-                             f"\nand it appears this many times: {proposed_names.count(name)}")
+                  f" Rename your Google classroom assignments.  Here is the shrunk name:\n{name}"
+                  f"\nand it appears this many times: {proposed_names.count(name)}")
             input("Press enter to continue")
             raise ValueError(f"This name will conflict (two assignments that are the same after you shrink them)"
                              f" Rename your Google classroom assignments.  Here is the shrunk name:\n{name}"
@@ -274,14 +274,7 @@ def get_assignments_from_aspen(p_driver):
     :return: list of Aspen assignment column names (string)
     """
     from selenium.common.exceptions import NoSuchElementException
-
-    from selenium.webdriver.common.keys import Keys
-    from selenium.webdriver.common.action_chains import ActionChains
-    import time
-    from helper_functions import constants
-    from helper_functions.db_functions import execute_sql
     print("Getting assignments from Aspen")
-    import re
 
     # Navigate to assignments page
     wait_for_element(p_driver, p_link_text='Assignments')
@@ -308,7 +301,6 @@ def get_assignments_from_aspen(p_driver):
         except NoSuchElementException:
             done = True
     return aspen_column_names
-
 
 
 def wait_for_element(p_driver, *, message='', timeout=10, p_link_text='', p_xpath_el='',
