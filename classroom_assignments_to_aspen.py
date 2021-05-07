@@ -34,7 +34,7 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
     new_courseworks = []
     for coursework in courseworks:
         if re.search(':-)', coursework['title']):
-            
+
 
 
 
