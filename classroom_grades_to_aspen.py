@@ -63,5 +63,6 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
                                  aspen_assignments,
                                  content_knowledge_completion, db_conn)
     print("all done!")
-    time.sleep(15)
+    time.sleep(3)
+    input("Press any key to continue")
 

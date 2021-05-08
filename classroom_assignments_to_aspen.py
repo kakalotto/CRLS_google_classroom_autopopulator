@@ -85,5 +85,5 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content
         print()
         add_assignments(driver, courseworks, content_knowledge_completion, db_conn)
         driver.close()
-    time.sleep(5)
-    input("press enter to finish")
+    time.sleep(2)
+    input("press enter to continue/finish")
