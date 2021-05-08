@@ -159,8 +159,10 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
     gb_column_name = convert_assignment_name(p_coursework['title'], p_content_knowledge_completion)
     if p_content_knowledge_completion and p_category == 'c':
         gb_column_name += '-C'
+        assignment_name += '-completion'
     elif p_content_knowledge_completion and p_category == 'k':
         gb_column_name += '-K'
+        assignment_name += '-content knowledge'
     # get aspen ssign date
     if p_coursework['state'] == 'PUBLISHED':
         year_assigned = p_coursework['creationTime'].split("T")[0].split('-')[0]
@@ -512,11 +514,12 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
     :return:
     """
     # assignments from aspen looks like this, where def is an assignment
+    import re
     from selenium.webdriver.common.action_chains import ActionChains
     from selenium.webdriver.common.keys import Keys
 
     from helper_functions.db_functions import execute_sql, query_db
-
+    print(p_aspen_assignments)
     for key in p_assignments_from_classroom.keys():
         gc_assignment_name = key
         name_scores = p_assignments_from_classroom[key]
@@ -524,51 +527,59 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
             gc_student = name_score[0]
             gc_score = name_score[1]
 
-            # print(f"test assignment {gc_assignment_name} test_name {gc_student} test_score {gc_score}")
+            print(f"test assignment {gc_assignment_name} test_name {gc_student} test_score {gc_score}")
 
-            aspen_assignment_col_name = convert_assignment_name(gc_assignment_name, p_content_knowledge_completion)
-            aspen_scholar_id = match_gc_name_with_aspen_id(gc_student, p_aspen_student_ids)
-
-            # print(f"aspen col name XX{aspen_assignment_col_name}XX scholar_id {aspen_scholar_id}")
-            # print(f"p_aspen_assignments {p_aspen_assignments}")
-            cell_id = p_aspen_assignments[aspen_assignment_col_name] + '|' + aspen_scholar_id
-            edit_cell_id = 'e' + cell_id
-
-    # 617 761774974 9403
-            # This will be the second cell.  If we have to do this, will do
-            # completion_assignment = assignment_aspen
-            # completion_assignment = re.sub('-K$', '-C', completion_assignment)
-            # cell2_id = aspen_assignment_ids[completion_assignment] + '|' + scholar_aspen_id
-            # edit_cell2_id = 'e' + cell2_id
-            # print(cell_id)
-            # print(edit_cell_id)
-            sql = 'select * from recorded_scores WHERE id ="' + cell_id + '" AND score =' + str(gc_score)
-            rows = query_db(p_db_conn, sql)
-            # print(f"This is what the query returns {rows} ")
-            # If not found in DB, add it
-            action = ActionChains(p_driver)
-
-            if len(rows) == 0:
-                # print("HERE IS CELL ID " + str(cell_id))
-                # wait_for_element(p_driver, p_id=cell_id)
-                grade_element = p_driver.find_element_by_id(cell_id)
-                action.move_to_element(grade_element).perform()
-                grade_element.click()
-                # wait_for_element(p_driver, p_id=edit_cell_id)
-                grade_element2 = p_driver.find_element_by_id(edit_cell_id)
-                grade_element2.send_keys(gc_score)
-                grade_element2.send_keys(Keys.RETURN)
-
-                sql = 'INSERT INTO recorded_scores VALUES ("' + \
-                      cell_id + '", "' + gc_assignment_name + '", "' + gc_student + '", ' + \
-                      str(gc_score) + ' )'
-                execute_sql(p_db_conn, sql)
-                print(f"adding  this record.  Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
-
+            assignment_col_names = []
+            if p_content_knowledge_completion:
+                aspen_assignment_col_name = convert_assignment_name(gc_assignment_name, p_content_knowledge_completion)
+                aspen_assignment_col_name += '-C'
+                assignment_col_names.append(aspen_assignment_col_name)
+                aspen_assignment_col_name = convert_assignment_name(gc_assignment_name, p_content_knowledge_completion)
+#                aspen_scholar_id = match_gc_name_with_aspen_id(gc_student, p_aspen_student_ids)
+                aspen_assignment_col_name += '-K'
+                assignment_col_names.append(aspen_assignment_col_name)
             else:
-                print(
-                    f"Record is in the DB already.   "
-                    f"Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
+                aspen_assignment_col_name = convert_assignment_name(gc_assignment_name, p_content_knowledge_completion)
+                assignment_col_names.append(aspen_assignment_col_name)
+            aspen_scholar_id = match_gc_name_with_aspen_id(gc_student, p_aspen_student_ids)
+            print(f'assignments {assignment_col_names}')
+            for col_name in assignment_col_names:
+
+                # print(f"aspen col name XX{aspen_assignment_col_name}XX scholar_id {aspen_scholar_id}")
+                # print(f"p_aspen_assignments {p_aspen_assignments}")
+                cell_id = p_aspen_assignments[col_name] + '|' + aspen_scholar_id
+                edit_cell_id = 'e' + cell_id
+
+                sql = 'select * from recorded_scores WHERE id ="' + cell_id + '" AND score =' + str(gc_score)
+                rows = query_db(p_db_conn, sql)
+
+                action = ActionChains(p_driver)
+
+                old_score = 0
+                if len(rows) == 0:
+                    # print("HERE IS CELL ID " + str(cell_id))
+                    # wait_for_element(p_driver, p_id=cell_id)
+                    if p_content_knowledge_completion and re.search('-C$', col_name):
+                        old_score = gc_score
+                        gc_score = 1
+                    grade_element = p_driver.find_element_by_id(cell_id)
+                    action.move_to_element(grade_element).perform()
+                    grade_element.click()
+                    # wait_for_element(p_driver, p_id=edit_cell_id)
+                    grade_element2 = p_driver.find_element_by_id(edit_cell_id)
+                    grade_element2.send_keys(gc_score)
+                    grade_element2.send_keys(Keys.RETURN)
+
+                    sql = 'INSERT INTO recorded_scores VALUES ("' + \
+                          cell_id + '", "' + gc_assignment_name + '", "' + gc_student + '", ' + \
+                          str(gc_score) + ' )'
+                    execute_sql(p_db_conn, sql)
+                    print(f"adding  this record.  Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
+                    gc_score = old_score
+                else:
+                    print(
+                        f"Record is in the DB already.   "
+                        f"Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
 
 
 def wait_for_element(p_driver, *, message='', timeout=10, p_link_text='', p_xpath_el='',
