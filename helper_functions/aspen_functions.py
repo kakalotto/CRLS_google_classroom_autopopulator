@@ -519,7 +519,6 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
     from selenium.webdriver.common.keys import Keys
 
     from helper_functions.db_functions import execute_sql, query_db
-    print(p_aspen_assignments)
     for key in p_assignments_from_classroom.keys():
         gc_assignment_name = key
         name_scores = p_assignments_from_classroom[key]

@@ -56,10 +56,10 @@ def get_assignments_from_classroom(p_service_classroom, p_course_id, p_quarter_s
             due_date = coursework['dueDate']
             due_date_obj = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
             if due_date_obj > p_quarter_start_obj:
-                print("Processing this assignment: " + str(coursework['title']))
+                print("This assignment will be processed: " + str(coursework['title']))
                 final_courseworks.append(coursework)
             else:
-                print("Skipping this assignment, due date was before start of this quarter: " +
+                print("     --- Skipping this assignment, due date was before start of this quarter: " +
                       str(coursework['title']))
         else:
             final_courseworks.append(coursework)
