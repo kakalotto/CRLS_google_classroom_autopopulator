@@ -4,9 +4,13 @@ from classroom_grades_to_aspen import classroom_grades_to_aspen
 config = configparser.ConfigParser()
 config.read("classroom_assignments_to_aspen.ini")
 
-login = config['LOGIN']
-username = login['username']
-password = login['password']
+username = ''
+password = ''
+if 'LOGIN' in config.keys():
+    login = config['LOGIN']
+    username = login['username']
+    password = login['password']
+
 
 classes = config['CLASSES']
 gc1 = classes['gc_class1']
@@ -42,5 +46,4 @@ if gc6 and aspen6:
 for key in all_classes.keys():
     classroom_grades_to_aspen(key, all_classes[key],
                               content_knowledge_completion=content_knowledge_completion_value,
-                              ignore_ungraded=ignore_ungraded_value,
                               username=username, password=password)

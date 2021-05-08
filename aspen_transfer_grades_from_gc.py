@@ -12,7 +12,6 @@ import re
 import time
 from webdriver_manager.chrome import ChromeDriverManager
 import datetime
-import sqlite3
 from sqlite3 import Error
 from helper_functions.db_functions import create_connection
 
@@ -259,7 +258,7 @@ while done is False:
     rows = len(driver.find_elements_by_xpath("//tr[@class='listCell listRowHeight   ']"))
     print(f"rows {rows}")
 
-    # get one element test
+    # get one element test GCD000000UGl4j|stdX2002052929
     el = driver.find_element_by_xpath("//*[@id='dataGrid']/table/tbody/tr[2]/td[8]")
     # print(el.text)
     for i in range(2, rows + 2):
@@ -317,14 +316,18 @@ submit5 = driver.find_element_by_xpath(
 
 # change to grade columns ALL
 try:
-    element = WebDriverWait(driver, 10).\
+    element = WebDriverWait(driver, 10). \
         until(ec.presence_of_element_located
-                            ((By.XPATH, '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select')))
+              ((By.XPATH,
+                '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/'
+                'table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select')))
 except TimeoutException:
     print("Did not find Pull down menu w/Grade columns in Aspen ")
     print("quitting")
     driver.quit()
-driver.find_element_by_xpath('//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select/option[1]').click()
+driver.find_element_by_xpath(
+    '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/'
+    'tr[2]/td[1]/table/tbody/tr/td[1]/select/option[1]').click()
 
 
 id_scholars = {}
@@ -455,4 +458,5 @@ for key in assignments_from_classroom_dict.keys():
             print(f"adding  this record.  Assignment: {test_assignment} scholar: {test_name} score: {test_score}")
 
         else:
-            print(f"Record is in the DB already.  Assignment: {test_assignment} scholar: {test_name} score: {test_score}")
+            print(f"Record is in the DB already.  Assignment: "
+                  f"{test_assignment} scholar: {test_name} score: {test_score}")

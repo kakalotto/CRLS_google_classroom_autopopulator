@@ -1,11 +1,11 @@
 
 
-def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_knowledge_completion=False,
+def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content_knowledge_completion=False,
                                    ignore_ungraded=False,
                                    username='', password=''):
     from generate_classroom_credential import generate_classroom_credential
-    from helper_functions.aspen_functions import generate_driver, aspen_login, goto_assignment, add_assignments, \
-        check_new_aspen_names, convert_assignment_name, get_assignments_from_aspen
+    from helper_functions.aspen_functions import generate_driver, aspen_login, add_assignments, \
+        check_new_aspen_names, get_assignments_from_aspen, goto_assignments
     from helper_functions.quarters import which_quarter_today
     from helper_functions.classroom_functions import get_assignments_from_classroom, class_name_2_id, \
         verify_due_date_exists, verify_points_exists, scrub_courseworks
@@ -58,8 +58,9 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
     execute_sql(db_conn, sql)
     sql = 'SELECT * FROM aspen_assignments;'
     rows = query_db(db_conn, sql)
-    # print(previous_assignments)
-    courseworks = scrub_courseworks(courseworks, 'The assignment database', previous_assignments, content_knowledge_completion)
+    previous_assignments = [x[0] for x in rows]
+    courseworks = scrub_courseworks(courseworks, 'The assignment database', previous_assignments,
+                                    content_knowledge_completion)
 
     # Print out for testing purposes
     # for coursework in courseworks:
@@ -73,7 +74,7 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
         driver = generate_driver()
         aspen_login(driver, username=username, password=password)
 
-        goto_assignment(driver,p_aspen_classname)
+        goto_assignments(driver, p_aspen_classname)
 
         aspen_assignments = get_assignments_from_aspen(driver)
         courseworks = scrub_courseworks(courseworks, 'Aspen', aspen_assignments, content_knowledge_completion)

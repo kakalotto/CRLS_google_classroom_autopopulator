@@ -84,6 +84,7 @@ def get_student_profiles(p_service_classroom, course_id):
         # print(student_profiles)
         # print(student_profiles['emailAddress'])
         gc_students[p_student_id] = student_profiles['name']['fullName']
+    # print("students!" + str(gc_students))
     return gc_students
 
 
@@ -188,7 +189,6 @@ def scrub_courseworks(p_courseworks, list_name, p_list, p_content_knowledge):
             found = True
             print("Skipping this assignment, is in " + str(list_name) + " already:" + str(coursework['title']))
         if found is False:
-            # print("no match" + str(new_proposed_name))
             new_courseworks.append(coursework)
     return new_courseworks
 
