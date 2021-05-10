@@ -23,10 +23,7 @@ gc6 = classes['gc_class6']
 aspen6 = classes['aspen_class6']
 
 content_knowledge_completion_value = config.getboolean("OPTIONS", "content_knowledge_completion")
-ignore_ungraded_value =  config.getboolean("OPTIONS", "ignore_ungraded")
-
-print(content_knowledge_completion_value)
-print(ignore_ungraded_value)
+ignore_ungraded_value = config.getboolean("OPTIONS", "ignore_ungraded")
 
 all_classes = {}
 if gc1 and aspen1:
