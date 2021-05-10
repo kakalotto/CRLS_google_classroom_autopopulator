@@ -46,7 +46,6 @@ def execute_sql(p_db_conn, p_sql):
     Returns: Nothing
     """
     from sqlite3 import Error
-
     try:
         c = p_db_conn.cursor()
         c.execute(p_sql)

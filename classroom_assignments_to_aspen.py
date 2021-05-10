@@ -1,11 +1,11 @@
 
 
-def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_knowledge_completion=False,
+def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content_knowledge_completion=False,
                                    ignore_ungraded=False,
                                    username='', password=''):
     from generate_classroom_credential import generate_classroom_credential
-    from helper_functions.aspen_functions import generate_driver, aspen_login, goto_assignment, add_assignments, \
-        check_new_aspen_names, convert_assignment_name, get_assignments_from_aspen
+    from helper_functions.aspen_functions import generate_driver, aspen_login, add_assignments, \
+        check_new_aspen_names, get_assignments_from_aspen, goto_assignments
     from helper_functions.quarters import which_quarter_today
     from helper_functions.classroom_functions import get_assignments_from_classroom, class_name_2_id, \
         verify_due_date_exists, verify_points_exists, scrub_courseworks
@@ -31,6 +31,7 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
     # Get rid of the smileyfaces
     new_courseworks = []
     for coursework in courseworks:
+
         if re.search(r':-\)', coursework['title']):
             print("Skipping this assignment has a smiley face by it:" + str(coursework['title']))
             continue
@@ -58,8 +59,8 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
     sql = 'SELECT * FROM aspen_assignments;'
     rows = query_db(db_conn, sql)
     previous_assignments = [x[0] for x in rows]
-    # print(previous_assignments)
-    courseworks = scrub_courseworks(courseworks, 'The assignment database', previous_assignments, content_knowledge_completion)
+    courseworks = scrub_courseworks(courseworks, 'The assignment database', previous_assignments,
+                                    content_knowledge_completion)
 
     # Print out for testing purposes
     # for coursework in courseworks:
@@ -73,7 +74,7 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
         driver = generate_driver()
         aspen_login(driver, username=username, password=password)
 
-        goto_assignment(driver,p_aspen_classname)
+        goto_assignments(driver, p_aspen_classname)
 
         aspen_assignments = get_assignments_from_aspen(driver)
         courseworks = scrub_courseworks(courseworks, 'Aspen', aspen_assignments, content_knowledge_completion)
@@ -84,5 +85,5 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname,*, content_
         print()
         add_assignments(driver, courseworks, content_knowledge_completion, db_conn)
         driver.close()
-    time.sleep(5)
-    input("press enter to finish")
+    time.sleep(2)
+    input("press enter to continue/finish")

@@ -44,3 +44,27 @@ def which_quarter_today():
         return q3
     else:
         return q4
+
+
+def which_quarter_today_string():
+    """
+    Tells me what quarter I'm int oday in string (i.e. Q1, Q2, Q3, Q4)
+    Returns:
+    datetime object of the first day of current quarter and last day that matters
+    """
+    import datetime
+    import helper_functions.constants as constants
+    q1 = constants.Q1
+    q2 = constants.Q2
+    q3 = constants.Q3
+    q4 = constants.Q4
+
+    today = datetime.datetime.now()
+    if q2 > today > q1:
+        return 'Q1'
+    elif q3 > today > q2:
+        return 'Q2'
+    elif q4 > today > q3:
+        return 'Q3'
+    else:
+        return 'Q4'

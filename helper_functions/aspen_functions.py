@@ -44,7 +44,7 @@ def aspen_login(p_driver, *, username='', password=''):
         wait_for_element(p_driver, p_xpath_el="//a[@title='Gradebook tab']", timeout=30,
                          message=f'Did not login sucessfully after 30 seconds')
         try:
-            WebDriverWait(p_driver, 30).until(ec.presence_of_element_located((By.XPATH, "")))
+            WebDriverWait(p_driver, 30).until(ec.presence_of_element_located((By.ID, "contextMenu")))
         except TimeoutException:
             print("Did not log in successfully after 30 seconds")
             print("quitting")
@@ -58,7 +58,8 @@ def goto_gradebook(p_driver, p_aspen_class):
     :param p_aspen_class: Name of the class in Aspen.
     :return:
     """
-    wait_for_element(p_driver, p_link_text='Gradebook')
+    # print("Trying to go to gradebook")
+    wait_for_element(p_driver, message='Trying to find gradebook but failed?', p_link_text='Gradebook')
     p_driver.find_element_by_link_text("Gradebook").click()
     # Do this twice, because Aspen is flaky
     wait_for_element(p_driver, p_link_text='Gradebook')
@@ -70,7 +71,7 @@ def goto_gradebook(p_driver, p_aspen_class):
     p_driver.find_element_by_link_text("Scores").click()
 
 
-def goto_assignment(p_driver, p_aspen_class):
+def goto_assignments(p_driver, p_aspen_class):
     """
     Goto Assignments.  Assumes are are at the aspen login.
     :param p_driver: Selenium driver object
@@ -80,6 +81,69 @@ def goto_assignment(p_driver, p_aspen_class):
     goto_gradebook(p_driver, p_aspen_class)
     wait_for_element(p_driver, p_link_text='Assignments')
     p_driver.find_element_by_link_text("Assignments").click()
+
+
+def goto_assignments_this_quarter(p_driver, p_aspen_class, p_quarter):
+    """
+    Goto Assignments and select this quarter.  Assumes are are past the aspen login.
+    :param p_driver: Selenium driver object
+    :param p_aspen_class: Name of the class in Aspen.
+    :param p_quarter: This quarter (Q1, Q3, Q3, etc...) (string)
+    :return: none
+    """
+    goto_assignments(p_driver, p_aspen_class)
+    p_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    wait_for_element(p_driver, p_xpath_el="//a[@title='List of assignment records']")  # assignments on the left
+    wait_for_element(p_driver, p_xpath_el='//*[@id="filterMenu"]')  # funnel icon
+    p_driver.find_element_by_xpath('//*[@id="filterMenu"]').click()
+    wait_for_element(p_driver, p_xpath_el='//*[@id="filterMenu_Option2"]/td[2]')  # term= pulldown
+    p_driver.find_element_by_xpath('//*[@id="filterMenu_Option2"]/td[2]').click()
+    window_before = p_driver.window_handles[0]
+    window_after = p_driver.window_handles[1]
+    p_driver.switch_to.window(window_after)
+    wait_for_element(p_driver, p_xpath_el='//input[@name="value(prompt1)"]')  # term ID field
+    term_id_field = p_driver.find_element_by_xpath('//input[@name="value(prompt1)"]')
+    term_id_field.click()  # Click in the popup termID field
+    term_id_field.send_keys(p_quarter)  # type in the quarter
+    wait_for_element(p_driver, p_xpath_el='//*[@id="submitButton"]')  # Submit button
+    p_driver.find_element_by_xpath('//*[@id="submitButton"]').click()
+    p_driver.switch_to.window(window_before)
+
+
+def goto_scores(p_driver, p_aspen_class):
+    """
+    Goto Assignments.  Assumes are are past the aspen login.
+    :param p_driver: Selenium driver object
+    :param p_aspen_class: Name of the class in Aspen.
+    :return:
+    """
+    goto_gradebook(p_driver, p_aspen_class)
+    wait_for_element(p_driver, p_link_text='Assignments')  # just to be sure loading is done
+    p_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    wait_for_element(p_driver, p_link_text='Scores')  # just to be sure loading is done
+    p_driver.find_element_by_link_text("Scores").click()
+    wait_for_element(p_driver, p_link_text='Scores')  # just to be sure loading is done
+    #        wait.until(EC.invisibility_of_element_located((By.XPATH, '//img[contains(@src, "loading")]')))
+
+
+def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
+    """
+    Goto gradebook and select this quarter, click on all categories  Assumes are are past the aspen login.
+    :param p_driver: Selenium driver object
+    :param p_aspen_class: Name of the class in Aspen.
+    :param p_quarter: This quarter (Q1, Q3, Q3, etc...) (string)
+    :return: none
+    """
+    goto_scores(p_driver, p_aspen_class)
+    wait_for_element(p_driver, p_xpath_el="//select[@name='termFilter']")  # term pulldown menu
+    xpath = "//select[@name='termFilter']/option[text()='" + str(p_quarter) + "']"
+    wait_for_element(p_driver, p_xpath_el=xpath)  # term pulldown menu
+    p_driver.find_element_by_xpath(xpath).click()
+    xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select'
+    wait_for_element(p_driver, p_xpath_el=xpath)
+    p_driver.find_element_by_xpath(xpath).click()  # clicks on Grade Columns ALL (all categories)
+    wait_for_element(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
+    wait_for_element(p_driver, p_xpath_el="//a")
 
 
 def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_conn, p_category='c'):
@@ -95,8 +159,10 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
     gb_column_name = convert_assignment_name(p_coursework['title'], p_content_knowledge_completion)
     if p_content_knowledge_completion and p_category == 'c':
         gb_column_name += '-C'
+        assignment_name += '-completion'
     elif p_content_knowledge_completion and p_category == 'k':
         gb_column_name += '-K'
+        assignment_name += '-content knowledge'
     # get aspen ssign date
     if p_coursework['state'] == 'PUBLISHED':
         year_assigned = p_coursework['creationTime'].split("T")[0].split('-')[0]
@@ -267,6 +333,48 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     return column_name
 
 
+def get_student_ids_from_aspen(p_driver):
+    """
+    Gets the aspen IDs from aspen
+    :param p_driver: driver
+    :return: dictionary key is name in Aspen, value is Aspen student ID.  i.e.
+    {'Fakir, Shahnawaz': 'STD0000007I3ZV', 'Hailemichael, Daniel': 'stdX2002052929'}
+    """
+    import re
+    id_scholars = {}
+    height = 0
+    wait_for_element(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
+    scr = p_driver.find_element_by_xpath("//div[@class='scrollCell invisible-horizontal-scrollbar']")
+    old_names = []
+    for i in range(10):
+        wait_for_element(p_driver, p_xpath_el="//a")
+        names = p_driver.find_elements_by_xpath("//a")
+        new_names = []
+        for a in names:
+            a_attrib = a.get_attribute('href')
+            if re.search('openGradeInputDetail', a_attrib) and \
+                    (re.search('STD', a_attrib) or re.search('std', a_attrib)):
+                match_obj = re.match(r"javascript:openGradeInputDetail\('((std|STD).+)'\)",
+                                     a_attrib, re.X | re.M | re.S)
+                first_id = match_obj.group(1)
+                name = a.text
+                if name:
+                    new_names.append(name)
+                    id_scholars[name] = first_id
+
+        # Basically you will run this an extra time.
+        # If the names you extract both times are the same, you are done scrolling down.
+        new_names.sort()
+        old_names.sort()
+        if new_names == old_names:
+            break
+        else:
+            old_names = new_names
+            height += 120
+            p_driver.execute_script("arguments[0].scrollTo(0," + str(height) + ") ", scr)
+    return id_scholars
+
+
 def get_assignments_from_aspen(p_driver):
     """
     gets all assignments from aspen for a particular class.  Assumes that we're already in that class.
@@ -301,6 +409,176 @@ def get_assignments_from_aspen(p_driver):
         except NoSuchElementException:
             done = True
     return aspen_column_names
+
+
+def get_assignments_and_assignment_ids_from_aspen(p_driver):
+    """
+    gets all assignments from aspen for a particular class.  Assumes that we're already in that class.
+    :param p_driver:   Selenium driver object
+    :return: list of Aspen assignment column names (string)
+    """
+    from selenium.common.exceptions import NoSuchElementException
+    print("Getting assignments and IDs from Aspen")
+
+    # Navigate to assignments page
+    wait_for_element(p_driver, p_link_text='Assignments')
+    p_driver.find_element_by_link_text("Assignments").click()
+    wait_for_element(p_driver, p_xpath_el="//div[@id='dataGrid']", message='Did not find assignments')
+
+    p_aspen_assignment_ids = {}
+    done = False
+    while done is False:
+        wait_for_element(p_driver, p_xpath_el="//tr[@class='listCell listRowHeight   ']")
+        rows = len(p_driver.find_elements_by_xpath("//tr[@class='listCell listRowHeight   ']"))
+        # print(f"rows {rows}")
+        # Looop over all rows in this table
+        for i in range(2, rows + 2):
+            xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[2]'
+            wait_for_element(p_driver, p_xpath_el=xpath_string)
+            aspen_assignment_id_el = p_driver.find_element_by_xpath(xpath_string)
+            aspen_assignment_id = aspen_assignment_id_el.get_attribute('id')
+            xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[8]'
+            wait_for_element(p_driver, p_xpath_el=xpath_string)
+            gb_column_name_el = p_driver.find_element_by_xpath(xpath_string)
+            gb_column_name = gb_column_name_el.text
+            p_aspen_assignment_ids[gb_column_name] = aspen_assignment_id
+        try:
+            button = p_driver.find_element_by_xpath('//*[@id="topnextPageButton"]')
+            disabled = button.get_attribute('disabled')
+            if disabled is None:
+                button.click()
+            elif disabled:
+                done = True
+        except NoSuchElementException:
+            done = True
+    print()
+    return p_aspen_assignment_ids
+
+
+def match_gc_name_with_aspen_id(p_name, aspen_name_dict):
+    """
+    Given a name in Google classroom, returns that scholar's ASPEN ID.
+    :param p_name:  name of scholar in Google classroom (string)
+    :param aspen_name_dict: dictionaries with student ID and name  (dict of strings)
+                           i.e. this: {'Fakir, Shahnawaz': 'STD0000007I3ZV', 'Hailemichael, Daniel': 'stdX2002052929'}
+
+    :return: id of scholar in aspen (str)
+    """
+    import re
+
+    # print(f"p_name {p_name}, dict {aspen_name_dict}")
+    p_name = p_name.lower()
+    g_name_parts = p_name.split()
+
+    # Check for last name match
+    candidate_matches = []
+    for p_key in aspen_name_dict.keys():
+        a_name = p_key.lower()
+        a_name_parts = a_name.split(', ')
+        if re.search(g_name_parts[-1], a_name_parts[0]):
+            candidate_matches.append(p_key)
+    if len(candidate_matches) == 1:
+        # ony matched one, found it
+        return aspen_name_dict[candidate_matches[0]]
+    else:
+        first_name_matches = []
+        for match in candidate_matches:
+            print(match)
+            match_parts = match.lower().split(', ')
+            print(g_name_parts[0])
+            if re.search(g_name_parts[0], match_parts[-1]):
+                first_name_matches.append(match)
+        if len(first_name_matches) == 1:
+            return aspen_name_dict[first_name_matches[0]]
+
+
+def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen_student_ids,
+                                 p_aspen_assignments,
+                                 p_content_knowledge_completion, p_db_conn):
+    """
+
+    :param p_driver:  Selenium driver object
+    :param p_assignments_from_classroom: Assignments dictionary from Google classroom.  Looks like this:
+       {'abcdefg': [['DANIEL HAILEMICHAEL', 55], ['Shahnawaz Fakir', 33]],
+        'def': [['DANIEL HAILEMICHAEL', 22], ['Shahnawaz Fakir', 5]]
+        }
+    :param p_aspen_student_ids: Student IDs dictionary from Google classroom.  Looks like this:
+       {'Fakir, Shahnawaz': 'STD0000007I3ZV', 'Hailemichael, Daniel': 'stdX2002052929'}
+    :param  p_aspen_assignments: Aspen column names and IDs. .  Looks like this:
+       {'GCD000000UDRPL': 'Creepy -C', 'GCD000000UDRPP': 'Creepy -K', 'GCD000000UDRPX': 'Web scr-C',
+       'GCD000000UDRPn': 'Web scr-K', 'GCD000000UDRPy': 'ffff ig-C', 'GCD000000UDRQ2': 'ffff ig-K',
+       'GCD000000UDRP7': 'def-C', 'GCD000000UDRPB': 'def-K'}
+    :param p_content_knowledge_completion Boolean whether you are going to have two categories completion and
+        content_knowledge, for every assignment in Google classroom.  True if yes.
+    :param p_db_conn: database connection object
+    :return:
+    """
+    # assignments from aspen looks like this, where def is an assignment
+    import re
+    from selenium.webdriver.common.action_chains import ActionChains
+    from selenium.webdriver.common.keys import Keys
+
+    from helper_functions.db_functions import execute_sql, query_db
+    for key in p_assignments_from_classroom.keys():
+        gc_assignment_name = key
+        name_scores = p_assignments_from_classroom[key]
+        for name_score in name_scores:
+            gc_student = name_score[0]
+            gc_score = name_score[1]
+
+            print(f"test assignment {gc_assignment_name} test_name {gc_student} test_score {gc_score}")
+
+            assignment_col_names = []
+            if p_content_knowledge_completion:
+                aspen_assignment_col_name = convert_assignment_name(gc_assignment_name, p_content_knowledge_completion)
+                aspen_assignment_col_name += '-C'
+                assignment_col_names.append(aspen_assignment_col_name)
+                aspen_assignment_col_name = convert_assignment_name(gc_assignment_name, p_content_knowledge_completion)
+#                aspen_scholar_id = match_gc_name_with_aspen_id(gc_student, p_aspen_student_ids)
+                aspen_assignment_col_name += '-K'
+                assignment_col_names.append(aspen_assignment_col_name)
+            else:
+                aspen_assignment_col_name = convert_assignment_name(gc_assignment_name, p_content_knowledge_completion)
+                assignment_col_names.append(aspen_assignment_col_name)
+            aspen_scholar_id = match_gc_name_with_aspen_id(gc_student, p_aspen_student_ids)
+            print(f'assignments {assignment_col_names}')
+            for col_name in assignment_col_names:
+
+                # print(f"aspen col name XX{aspen_assignment_col_name}XX scholar_id {aspen_scholar_id}")
+                # print(f"p_aspen_assignments {p_aspen_assignments}")
+                cell_id = p_aspen_assignments[col_name] + '|' + aspen_scholar_id
+                edit_cell_id = 'e' + cell_id
+
+                sql = 'select * from recorded_scores WHERE id ="' + cell_id + '" AND score =' + str(gc_score)
+                rows = query_db(p_db_conn, sql)
+
+                action = ActionChains(p_driver)
+
+                old_score = 0
+                if len(rows) == 0:
+                    # print("HERE IS CELL ID " + str(cell_id))
+                    # wait_for_element(p_driver, p_id=cell_id)
+                    if p_content_knowledge_completion and re.search('-C$', col_name):
+                        old_score = gc_score
+                        gc_score = 1
+                    grade_element = p_driver.find_element_by_id(cell_id)
+                    action.move_to_element(grade_element).perform()
+                    grade_element.click()
+                    # wait_for_element(p_driver, p_id=edit_cell_id)
+                    grade_element2 = p_driver.find_element_by_id(edit_cell_id)
+                    grade_element2.send_keys(gc_score)
+                    grade_element2.send_keys(Keys.RETURN)
+
+                    sql = 'INSERT INTO recorded_scores VALUES ("' + \
+                          cell_id + '", "' + gc_assignment_name + '", "' + gc_student + '", ' + \
+                          str(gc_score) + ' )'
+                    execute_sql(p_db_conn, sql)
+                    print(f"adding  this record.  Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
+                    gc_score = old_score
+                else:
+                    print(
+                        f"Record is in the DB already.   "
+                        f"Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
 
 
 def wait_for_element(p_driver, *, message='', timeout=10, p_link_text='', p_xpath_el='',
