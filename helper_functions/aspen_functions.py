@@ -323,9 +323,9 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'Final\sreview', 'Frev', new_title, re.X | re.S | re.M)
     # print("New title is this " + str(new_title))
     if re.search(r"extra \s credit", new_title.lower(), re.X | re.M | re.S):
-        return 'SKIP'
+        return 'SKIPTHIS'
     if re.search(r"create \s task \s checkin", new_title.lower(), re.X | re.M | re.S):
-        return 'SKIP'
+        return 'SKIPTHIS'
     if len(new_title) >= len_title:
         column_name = new_title[:len_title]
     else:
@@ -531,6 +531,8 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
             assignment_col_names = []
             if p_content_knowledge_completion:
                 aspen_assignment_col_name = convert_assignment_name(gc_assignment_name, p_content_knowledge_completion)
+                if aspen_assignment_col_name == 'SKIPTHIS':
+                    continue
                 aspen_assignment_col_name += '-C'
                 assignment_col_names.append(aspen_assignment_col_name)
                 aspen_assignment_col_name = convert_assignment_name(gc_assignment_name, p_content_knowledge_completion)
@@ -539,6 +541,8 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                 assignment_col_names.append(aspen_assignment_col_name)
             else:
                 aspen_assignment_col_name = convert_assignment_name(gc_assignment_name, p_content_knowledge_completion)
+                if aspen_assignment_col_name == 'SKIPTHIS':
+                    continue
                 assignment_col_names.append(aspen_assignment_col_name)
             aspen_scholar_id = match_gc_name_with_aspen_id(gc_student, p_aspen_student_ids)
             print(f'assignments {assignment_col_names}')

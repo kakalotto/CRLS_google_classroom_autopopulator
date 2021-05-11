@@ -47,3 +47,4 @@ for key in all_classes.keys():
     classroom_grades_to_aspen(key, all_classes[key],
                               content_knowledge_completion=content_knowledge_completion_value,
                               username=username, password=password)
+input("Type anything, then press enter to quit (this line is to keep the window open)")

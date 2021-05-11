@@ -76,4 +76,4 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
 
     driver.close()
 
-input("Type anything, then press enter to quit")
+
