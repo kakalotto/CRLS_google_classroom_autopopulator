@@ -13,4 +13,4 @@ for gc_name in all_classes.keys():
     print("Sending emails for this class: " + str(gc_name))
     missing_assignments_mailer(config_filename, gc_name, mailerinfo)
 
-input("Type anything and press enter to end")
+input("Press enter 2x to end")

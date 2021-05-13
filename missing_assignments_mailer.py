@@ -73,6 +73,7 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_mailerinfo):
     # send the messages
     p_message = p_mailerinfo[0]
     send_email = p_mailerinfo[1]
+    p_cc = p_mailerinfo[2]
 
     if send_email:
         service_gmail = generate_gmail_credential()
@@ -99,8 +100,9 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_mailerinfo):
             if send_email:
                 email_message = MIMEMultipart()
                 email_message['to'] = email_address
-                email_message['cc'] = 'ewu@cpsd.us'
-                email_message['subject'] = 'Cybersecurity/IT2 assignments report'
+                if p_cc:
+                    email_message['cc'] = p_cc
+                email_message['subject'] = p_gc_name + '  assignments report'
                 email_message.attach(MIMEText(msg_text, 'plain'))
                 raw_string = base64.urlsafe_b64encode(email_message.as_bytes()).decode()
                 send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
