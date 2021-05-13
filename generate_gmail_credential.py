@@ -21,7 +21,7 @@ def generate_gmail_credential():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file('credentials_sheets.json', scopes)
+            flow = InstalledAppFlow.from_client_secrets_file('credentials_gmail.json', scopes)
             creds = flow.run_local_server()
             # Save the credentials for the next run
             with open('token_gmail.pickle', 'wb') as token:
