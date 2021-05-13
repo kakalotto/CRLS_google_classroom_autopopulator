@@ -18,7 +18,7 @@ def generate_ro_classroom_credential():
               'https://www.googleapis.com/auth/classroom.topics.readonly',
               'https://www.googleapis.com/auth/classroom.courseworkmaterials.readonly',
               'https://www.googleapis.com/auth/classroom.profile.emails',
-              'https://www.googleapis.com/auth/classroom.student-submissions.students.readonly'
+              'https://www.googleapis.com/auth/classroom.student-submissions.students.readonly',
               ]
 #               'https://www.googleapis.com/auth/classroom.coursework.students.readonly',
 

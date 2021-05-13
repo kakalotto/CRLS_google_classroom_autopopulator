@@ -11,13 +11,13 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_mailerinfo):
     from email.mime.text import MIMEText
     import base64
 
-    from generate_classroom_credential import generate_classroom_credential
+    from generate_ro_classroom_credential import generate_ro_classroom_credential
     from generate_gmail_credential import generate_gmail_credential
     from helper_functions.classroom_functions import class_name_2_id
     from helper_functions.quarters import which_quarter_today
 
     # Get the course ID
-    service_classroom = generate_classroom_credential()
+    service_classroom = generate_ro_classroom_credential()
     course_id = class_name_2_id(service_classroom, p_gc_name)
 
     # Get students and student profiles from google classroom

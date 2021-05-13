@@ -1,7 +1,11 @@
+import os
+import shutil
 from helper_functions.read_ini_functions import read_classes_info, read_mailer_info
 from missing_assignments_mailer import missing_assignments_mailer
+
 # Read in info
 config_filename = "crls_teacher_tools.ini"
+
 all_classes = read_classes_info(config_filename)
 mailerinfo = read_mailer_info(config_filename)
 
