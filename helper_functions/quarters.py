@@ -4,13 +4,21 @@ def quarter_dates(*, fy=False):
     Returns:
     datetime objects  of the first day of current quarter and last day that matters (list of datetimes)
     """
+    import configparser
     from datetime import datetime, timedelta
-    import helper_functions.constants as constants
-    q1 = constants.Q1
-    q2 = constants.Q2
-    q3 = constants.Q3
-    q4 = constants.Q4
-    summer = constants.summer
+
+    config = configparser.ConfigParser()
+    config.read("classroom_assignments_to_aspen.ini")
+
+    if 'QUARTERS' in config:
+        quarters = config['QUARTERS']
+        q1 = quarters['q1']
+        q2 = quarters['q2']
+        q3 = quarters['q3']
+        q4 = quarters['q4']
+        summer = quarters['summer']
+    else:
+        raise ValueError("In your ini file, need to have a section called QUARTERS")
 
     today = datetime.now()
     if fy:
@@ -22,18 +30,38 @@ def quarter_dates(*, fy=False):
             return [q3, summer - timedelta(days=1)]
 
 
-def which_quarter_today():
+def which_quarter_today(*, p_filename=''):
     """
     Tells me what quarter I'm int oday
     Returns:
-    datetime object of the first day of current quarter and last day that matters
+    datetime object of the first day of current quarters
     """
+    import configparser
     import datetime
-    import helper_functions.constants as constants
-    q1 = constants.Q1
-    q2 = constants.Q2
-    q3 = constants.Q3
-    q4 = constants.Q4
+
+    config = configparser.ConfigParser()
+    if p_filename:
+        config.read(p_filename)
+    else:
+        config.read("classroom_assignments_to_aspen.ini")
+
+    if 'QUARTERS' in config:
+        quarters = config['QUARTERS']
+        q1 = quarters['q1']
+        q2 = quarters['q2']
+        q3 = quarters['q3']
+        q4 = quarters['q4']
+    else:
+        raise ValueError("In your ini file, need to have a section called QUARTERS")
+
+    q1_list = q1.split('/')
+    q2_list = q2.split('/')
+    q3_list = q3.split('/')
+    q4_list = q4.split('/')
+    q1 = datetime.datetime(int(q1_list[0]), int(q1_list[1]), int(q1_list[2]))
+    q2 = datetime.datetime(int(q2_list[0]), int(q2_list[1]), int(q2_list[2]))
+    q3 = datetime.datetime(int(q3_list[0]), int(q3_list[1]), int(q3_list[2]))
+    q4 = datetime.datetime(int(q4_list[0]), int(q4_list[1]), int(q4_list[2]))
 
     today = datetime.datetime.now()
     if q2 > today > q1:
@@ -49,15 +77,23 @@ def which_quarter_today():
 def which_quarter_today_string():
     """
     Tells me what quarter I'm int oday in string (i.e. Q1, Q2, Q3, Q4)
-    Returns:
-    datetime object of the first day of current quarter and last day that matters
+    Returns: String of which quarter it is ('Q1', 'Q2', 'Q3', or 'Q4')
     """
+    import configparser
     import datetime
-    import helper_functions.constants as constants
-    q1 = constants.Q1
-    q2 = constants.Q2
-    q3 = constants.Q3
-    q4 = constants.Q4
+
+    config = configparser.ConfigParser()
+    config.read("classroom_assignments_to_aspen.ini")
+
+    if 'QUARTERS' in config:
+        quarters = config['QUARTERS']
+        q1 = quarters['q1']
+        q2 = quarters['q2']
+        q3 = quarters['q3']
+        q4 = quarters['q4']
+        summer = quarters['summer']
+    else:
+        raise ValueError("In your ini file, need to have a section called QUARTERS")
 
     today = datetime.datetime.now()
     if q2 > today > q1:
