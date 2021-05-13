@@ -250,10 +250,13 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
     # raise ValueError("Debugging stop here")
 
 
-def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_db_conn):
+def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_db_conn, p_default_category):
 
     # get the name of the first category
-    if p_content_knowledge_completion is False:
+    if p_default_category:  # category is set
+        for coursework in p_courseworks:
+            coursework['aspen_category'] = p_default_category
+    elif p_content_knowledge_completion is False:  # Category is default
         full_xpath = '/ html / body / form / table / tbody / tr[2] / td ' \
                      '/ div / table[2] / tbody / tr[1] / td[2] / div / table / tbody / tr[2] / td[2] / a'
         wait_for_element(p_driver, p_link_text='Categories')
@@ -263,19 +266,19 @@ def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_d
         wait_for_element(p_driver, p_link_text='Assignments')
         p_driver.find_element_by_link_text("Assignments").click()
         wait_for_element(p_driver, p_link_text='Assignments')
-        p_driver.find_element_by_link_text("Scores").click()
-        wait_for_element(p_driver, p_link_text='Scores')
         for coursework in p_courseworks:
             coursework['aspen_category'] = category
-    else:
-        p_driver.find_element_by_link_text("Scores").click()
-        wait_for_element(p_driver, p_link_text='Scores')
+
+    p_driver.find_element_by_link_text("Scores").click()
+    wait_for_element(p_driver, p_link_text='Scores')
     for coursework in p_courseworks:
         if p_content_knowledge_completion:
-            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn, p_category='c')
-            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn, p_category='k')
+            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn,
+                           p_category='c')
+            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn,
+                           p_category='k')
         else:
-            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn,)
+            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn)
 
 
 def check_new_aspen_names(p_dict, p_content_knowledge_completion):

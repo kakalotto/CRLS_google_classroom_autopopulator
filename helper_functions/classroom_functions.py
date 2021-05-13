@@ -82,7 +82,7 @@ def get_student_profiles(p_service_classroom, course_id):
         student_profiles = p_service_classroom.userProfiles(). \
             get(userId=p_student_id, ).execute()
         # print(student_profiles)
-        # print(student_profiles['emailAddress'])
+        print(student_profiles['emailAddress'])
         gc_students[p_student_id] = student_profiles['name']['fullName']
     # print("students!" + str(gc_students))
     return gc_students
