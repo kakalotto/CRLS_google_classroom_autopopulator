@@ -1,6 +1,6 @@
 import configparser
 from classroom_grades_to_aspen import classroom_grades_to_aspen
-from helper_functions.read_ini_functions import read_classes_info, read_mailer_info
+from helper_functions.read_ini_functions import read_classes_info
 
 
 # Read in info
