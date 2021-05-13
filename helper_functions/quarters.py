@@ -1,4 +1,4 @@
-def quarter_dates(*, fy=False):
+def quarter_dates(*, fy=False, p_filename=''):
     """
     quarter_date returns the ranges that I care about, given where I am now.
     Returns:
@@ -8,7 +8,10 @@ def quarter_dates(*, fy=False):
     from datetime import datetime, timedelta
 
     config = configparser.ConfigParser()
-    config.read("classroom_assignments_to_aspen.ini")
+    if p_filename:
+        config.read(p_filename)
+    else:
+        config.read("crls_teacher_tools.ini")
 
     if 'QUARTERS' in config:
         quarters = config['QUARTERS']
@@ -19,6 +22,15 @@ def quarter_dates(*, fy=False):
         summer = quarters['summer']
     else:
         raise ValueError("In your ini file, need to have a section called QUARTERS")
+
+    q1_list = q1.split('/')
+    q2_list = q2.split('/')
+    q3_list = q3.split('/')
+    q4_list = q4.split('/')
+    q1 = datetime.datetime(int(q1_list[0]), int(q1_list[1]), int(q1_list[2]))
+    q2 = datetime.datetime(int(q2_list[0]), int(q2_list[1]), int(q2_list[2]))
+    q3 = datetime.datetime(int(q3_list[0]), int(q3_list[1]), int(q3_list[2]))
+    q4 = datetime.datetime(int(q4_list[0]), int(q4_list[1]), int(q4_list[2]))
 
     today = datetime.now()
     if fy:
@@ -43,7 +55,7 @@ def which_quarter_today(*, p_filename=''):
     if p_filename:
         config.read(p_filename)
     else:
-        config.read("classroom_assignments_to_aspen.ini")
+        config.read("crls_teacher_tools.ini")
 
     if 'QUARTERS' in config:
         quarters = config['QUARTERS']
@@ -83,7 +95,7 @@ def which_quarter_today_string():
     import datetime
 
     config = configparser.ConfigParser()
-    config.read("classroom_assignments_to_aspen.ini")
+    config.read("crls_teacher_tools.ini")
 
     if 'QUARTERS' in config:
         quarters = config['QUARTERS']
@@ -95,6 +107,14 @@ def which_quarter_today_string():
     else:
         raise ValueError("In your ini file, need to have a section called QUARTERS")
 
+    q1_list = q1.split('/')
+    q2_list = q2.split('/')
+    q3_list = q3.split('/')
+    q4_list = q4.split('/')
+    q1 = datetime.datetime(int(q1_list[0]), int(q1_list[1]), int(q1_list[2]))
+    q2 = datetime.datetime(int(q2_list[0]), int(q2_list[1]), int(q2_list[2]))
+    q3 = datetime.datetime(int(q3_list[0]), int(q3_list[1]), int(q3_list[2]))
+    q4 = datetime.datetime(int(q4_list[0]), int(q4_list[1]), int(q4_list[2]))
     today = datetime.datetime.now()
     if q2 > today > q1:
         return 'Q1'

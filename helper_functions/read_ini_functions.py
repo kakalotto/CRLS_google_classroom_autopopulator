@@ -98,7 +98,8 @@ def read_mailer_info(p_filename):
                          "\nThis file needs to have a "
                          "MAILER section with variables message1, message2, test_run, etc...")
     p_send_email = config.getboolean('MAILER', 'send_email', fallback=False)
+    p_cc = config.get('MAILER', 'cc', fallback='')
 
     p_message = p_message1 + '\n\n' + p_message2
 
-    return [p_message, p_send_email]
+    return [p_message, p_send_email, p_cc]
