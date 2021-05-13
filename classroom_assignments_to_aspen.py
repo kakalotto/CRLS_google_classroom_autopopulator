@@ -52,7 +52,7 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content
     # DB stuff; create connection, add table if not there, select all, remove duplicates from coursework
     print("Opening up the sqlite DB, which has info about classes that have already been put in Aspen.\n"
           "If you need something to edit this manually: https://sqlitebrowser.org/")
-    db_filename = 'classroom_assignments_to_aspen_' + p_gc_classname + '.db'
+    db_filename = 'database_gc_assignments_put_in_aspen_' + p_gc_classname + '.db'
     db_conn = create_connection(db_filename)
     sql = 'CREATE TABLE IF NOT EXISTS aspen_assignments (id varchar(60) PRIMARY KEY);'
     execute_sql(db_conn, sql)
@@ -85,5 +85,3 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content
         print()
         add_assignments(driver, courseworks, content_knowledge_completion, db_conn, default_category)
         driver.close()
-    time.sleep(2)
-    input("press enter to continue/finish")
