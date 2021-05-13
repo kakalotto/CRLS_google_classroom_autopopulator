@@ -1,50 +1,22 @@
 import configparser
 from classroom_grades_to_aspen import classroom_grades_to_aspen
+from helper_functions.read_ini_functions import read_classes_info, read_mailer_info
+
+
+# Read in info
+config_filename = "crls_teacher_tools.ini"
+all_classes = read_classes_info(config_filename)
+
 
 config = configparser.ConfigParser()
-config.read("classroom_assignments_to_aspen.ini")
+config.read("crls_teacher_tools.ini")
 
-username = ''
-password = ''
-if 'LOGIN' in config.keys():
-    login = config['LOGIN']
-    username = login['username']
-    password = login['password']
-
-
-classes = config['CLASSES']
-gc1 = classes['gc_class1']
-aspen1 = classes['aspen_class1']
-gc2 = classes['gc_class2']
-aspen2 = classes['aspen_class2']
-gc3 = classes['gc_class3']
-aspen3 = classes['aspen_class3']
-gc4 = classes['gc_class4']
-aspen4 = classes['aspen_class4']
-gc5 = classes['gc_class5']
-aspen5 = classes['aspen_class5']
-gc6 = classes['gc_class6']
-aspen6 = classes['aspen_class6']
-
-content_knowledge_completion_value = config.getboolean("OPTIONS", "content_knowledge_completion")
-ignore_ungraded_value = config.getboolean("OPTIONS", "ignore_ungraded")
-
-all_classes = {}
-if gc1 and aspen1:
-    all_classes[gc1] = aspen1
-if gc2 and aspen2:
-    all_classes[gc2] = aspen2
-if gc3 and aspen3:
-    all_classes[gc3] = aspen3
-if gc4 and aspen4:
-    all_classes[gc4] = aspen4
-if gc5 and aspen5:
-    all_classes[gc5] = aspen5
-if gc6 and aspen6:
-    all_classes[gc6] = aspen6
+username = config.get('LOGIN', 'username', fallback='')
+password = config.get('LOGIN', 'password', fallback='')
+content_knowledge_completion_value = config.getboolean("ASPEN", "content_knowledge_completion", fallback=False)
 
 for key in all_classes.keys():
     classroom_grades_to_aspen(key, all_classes[key],
                               content_knowledge_completion=content_knowledge_completion_value,
-                              username=username, password=password)
-input("Type anything, then press enter to quit (this line is to keep the window open)")
+                              username=username, password=password, p_config_filename=config_filename)
+input("Press enter 2x to end")
