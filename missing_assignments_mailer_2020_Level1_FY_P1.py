@@ -1,39 +1,43 @@
 import base64
 import datetime
-
+import configparser
+from helper_functions.classroom_functions import class_name_2_id
 from generate_gmail_credential import generate_gmail_credential
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from generate_classroom_credential import generate_classroom_credential
-
-def create_message(sender, to, subject, message_text):
-    """Create a message for an email.
-
-      Args:
-        sender: Email address of the sender.
-        to: Email address of the receiver.
-        subject: The subject of the email message.
-        message_text: The text of the email message.
-
-      Returns:
-        An object containing a base64url encoded email object.
-      """
-    import base64
-    from email.mime.text import MIMEText
-
-    message = MIMEText(message_text)
-    message['to'] = to
-    message['from'] = sender
-    message['subject'] = subject
-    return {'raw': base64.urlsafe_b64encode(message.as_string())}
+from helper_functions.quarters import which_quarter_today
 
 
-course_id = 164899277959
-service_classroom = generate_classroom_credential()
 
 
-student_dict = {'21nlei@cpsd.us': '103026788979009218908',
-                '21atekieteklemariam@cpsd.us': 102189211805773929897}
+
+config = configparser.ConfigParser()
+config.read("classroom_assignments_to_aspen.ini")
+
+if 'QUARTERS' in config:
+    quarters = config['QUARTERS']
+    q1 = quarters['q1']
+    q2 = quarters['q2']
+    q3 = quarters['q3']
+    q4 = quarters['q4']
+else:
+    username = ''
+    password = ''
+if 'OPTIONS' in config:
+    options = config['OPTIONS']
+    if 'default_category' in options:
+        default_category = options['default_category']
+else:
+    default_category = ''
+
+
+
+
+
+#
+# student_dict = {'21nlei@cpsd.us': '103026788979009218908',
+#                 '21atekieteklemariam@cpsd.us': 102189211805773929897}
 
 '''
 
@@ -50,19 +54,19 @@ student_dict = {'21nlei@cpsd.us': '103026788979009218908',
 {'id': '116668099320993692987', 'name': {'givenName': 'JUSTIN-CORI', 'familyName': 'AZEVEDO', 'fullName': 'JUSTIN-CORI AZEVEDO'}}
 {'id': '116104146147212808913', 'name': {'givenName': 'RYAN', 'familyName': 'GUERRERO', 'fullName': 'RYAN GUERRERO'}}
 '''
-email_dict = {
- '100437299855115523930': '23mmusawwir@cpsd.us',
- '115899787127900489710': '21ntemam@cpsd.us',
- '107372429037627570808': '22fpanepintohattori@cpsd.us',
- '117781278118817502289': '22smarks@cpsd.us',
- '117580555014802942323': '21jjaffe@cpsd.us',
- '112667830524174574890': '22balemu@cpsd.us',
- '115853813505606026479': '20ewegayhu@cpsd.us',
- '102475404831589545837': '22sroy@cpsd.us',
- '114590111590307965499': '23mstringa@cpsd.us',
- '116668099320993692987': '22jazevedo@cpsd.us',
- '116104146147212808913': '21rguerrero@cpsd.us',
-}
+# email_dict = {
+#  '100437299855115523930': '23mmusawwir@cpsd.us',
+#  '115899787127900489710': '21ntemam@cpsd.us',
+#  '107372429037627570808': '22fpanepintohattori@cpsd.us',
+#  '117781278118817502289': '22smarks@cpsd.us',
+#  '117580555014802942323': '21jjaffe@cpsd.us',
+#  '112667830524174574890': '22balemu@cpsd.us',
+#  '115853813505606026479': '20ewegayhu@cpsd.us',
+#  '102475404831589545837': '22sroy@cpsd.us',
+#  '114590111590307965499': '23mstringa@cpsd.us',
+#  '116668099320993692987': '22jazevedo@cpsd.us',
+#  '116104146147212808913': '21rguerrero@cpsd.us',
+# }
 
 students = service_classroom.courses().students().list(courseId=course_id,).execute()
 students = students['students']
@@ -72,13 +76,11 @@ for student in students:
     student_id = student['userId']
     student_profiles = service_classroom.userProfiles().get(userId=student_id,).execute()
     print(student_profiles)
-    # print(student_profiles['emailAddress'])
 
 
 assignments_id_dict = {}
 all_assignments = service_classroom.courses().courseWork().list(courseId=course_id,).execute()
 all_assignments = all_assignments['courseWork']
-# print(all_assignments)
 for assignment in all_assignments:
     assignments_id_dict[assignment['id']] = assignment['title']
 
@@ -88,31 +90,30 @@ for assignment in all_assignments:
 messages = []
 for student in students:
     student_id = student['userId']
+    student_email = student['name']['emailAddress']
     message_dict = {}
     message_dict[student_id] = ''
-    if student_id in email_dict:
-        print("Trying this student ID : " + str(student_id))
-        print("this student" + email_dict[student_id])
-        student_email = email_dict[student_id]
-        student_work = service_classroom.courses().courseWork().studentSubmissions().list(courseId=course_id, courseWorkId='-',userId=student_id).execute()
-        student_work = student_work['studentSubmissions']
-        for work in student_work:
+    print("Trying this student ID : " + str(student_id))
+    print("this student" + email_dict[student_id])
+    student_work = service_classroom.courses().\
+        courseWork().studentSubmissions().list(courseId=course_id, courseWorkId='-',userId=student_id).execute()
+    student_work = student_work['studentSubmissions']
+    for work in student_work:
+        if 'late' in work:
+            work_id = work['courseWorkId']
+            for assignment in all_assignments:
+                if work_id == assignment['id']:
+                    due_date = assignment['dueDate']
 
-            if 'late' in work:
-                work_id = work['courseWorkId']
-                for assignment in all_assignments:
-                    if work_id == assignment['id']:
-                        due_date = assignment['dueDate']
-
-                if work['state'] != 'TURNED_IN' and work['late'] is True:
-                    d1 = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
-                    d2 = datetime.datetime.now()
-                    q2 = datetime.datetime(2021, 2, 4)
-                    if d2 >= d1 and d1 > q2:
-                        link = work['alternateLink']
-                        coursework_id = work['courseWorkId']
-                        message_dict[student_id] += "assignment:  {} \nlink to assignment {}\n\n".format(assignments_id_dict[coursework_id], link)
-        messages.append(message_dict)
+            if work['state'] != 'TURNED_IN' and work['late'] is True:
+                d1 = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
+                d2 = datetime.datetime.now()
+                q2 = datetime.datetime(2021, 2, 4)
+                if d2 >= d1 and d1 > q2:
+                    link = work['alternateLink']
+                    coursework_id = work['courseWorkId']
+                    message_dict[student_id] += "assignment:  {} \nlink to assignment {}\n\n".format(assignments_id_dict[coursework_id], link)
+    messages.append(message_dict)
 #message_dict = create_message('ewu@cpsd.us', 'ejw50@hotmail.com', 'hello there', 'smell my   feet')
 #print(message_dict)
 service_gmail = generate_gmail_credential()
@@ -148,5 +149,5 @@ for message in messages:
         email_message.attach(MIMEText(msg_text, 'plain'))
         raw_string = base64.urlsafe_b64encode(email_message.as_bytes()).decode()
 
-        send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
+      #  send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
       #  print(send_message)

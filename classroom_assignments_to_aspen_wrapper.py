@@ -4,9 +4,19 @@ from classroom_assignments_to_aspen import classroom_assignments_to_aspen
 config = configparser.ConfigParser()		
 config.read("classroom_assignments_to_aspen.ini")
 
-login = config['LOGIN']
-username = login['username']
-password = login['password']
+if 'LOGIN' in config:
+    login = config['LOGIN']
+    username = login['username']
+    password = login['password']
+else:
+    username = ''
+    password = ''
+if 'OPTIONS' in config:
+    options = config['OPTIONS']
+    if 'default_category' in options:
+        default_category = options['default_category']
+else:
+    default_category = ''
 
 classes = config['CLASSES']
 gc1 = classes['gc_class1']
@@ -43,4 +53,4 @@ for key in all_classes.keys():
     classroom_assignments_to_aspen(key, all_classes[key],
                                    content_knowledge_completion=content_knowledge_completion_value,
                                    ignore_ungraded=ignore_ungraded_value,
-                                   username=username, password=password)
+                                   username=username, password=password, default_category=default_category)
