@@ -5,7 +5,7 @@ def quarter_dates(*, fy=False, p_filename=''):
     datetime objects  of the first day of current quarter and last day that matters (list of datetimes)
     """
     import configparser
-    from datetime import datetime, timedelta
+    import datetime
 
     config = configparser.ConfigParser()
     if p_filename:
@@ -27,19 +27,22 @@ def quarter_dates(*, fy=False, p_filename=''):
     q2_list = q2.split('/')
     q3_list = q3.split('/')
     q4_list = q4.split('/')
+    summer_list =  summer.split('/')
+
     q1 = datetime.datetime(int(q1_list[0]), int(q1_list[1]), int(q1_list[2]))
     q2 = datetime.datetime(int(q2_list[0]), int(q2_list[1]), int(q2_list[2]))
     q3 = datetime.datetime(int(q3_list[0]), int(q3_list[1]), int(q3_list[2]))
     q4 = datetime.datetime(int(q4_list[0]), int(q4_list[1]), int(q4_list[2]))
-
-    today = datetime.now()
+    summer = datetime.datetime(int(summer_list[0]), int(summer_list[1]), int(summer_list[2]))
+    today = datetime.datetime.now()
+    one_day = datetime.timedelta(days=1)
     if fy:
-        return [q1, summer - timedelta(days=1)]
+        return [q1, summer - one_day]
     else:
         if q3 > today:
-            return [q1, q3 - timedelta(days=1)]
+            return [q1, q3 - one_day]
         else:
-            return [q3, summer - timedelta(days=1)]
+            return [q3, summer - one_day]
 
 
 def which_quarter_today(*, p_filename=''):
