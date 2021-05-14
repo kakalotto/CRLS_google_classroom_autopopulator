@@ -27,7 +27,7 @@ def quarter_dates(*, fy=False, p_filename=''):
     q2_list = q2.split('/')
     q3_list = q3.split('/')
     q4_list = q4.split('/')
-    summer_list =  summer.split('/')
+    summer_list = summer.split('/')
 
     q1 = datetime.datetime(int(q1_list[0]), int(q1_list[1]), int(q1_list[2]))
     q2 = datetime.datetime(int(q2_list[0]), int(q2_list[1]), int(q2_list[2]))
