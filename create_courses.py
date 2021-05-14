@@ -5,7 +5,6 @@ from generate_sheets_credential import generate_sheets_credential
 from generate_classroom_credential import generate_classroom_credential
 
 SHEET_NAME = 'Courses'
-
 print("Running create_courses.py")
 config = configparser.ConfigParser()
 config_filename = "google_classroom_tools.ini"
@@ -80,4 +79,3 @@ for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
                 raise Exception("Possible errors.\n  If 'requested entity already exists', maybe already have topic {}."
                                 "\n If 'requested entity not found', then the course id {} may not exist.\n)."
                                 .format(topic, values))
-
