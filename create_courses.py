@@ -1,6 +1,5 @@
 import googleapiclient.errors
 import configparser
-
 from generate_sheets_credential import generate_sheets_credential
 from generate_classroom_credential import generate_classroom_credential
 
