@@ -3,7 +3,7 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
     """
     Sends emails to students letting them know what assignments are missing
     :param p_config_filename: Name of the configuration filename (str)
-    :param p_gc_name: Name of Google classroom to look through (string)
+    :param p_gc_name: Name of Google classroom to look  (string)
     :param p_send_email: Boolean whether to send email (Bool)
     :param p_teachercc: email address to cc on this class (string)
     :param p_message: Email message to append for this class (string)
@@ -81,7 +81,7 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
     for message in messages:
         for key in message:
             email_address = email_dict[key]
-            print("This person " + str(email_address) + " is missing these (past due) assignments ")
+            # print("This person " + str(email_address) + " is missing these (past due) assignments ")
             if not message[key]:
                 message[key] = 'Nothing! You have everything turned in that is due.  Great work!'
             else:
@@ -92,6 +92,17 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
             message[key] += "\n\n" + p_message
 
             message[key] += '\n\nThis is an automated email\n\n'
+
+            # Debug info here
+            if email_address in p_scholar_guardians.keys():
+                print("Email address to send to: " + email_address + ',' +
+                      p_scholar_guardians[email_address])
+            else:
+                print("Email address to send to: " + email_address)
+            if p_teachercc:
+                print("teacher cc: " + str(p_teachercc))
+            else:
+                print("no teacher cc")
             print("This is the message that will be/would have been sent:")
             print(message[key])
             msg_text = message[key]

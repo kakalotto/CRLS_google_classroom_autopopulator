@@ -25,7 +25,6 @@ def generate_docs_credential():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-#            flow = InstalledAppFlow.from_client_secrets_file('credentials_docs_old.json', scopes)
             flow = InstalledAppFlow.from_client_secrets_file('credentials_docs.json', scopes)
             creds = flow.run_local_server()
             # Save the credentials for the next run
