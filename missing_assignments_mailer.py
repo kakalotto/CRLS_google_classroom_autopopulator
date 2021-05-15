@@ -1,9 +1,13 @@
-def missing_assignments_mailer(p_config_filename, p_gc_name, p_mailerinfo):
+def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
+                               p_teachercc='', p_message='', p_scholar_guardians=''):
     """
     Sends emails to students letting them know what assignments are missing
     :param p_config_filename: Name of the configuration filename (str)
     :param p_gc_name: Name of Google classroom to look through (string)
-    :param p_mailerinfo: List of 3 items.  message1 (string), message2 (string), Boolean whether to mail or not (Bool)
+    :param p_send_email: Boolean whether to send email (Bool)
+    :param p_teachercc: email address to cc on this class (string)
+    :param p_message: Email message to append for this class (string)
+    :param p_scholar_guardians: Dictionary of keys scholar emails, values guardian emails.
     :return: none
     """
     import datetime
@@ -28,9 +32,9 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_mailerinfo):
     for student in students:
         student_id = student['userId']
         student_profiles = service_classroom.userProfiles().get(userId=student_id, ).execute()
-        email_dict[student_id] = student_profiles['emailAddress']
-        print(student_profiles)
-
+        email_address = student_profiles['emailAddress']
+        email_dict[student_id] = email_address
+        print(email_address)
     # get all assignments from Google classroom
     print("Getting all assignments from Google classroom")
     assignments_id_dict = {}
@@ -70,15 +74,10 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_mailerinfo):
                                 assignments_id_dict[coursework_id], link)
         messages.append(message_dict)
 
-    # send the messages
-    p_message = p_mailerinfo[0]
-    send_email = p_mailerinfo[1]
-    p_cc = p_mailerinfo[2]
-
-    if send_email:
+    if p_send_email:
         service_gmail = generate_gmail_credential()
 
-    print("SEND EMAIL IS THIS" + str(send_email))
+    print("SEND EMAIL IS THIS" + str(p_send_email))
     for message in messages:
         for key in message:
             email_address = email_dict[key]
@@ -97,11 +96,14 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_mailerinfo):
             print(message[key])
             msg_text = message[key]
 
-            if send_email:
+            if p_send_email:
                 email_message = MIMEMultipart()
-                email_message['to'] = email_address
-                if p_cc:
-                    email_message['cc'] = p_cc
+                if email_address in p_scholar_guardians.keys():
+                    email_message['to'] = email_address + ',' + p_scholar_guardians[email_address]
+                else:
+                    email_message['to'] = email_address
+                if p_teachercc:
+                    email_message['cc'] = p_teachercc
                 email_message['subject'] = p_gc_name + '  assignments report'
                 email_message.attach(MIMEText(msg_text, 'plain'))
                 raw_string = base64.urlsafe_b64encode(email_message.as_bytes()).decode()
@@ -110,4 +112,3 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_mailerinfo):
             else:
                 print("send_message was sent to 0.  Emails were not sent.\n"
                       "To send emails, switch send_email to 1 in this file: " + str(p_config_filename) + "\n\n")
-
