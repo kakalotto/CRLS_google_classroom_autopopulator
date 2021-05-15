@@ -1,4 +1,5 @@
-def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EPOI', classroom_id='MTY0OTY1NDEyNjg3',
+def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EPOI',
+                           classroom_id='MTY0OTY1NDEyNjg3',
                            spreadsheet_id='1ZenTcQlCQhbYvBvPOVq8XIB2FQgseIGHH4gTBTcw-KY', sheet_id='APCSP_S1_P1',
                            header_text='AP CSP\n', course_id=164978040288,
                            course_contract_link='https://docs.google.com/document/d/'
@@ -23,10 +24,10 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
     import re
     import calendar
     import datetime
-    from copy import deepcopy
+    # from copy import deepcopy
     from generate_docs_credential import generate_docs_credential
     from generate_sheets_credential import generate_sheets_credential
-    from generate_classroom_credential import generate_classroom_credential
+    from generate_ro_classroom_credential import generate_ro_classroom_credential
     from helper_functions.dr_lam_functions import add_table, delete_entire_document, get_text, \
         add_regular_text, add_bold_normal, add_italic_normal, add_link, get_assignment_link, iter4obj_2_list, \
         insert_page_break
@@ -42,7 +43,7 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
 
     service_doc = generate_docs_credential()
     service_sheets = generate_sheets_credential()
-    service_classroom = generate_classroom_credential()
+    service_classroom = generate_ro_classroom_credential()
 
     calendar_obj = calendar.Calendar()
 
@@ -164,7 +165,7 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
             # Make a new calendar here
             # print("Making new calendar here!")
             cal_month = int(month)
-            old_cal_list = deepcopy(cal_list)  # save the old cal list
+            # old_cal_list = deepcopy(cal_list)  # save the old cal list
 
             # Skip to the end of the month
             for j in range(cal_list_counter, 42):
@@ -316,7 +317,6 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
             # Go to the next cell after printing out today's stuff
             # last_index += 2
             # print("This is last index at end of day" + str(last_index))
-
 
     print("Printing out the schedule now...\n")
     # print(batch_requests)
