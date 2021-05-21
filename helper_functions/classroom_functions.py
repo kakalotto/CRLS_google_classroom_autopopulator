@@ -128,23 +128,53 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
     return assignments_scores_to_aspen
 
 
-def verify_due_date_exists(p_courseworks):
+def verify_due_date_exists(p_courseworks, ignore_noduedate):
     """
     Verifies every assignment has a due date
     :param p_courseworks:  courseworks list of coursework objects
+    :param ignore_noduedate: Boolean, which tells me if I should not care if assignment has no due date.
+
     :return: NOne
     """
 
     bad_courseworks = []
+    new_courseworks = []
     for coursework in p_courseworks:
-        if 'dueDate' not in coursework:
+        # print(coursework)
+        if 'dueDate' not in coursework and ignore_noduedate is False:
             bad_courseworks.append(coursework['title'])
+        elif 'dueDate' not in coursework and ignore_noduedate:
+            creationtime_list = coursework['creationTime'].split('T')
+            print(creationtime_list)
+            creation_date = creationtime_list[0]
+            creation_time = creationtime_list[1]
+            creation_date_list = creation_date.split('-')
+            creation_year = creation_date_list[0]
+            creation_month = creation_date_list[1]
+            creation_day = creation_date_list[2]
+            new_coursework = coursework
+            # 'creationTime': '2021-05-06T12:11:29.408
+            #dueDate': {'year': 2021, 'month': 5, 'day': 8}, 'dueTime': {'hours': 3, 'minutes': 59}
+            new_coursework['dueDate'] = {'year': creation_year, 'month': creation_month, 'day': creation_day}
+            creation_time_list = creation_time.split(':')
+            creation_hour = creation_time_list[0]
+            creation_minute = creation_time_list[1]
+            new_coursework['dueTime'] = {'hours': creation_hour, 'minutes': creation_minute}
+            new_courseworks.append(new_coursework)
+        elif 'dueDate' in coursework and ignore_noduedate:
+            new_courseworks.append(coursework)
     if bad_courseworks:
         print((f"Every assignment should have a due date.  Here are the assignments without a due date:"
                f" {bad_courseworks} \nProgram will exit now."))
         input("Press enter to continue.")
         raise ValueError(f"Every assignment should have a due date.  Here are the assignments without a due date:"
                          f" {bad_courseworks}  \nProgram will exit now.")
+
+    if ignore_noduedate is False:
+        return p_courseworks
+    else:
+        return new_courseworks
+
 
 
 def verify_points_exists(p_courseworks):
