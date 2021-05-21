@@ -136,6 +136,9 @@ def verify_due_date_exists(p_courseworks, ignore_noduedate):
 
     :return: NOne
     """
+    import datetime
+    from helper_functions.quarters import which_quarter_today
+
 
     bad_courseworks = []
     new_courseworks = []
@@ -152,9 +155,17 @@ def verify_due_date_exists(p_courseworks, ignore_noduedate):
             creation_year = creation_date_list[0]
             creation_month = creation_date_list[1]
             creation_day = creation_date_list[2]
+
             new_coursework = coursework
             # 'creationTime': '2021-05-06T12:11:29.408
             #dueDate': {'year': 2021, 'month': 5, 'day': 8}, 'dueTime': {'hours': 3, 'minutes': 59}
+            duedate_datetime = datetime.datetime(int(creation_year), int(creation_month), int(creation_day))
+            today_quarter = which_quarter_today()
+            if duedate_datetime < today_quarter:
+                continue
+#                creation_year = today_quarter.year
+#                creation_month = today_quarter.month
+#                creation_day = today_quarter.day
             new_coursework['dueDate'] = {'year': creation_year, 'month': creation_month, 'day': creation_day}
             creation_time_list = creation_time.split(':')
             creation_hour = creation_time_list[0]
