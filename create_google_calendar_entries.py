@@ -1,4 +1,4 @@
-def create_google_calendar_entries(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EPOI',
+def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_lPT8EPOI',
                            classroom_id='MTY0OTY1NDEyNjg3',
                            spreadsheet_id='1ZenTcQlCQhbYvBvPOVq8XIB2FQgseIGHH4gTBTcw-KY', sheet_id='APCSP_S1_P1',
                            header_text='AP CSP\n', course_id=164978040288,
@@ -22,6 +22,7 @@ def create_google_calendar_entries(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-H
     :return: none
     """
     from generate_calendar_credential import generate_calendar_credential
+    from helper_functions.calendar_functions import get_calendars, get_calendar_id
     import re
     import calendar
     import datetime
@@ -38,3 +39,10 @@ def create_google_calendar_entries(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-H
     from helper_functions.read_in_holidays import read_in_holidays
 
     service_calendar = generate_calendar_credential()
+    calendars = get_calendars(service_calendar)
+    id = get_calendar_id('AP Computer Science Principles S2P4', calendars)
+    print(id)
+    calendar_items = service_calendar.events().list(calendarId=id).execute()
+    calendar_items = calendar_items['items']
+    for item in calendar_items:
+        print(item)
