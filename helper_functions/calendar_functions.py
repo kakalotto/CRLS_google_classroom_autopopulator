@@ -35,3 +35,26 @@ def get_calendar_id(p_name, p_calendars):
     else:
         id = candidate_calendars[0]['id']
         return id
+
+#
+from apiclient.http import BatchHttpRequest
+#
+# def insert_event(request_id, response, exception):
+#   if exception is not None:
+#     # Do something with the exception
+#      pass
+#   else:
+#     # Do something with the response
+#     pass
+#
+# service = build('calendar', 'v3')
+#
+# batch = BatchHttpRequest(callback=insert_event)
+#
+# batch.add(service.events().quickAdd(calendarId="you@domain.com",
+#   text="Lunch with Jim on Friday"))
+# batch.add(service.events().quickAdd(calendarId="you@domain.com",
+#   text="Dinner with Amy on Saturday"))
+# batch.add(service.events().quickAdd(calendarId="you@domain.com",
+#   text="Breakfast with John on Sunday"))
+# batch.execute(http=http)
