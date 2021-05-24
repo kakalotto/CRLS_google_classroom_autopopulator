@@ -36,8 +36,12 @@ def aspen_login(p_driver, *, username='', password=''):
 
     if username and password:
         print("Login supplied via script.")
+        wait_for_element(p_driver, p_xpath_el="//input[@class='logonInput']")
+        wait_for_element(p_driver, p_xpath_el="//input[@name='password']")
+        print("sending pasword and usernamne")
         p_driver.find_element_by_xpath("//input[@class='logonInput']").send_keys(username)
         p_driver.find_element_by_xpath("//input[@name='password']").send_keys(password)
+        wait_for_element(p_driver, p_xpath_el="//button")
         p_driver.find_element_by_xpath("//button").click()
     else:
         print("Login credentials not supplied.  Manual login")
@@ -141,9 +145,14 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
     p_driver.find_element_by_xpath(xpath).click()
     xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select'
     wait_for_element(p_driver, p_xpath_el=xpath)
+
     p_driver.find_element_by_xpath(xpath).click()  # clicks on Grade Columns ALL (all categories)
+    xpath += "/option[text()='All']"
+    wait_for_element(p_driver, p_xpath_el=xpath)
+    p_driver.find_element_by_xpath(xpath).click()
     wait_for_element(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
     wait_for_element(p_driver, p_xpath_el="//a")
+    wait_for_element(p_driver, p_xpath_el="//select[@name='termFilter']")  # term pulldown menu
 
 
 def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_conn, p_category='c'):
@@ -522,13 +531,16 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
     from selenium.webdriver.common.keys import Keys
 
     from helper_functions.db_functions import execute_sql, query_db
+
     for key in p_assignments_from_classroom.keys():
         gc_assignment_name = key
         name_scores = p_assignments_from_classroom[key]
         for name_score in name_scores:
             gc_student = name_score[0]
             gc_score = name_score[1]
-
+            if abs(int(gc_score) - gc_score) > 0.01:
+                print("Rounding up assignment score to nearest 1")
+                gc_score = round(gc_score)
             print(f"test assignment {gc_assignment_name} test_name {gc_student} test_score {gc_score}")
 
             assignment_col_names = []
@@ -553,6 +565,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
 
                 # print(f"aspen col name XX{aspen_assignment_col_name}XX scholar_id {aspen_scholar_id}")
                 # print(f"p_aspen_assignments {p_aspen_assignments}")
+
                 cell_id = p_aspen_assignments[col_name] + '|' + aspen_scholar_id
                 edit_cell_id = 'e' + cell_id
 
@@ -570,6 +583,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                         gc_score = 1
                     grade_element = p_driver.find_element_by_id(cell_id)
                     action.move_to_element(grade_element).perform()
+                    print("jjj this cell ID " + str(cell_id))
                     grade_element.click()
                     # wait_for_element(p_driver, p_id=edit_cell_id)
                     grade_element2 = p_driver.find_element_by_id(edit_cell_id)

@@ -1,12 +1,14 @@
 def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_knowledge_completion=False,
-                              username='', password='', p_config_filename='crls_teacher_tools.ini'):
+                              username='', password='', p_config_filename='crls_teacher_tools.ini',
+                              p_ignore_noduedate=False):
     from generate_ro_classroom_credential import generate_ro_classroom_credential
     from helper_functions.aspen_functions import generate_driver, aspen_login,  goto_assignments_this_quarter, \
         goto_scores_this_quarter, get_student_ids_from_aspen, get_assignments_and_assignment_ids_from_aspen, \
         input_assignments_into_aspen
     from helper_functions.quarters import which_quarter_today, which_quarter_today_string
     from helper_functions.classroom_functions import get_assignments_from_classroom, class_name_2_id, \
-        get_student_profiles, get_assignment_scores_from_classroom, scrub_assignment_scores_student_id
+        get_student_profiles, get_assignment_scores_from_classroom, scrub_assignment_scores_student_id, \
+        verify_due_date_exists
     from helper_functions.db_functions import create_connection, execute_sql, query_db
     import time
 
@@ -18,9 +20,17 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
     course_id = class_name_2_id(service_classroom, p_gc_classname)
     courseworks = get_assignments_from_classroom(service_classroom, course_id, today_quarter_obj)
 
-    print("Here are the Google classroom assignments from this quarter:")
+    print("Here are the Google classroom assignments from this quarter or with no due date")
     for coursework in courseworks:
         print(coursework['title'])
+
+    # Crash out if there is no due date for assignment unless p_ignore_noduedaste is True.
+    courseworks = verify_due_date_exists(courseworks, p_ignore_noduedate)
+    print("\nHere are the Google classroom assignments that we will try to process")
+    for coursework in courseworks:
+        print(coursework['title'])
+
+
     # Get student profiles
     gc_student_profiles = get_student_profiles(service_classroom, course_id)
     print("Here are Google classroom student profiles")

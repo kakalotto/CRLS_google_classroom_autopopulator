@@ -96,6 +96,8 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
     :param students_dict: dictionary with keys id and name, student INFo and IDs (dict)
     :param p_courseworks: Dictionary of student courseworks in Google classroom
     :param p_course_id: ID of the course (str)
+    :param p_ignore_noduedate: Whether to ignore whether or not we have no due date on assignments (False))
+    :param p_ignore_noduedate: Ignore that some assignments have no due date.  If this is True, it will use quarters
     :return: dictionary of lists.  assignments_scores_to_aspen = {'python1.040': [ [111142, 40], [123123, 50]} etc...
     """
     import datetime
@@ -109,7 +111,7 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
         coursework_title = coursework['title']
         if 'dueDate' in coursework:
             due_date = coursework['dueDate']
-            due_date_obj = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
+            due_date_obj = datetime.datetime(int(due_date['year']), int(due_date['month']), int(due_date['day']))
             if due_date_obj > p_quarter_start_obj:
                 student_works = p_service_classroom.courses(). \
                     courseWork().studentSubmissions().list(courseId=p_course_id, courseWorkId=coursework_id).execute()
@@ -125,7 +127,57 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
                                 assignments_scores_to_aspen[coursework_title].append([student_name, grade])
                             else:
                                 assignments_scores_to_aspen[coursework_title] = [[student_name, grade]]
+
     return assignments_scores_to_aspen
+
+
+def creation_time_to_coursework_duedate(p_creationtime):
+    """
+    converts creation time from Google classroom coursework to datetime object of creation time
+    :param p_creationtime: Something like this: 2021-05-06T12:11:29.408
+    :return: Date time object of the DATE of this creation time
+    """
+    import datetime
+
+    creationtime_list = p_creationtime.split('T')
+    creation_date = creationtime_list[0]
+    # creation_time = creationtime_list[1]
+    creation_date_list = creation_date.split('-')
+    creation_year = creation_date_list[0]
+    creation_month = creation_date_list[1]
+    creation_day = creation_date_list[2]
+    creation_date_obj = datetime.datetime(int(creation_year), int(creation_month), int(creation_day))
+    return creation_date_obj
+
+
+def creation_time_to_coursework_duedate(p_creationtime):
+    """
+    converts creation time from Google classroom coursework to datetime object of creation time
+    :param p_creationtime: Something like this: 2021-05-06T12:11:29.408
+    :return: list of year, month, day
+    """
+    creationtime_list = p_creationtime.split('T')
+    creation_date = creationtime_list[0]
+    # creation_time = creationtime_list[1]
+    creation_date_list = creation_date.split('-')
+    creation_year = creation_date_list[0]
+    creation_month = creation_date_list[1]
+    creation_day = creation_date_list[2]
+    return [creation_year, creation_month, creation_day]
+
+
+def creation_time_to_coursework_duetime(p_creationtime):
+    """
+    converts creation time from Google classroom coursework to datetime object of creation time
+    :param p_creationtime: Something like this: 2021-05-06T12:11:29.408
+    :return: list of hour minute
+    """
+    creationtime_list = p_creationtime.split('T')
+    creation_time = creationtime_list[1]
+    creation_time_list = creation_time.split(':')
+    creation_hour = creation_time_list[0]
+    creation_minute = creation_time_list[1]
+    return [creation_hour, creation_minute]
 
 
 def verify_due_date_exists(p_courseworks, ignore_noduedate):
@@ -147,30 +199,20 @@ def verify_due_date_exists(p_courseworks, ignore_noduedate):
         if 'dueDate' not in coursework and ignore_noduedate is False:
             bad_courseworks.append(coursework['title'])
         elif 'dueDate' not in coursework and ignore_noduedate:
-            creationtime_list = coursework['creationTime'].split('T')
-            print(creationtime_list)
-            creation_date = creationtime_list[0]
-            creation_time = creationtime_list[1]
-            creation_date_list = creation_date.split('-')
-            creation_year = creation_date_list[0]
-            creation_month = creation_date_list[1]
-            creation_day = creation_date_list[2]
-
+            [creation_year, creation_month, creation_day] = \
+                creation_time_to_coursework_duedate(coursework['creationTime'])
+            duedate_datetime = datetime.datetime(int(creation_year), int(creation_month), int(creation_day))
             new_coursework = coursework
             # 'creationTime': '2021-05-06T12:11:29.408
             #dueDate': {'year': 2021, 'month': 5, 'day': 8}, 'dueTime': {'hours': 3, 'minutes': 59}
-            duedate_datetime = datetime.datetime(int(creation_year), int(creation_month), int(creation_day))
+#
             today_quarter = which_quarter_today()
             if duedate_datetime < today_quarter:
                 continue
-#                creation_year = today_quarter.year
-#                creation_month = today_quarter.month
-#                creation_day = today_quarter.day
-            new_coursework['dueDate'] = {'year': creation_year, 'month': creation_month, 'day': creation_day}
-            creation_time_list = creation_time.split(':')
-            creation_hour = creation_time_list[0]
-            creation_minute = creation_time_list[1]
-            new_coursework['dueTime'] = {'hours': creation_hour, 'minutes': creation_minute}
+            new_coursework['dueDate'] = {'year': int(creation_year), 'month': int(creation_month),
+                                         'day': int(creation_day)}
+            [creation_hour, creation_minute] = creation_time_to_coursework_duetime(coursework['creationTime'])
+            new_coursework['dueTime'] = {'hours': int(creation_hour), 'minutes': int(creation_minute)}
             new_courseworks.append(new_coursework)
         elif 'dueDate' in coursework and ignore_noduedate:
             new_courseworks.append(coursework)
