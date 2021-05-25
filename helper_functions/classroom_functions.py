@@ -66,6 +66,76 @@ def get_assignments_from_classroom(p_service_classroom, p_course_id, p_quarter_s
     return final_courseworks
 
 
+def add_time(p_time, p_offset):
+    """
+    adds p_offset time to original time
+    Args:
+        p_time: time (8:15 for example)  (string)
+        p_offset: time to add to original time in minutes
+    Returns:
+        list of hour and minute in 24h format (i.e. [15, 55]
+    """
+    import datetime
+    time_obj = datetime.datetime.now()
+    [hour, minute] = p_time.split(':')
+    time_obj.replace(hour=hour, minute=minute)
+    one_minute = datetime.timedelta(minutes=1)
+    offset_obj = p_offset * one_minute
+    return offset_obj.hour, offset_obj.min
+
+
+def get_due_time(p_days_to_complete, p_section, *, p_filename='', offset=5, utc=True):
+    """
+    Gets the due time for an assignment.  OR gets calendar time
+    Args:
+        p_days_to_complete: How many days to complete.  If zero, then due time is same day (int)
+        p_section: Section from Google classroom or Calendar(string).  used to extract what period
+        p_filename: Filename of config file with times (str)
+        offset: How many minutes to add to original (int)
+        utc: Whether or not time is in UTC mode (bool)
+
+    Returns:
+            list of hour and minute in 24h format (i.e. [15, 55] of due time
+    """
+    import re
+    import configparser
+    import datetime
+    config = configparser.ConfigParser()
+    if not p_filename:
+        p_filename = "crls_teacher_tools.ini"
+    config.read(p_filename)
+
+    if 'PERIODS' in config:
+        quarters = config['PERIODS']
+        p1 = quarters['q1']
+        p2 = quarters['q2']
+        p3 = quarters['q3']
+        p4 = quarters['q4']
+    else:
+        raise ValueError("In your " + p_filename + " ini file, need to have a section called PERIODS")
+
+    is_p1 = re.search('P1', p_section, re.X | re.M | re.S)
+    is_p2 = re.search('P2', p_section, re.X | re.M | re.S)
+    is_p3 = re.search('P3', p_section, re.X | re.M | re.S)
+    is_p4 = re.search('P4', p_section, re.X | re.M | re.S)
+
+    # All times are -4 (UTC TO EDT converter)
+    if int(p_days_to_complete) == 0:
+        p_hours = 18
+        p_minutes = 29
+    elif is_p1:
+        [p_hours, p_minutes] = add_time(p1, offset)
+    elif is_p2:
+        [p_hours, p_minutes] = add_time(p2, offset)
+    elif is_p3:
+        [p_hours, p_minutes] = add_time(p3, offset)
+    elif is_p4:
+        [p_hours, p_minutes] = add_time(p4, offset)
+    if utc:
+        p_hours += 4
+    return [p_hours, p_minutes]
+
+
 def get_student_profiles(p_service_classroom, course_id):
     """
     Gets the student profiles, given a particular classroom in GC

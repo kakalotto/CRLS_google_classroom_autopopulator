@@ -8,9 +8,8 @@ def create_assignments_announcements(spreadsheet_id):
     from generate_classroom_credential import generate_classroom_credential
 
     from helper_functions.get_google_drive_id import get_google_drive_id
-    from helper_functions.get_all_sheets import get_all_sheets
     from helper_functions.read_course_id import read_course_id
-    from helper_functions.sheets_functions import read_course_daily_data_all
+    from helper_functions.sheets_functions import read_course_daily_data_all, get_all_sheets
     from helper_functions.is_in_past import is_in_past
     from helper_functions.read_day_info import read_day_info
     from helper_functions.read_lesson_plan import read_lesson_plan

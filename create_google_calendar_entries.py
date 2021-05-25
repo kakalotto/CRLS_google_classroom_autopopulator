@@ -5,7 +5,7 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
                            course_contract_link='https://docs.google.com/document/d/'
                                                 '1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/edit',
                            zoom_links=None,
-                           assignments_dictionary=None, fy=False):
+                           assignments_dictionary=None):
     """
     This creates a calendar document with daily activities, items due and notes.  Named after Dr. Lam, who does
     the same thing
@@ -25,7 +25,7 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
 
     from generate_calendar_credential import generate_calendar_credential
 
-    from helper_functions.calendar_functions import get_calendars, get_calendar_id
+    from helper_functions.calendar_functions import get_calendars, get_calendar_id, add_to_event_adds
     from helper_functions.classroom_functions import class_name_2_id
     import re
     import calendar
@@ -44,21 +44,28 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     service_calendar = generate_calendar_credential()
     service_classroom_ro = generate_ro_classroom_credential()
     service_sheets = generate_sheets_credential()
-    [q_start, q_end] = quarter_dates(fy=fy)
-    events = []
-    calendars = get_calendars(service_calendar)
-    calendar_id = get_calendar_id('test this calendar', calendars)
-    print(calendar_id)
-    calendar_items = service_calendar.events().list(calendarId=calendar_id).execute()
-    calendar_items = calendar_items['items']
-    print("Got calendar items")
-    for item in calendar_items:
-        print(item)
 
-    # Read Google classroom for all of the course info
-    print("Geting Google classroom ID")
+    # batch does things in random order. So delete before add
+    events_delete = []
+    events_add = []
+
+    # Get ID of calendar
+    calendars = get_calendars(service_calendar)
+    calendar_id = get_calendar_id(classname, calendars)
+    print(calendar_id)
+
+    # Get all events from calendar
+    calendar_events = service_calendar.events().list(calendarId=calendar_id).execute()
+    calendar_events = calendar_items['items']
+    print("Got calendar events")
+    for event in calendar_events:
+        print(event)
+
+    # Get ID of Google classroom
+    print("Getting Google classroom ID")
     course_id = class_name_2_id(service_classroom_ro, classname)
 
+    # Get assignments and materials from Google classroom
     print("Getting assignments from Google Classroom")
     courseworks = service_classroom_ro.courses().courseWork().list(courseId=course_id).execute().get('courseWork', [])
     for coursework in courseworks:
@@ -66,52 +73,61 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     materials = service_classroom_ro.courses(). \
         courseWorkMaterials().list(courseId=course_id).execute().get('courseWorkMaterial', [])
 
+    # Read in everything from Google sheet (to put in Today and Notes)
     sheet_values = read_course_daily_data_all(spreadsheet_id, sheet_id, service_sheets)
+
+    # Loop over Google sheet, add to events_add and events_delete
     for i, value in enumerate(sheet_values):
         date = value[1]
         [month, dom, year] = date.split('/')
         date_obj = datetime.datetime(int(year), int(month), int(dom))
         print(date_obj)
-        today_obj = datetime.datetime(int(year), int(month), int(dom))
+        today_obj = datetime.datetime.now()
         if date_obj < today_obj:
             # print("skipping, this date is before today")
             continue
 
         # do "Today"
-        all_assignments = value[3]
-        assignments = all_assignments.split('and ')
-        for assignment in assignments:
-            # clean the assignment up
-            clean_assignment = re.sub(r'^\s+', r'', assignment)
-            clean_assignment = re.sub(r'\s+$', r'', clean_assignment)
+        print(date_obj)
+        is_assignment = True
+        is_note = True
+        try:
+            all_assignments = value[3]
+        except TypeError:
+            is_assignment = False
+        try:
+            note = value[7]
+        except TypeError:
+            is_note = False
+        if is_assignment is False and is_note is False:
+            continue
 
-            summary = 'Today: ' + clean_assignment
-            link = get_assignment_link(assignments_dictionary, clean_assignment, courseworks, materials)
-            description = link
-            if clean_assignment not in calendar_items.values():
-                event = {'summary': summary, 'description': description,
-                         'start': {
-                             'dateTime': '2021-05-28T09:00:00-07:00',
-                             'timeZone': 'America/Los_Angeles',
-                         },
-                         'end': {
-                             'dateTime': '2021-05-28T17:00:00-07:00',
-                             'timeZone': 'America/Los_Angeles',
-                         },
-                         }
-                events.append(event)
-            else:
-                # Check to see if they are the same date
-                for event in events:
-                    if re.search('Assignment', event['summary']):
-                        continue
-                    elif summary == event['summary']:
-                        print("yes")
-                        # test_datetime =
-                        # if different
-                        # delete old
-                        # batch put in new
-                        # Check t
+        if is_assignment:
+            assignments = all_assignments.split('and ')
+            for assignment in assignments:
+                # clean the assignment up
+                clean_assignment = re.sub(r'^\s+', r'', assignment)
+                clean_assignment = re.sub(r'\s+$', r'', clean_assignment)
+
+                summary = 'Today: ' + clean_assignment
+                link = get_assignment_link(assignments_dictionary, clean_assignment, courseworks, materials)
+                description = link
+
+                # Brand new one
+                if clean_assignment not in calendar_events.values():
+                    events_add = add_to_event_adds(events_add, summary, description, year + '-' + month + '-' + date)
+                else:
+                    # Check to see if they are the same date
+                    for event in events:
+                        if re.search('Assignment', event['summary']):
+                            continue
+                        elif summary == event['summary']:
+                            print("yes")
+                            # test_datetime =
+                            # if different
+                            # delete old
+                            # batch put in new
+                            # Check t
 
             # Do notes
             #             notes = ' '

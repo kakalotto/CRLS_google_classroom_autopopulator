@@ -4,7 +4,7 @@ from generate_sheets_credential import generate_sheets_credential
 from generate_classroom_credential import generate_classroom_credential
 
 from helper_functions.sheets_functions import read_in_holidays
-from helper_functions.get_due_time import get_due_time
+from helper_functions.classroom_functions import get_due_time
 
 # stuff is from post_assignment_reschedule
 

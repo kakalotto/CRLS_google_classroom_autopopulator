@@ -9,7 +9,7 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
     import googleapiclient
 
     from helper_functions.get_due_date import get_due_date
-    from helper_functions.get_due_time import get_due_time
+    from helper_functions.classroom_functions import get_due_time
     from helper_functions.date_to_ISO8601 import date_to_iso8601
     from helper_functions.get_topic_ids import get_topic_ids
 
