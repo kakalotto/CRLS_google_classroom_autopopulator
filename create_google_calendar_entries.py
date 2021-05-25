@@ -22,6 +22,8 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     :return: none
     """
     from generate_calendar_credential import generate_calendar_credential
+    from generate_ro_classroom_credential import generate_ro_classroom_credential
+
     from helper_functions.calendar_functions import get_calendars, get_calendar_id
     import re
     import calendar
@@ -39,10 +41,76 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     from helper_functions.read_in_holidays import read_in_holidays
 
     service_calendar = generate_calendar_credential()
+    service_classroom_ro = generate_ro_classroom_credential()
+
     calendars = get_calendars(service_calendar)
-    id = get_calendar_id('AP Computer Science Principles S2P4', calendars)
+    id = get_calendar_id('test this calendar', calendars)
     print(id)
     calendar_items = service_calendar.events().list(calendarId=id).execute()
     calendar_items = calendar_items['items']
     for item in calendar_items:
         print(item)
+
+    # Read Google classroom for all of the course info
+    print("Getting assignments from Google Classroom")
+    courseworks = service_classroom_ro.courses().courseWork().list(courseId=course_id).execute().get('courseWork', [])
+
+
+    event = {
+        'summary': 'Google I/O 2015',
+        'location': '800 Howard St., San Francisco, CA 94103',
+        'description': 'A chance to hear more about Google\'s developer products.',
+        'start': {
+            'dateTime': '2021-05-28T09:00:00-07:00',
+            'timeZone': 'America/Los_Angeles',
+        },
+        'end': {
+            'dateTime': '2021-05-28T17:00:00-07:00',
+            'timeZone': 'America/Los_Angeles',
+        },
+        'reminders': {
+            'useDefault': False,
+            'overrides': [
+                {'method': 'email', 'minutes': 24 * 60},
+                {'method': 'popup', 'minutes': 10},
+            ],
+        },
+    }
+
+    event2 = {
+        'summary': 'Rocky smash 2015',
+        'location': '800 Howard St., San Francisco, CA 94103',
+        'description': 'A chance to hear more about Google\'s developer products.',
+        'start': {
+            'dateTime': '2021-05-23T09:00:00-07:00',
+            'timeZone': 'America/Los_Angeles',
+        },
+        'end': {
+            'dateTime': '2021-05-23T17:00:00-07:00',
+            'timeZone': 'America/Los_Angeles',
+        },
+        'reminders': {
+            'useDefault': False,
+            'overrides': [
+                {'method': 'email', 'minutes': 24 * 60},
+                {'method': 'popup', 'minutes': 10},
+            ],
+        },
+    }
+    abcevent = service_calendar.events().insert(calendarId=id, body=event).execute()
+    #print(abcevent)
+
+    from googleapiclient.http import BatchHttpRequest
+    import httplib2
+    from googleapiclient import discovery
+
+
+
+    batch = service_calendar.new_batch_http_request()
+    batch.add(service_calendar.events().insert(calendarId=id, body=event))
+    batch.add(service_calendar.events().insert(calendarId=id, body=event2))
+    batch.execute()
+    # batch.add(service.calendars().insert(body={'summary': 'Using batch'}, fields='id'), callback=.., request_id=..)
+    # batch.execute(http=http)
+
+
