@@ -11,7 +11,7 @@ def post_assignment_reschedule(p_assignment, p_date, p_course_id, p_coursework_i
     import datetime
 
     from helper_functions.date_to_ISO8601 import date_to_iso8601
-    from helper_functions.read_in_holidays import read_in_holidays
+    from helper_functions.sheets_functions import read_in_holidays
     from helper_functions.get_due_date import get_due_date
 
     # Misc. data formatting get new schedule date year, month, day of month

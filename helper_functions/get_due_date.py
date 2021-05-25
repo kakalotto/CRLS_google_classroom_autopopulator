@@ -7,7 +7,7 @@
 
 def get_due_date(p_post_day, days_until_due, spreadsheet_id, service):
     import datetime
-    from helper_functions.read_in_holidays import read_in_holidays
+    from helper_functions.sheets_functions import read_in_holidays
 
     format_str = '%m-%d-%Y'
     p_post_day_obj = datetime.datetime.strptime(p_post_day, format_str)

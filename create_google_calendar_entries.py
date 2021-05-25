@@ -39,7 +39,7 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     from helper_functions.dr_lam_requests import requests_header, requests_links
     from helper_functions.sheets_functions import read_course_daily_data_all
     from helper_functions.quarters import quarter_dates
-    from helper_functions.read_in_holidays import read_in_holidays
+    from helper_functions.sheets_functions import read_in_holidays
 
     service_calendar = generate_calendar_credential()
     service_classroom_ro = generate_ro_classroom_credential()

@@ -34,7 +34,7 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
     from helper_functions.dr_lam_requests import requests_header, requests_links
     from helper_functions.sheets_functions import read_course_daily_data_all
     from helper_functions.quarters import quarter_dates
-    from helper_functions.read_in_holidays import read_in_holidays
+    from helper_functions.sheets_functions import read_in_holidays
 
     if zoom_links is None:
         zoom_links = ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09']
