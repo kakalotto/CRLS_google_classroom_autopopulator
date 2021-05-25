@@ -49,14 +49,15 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     events_delete = []
     events_add = []
 
-    # Get ID of calendar
+    # Get ID and name of calendar
     calendars = get_calendars(service_calendar)
     calendar_id = get_calendar_id(classname, calendars)
-    print(calendar_id)
+    calendar = service_calendar.calendars().get(calendarId=calendar_id).execute()
+    calendar_name = calendar['summary']
 
     # Get all events from calendar
     calendar_events = service_calendar.events().list(calendarId=calendar_id).execute()
-    calendar_events = calendar_items['items']
+    calendar_events = calendar_events['items']
     print("Got calendar events")
     for event in calendar_events:
         print(event)
@@ -115,14 +116,16 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
 
                 # Brand new one
                 if clean_assignment not in calendar_events.values():
-                    events_add = add_to_event_adds(events_add, summary, description, year + '-' + month + '-' + date)
+                    events_add = add_to_event_adds(events_add, calendar_name,  summary, description,
+                                                   year + '-' + month + '-' + date)
                 else:
+                    print("no")
                     # Check to see if they are the same date
-                    for event in events:
-                        if re.search('Assignment', event['summary']):
-                            continue
-                        elif summary == event['summary']:
-                            print("yes")
+                    #for event in events:
+                        # if re.search('Assignment', event['summary']):
+                        #     continue
+                        # elif summary == event['summary']:
+                        #     print("yes")
                             # test_datetime =
                             # if different
                             # delete old

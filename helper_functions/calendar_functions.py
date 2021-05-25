@@ -1,4 +1,4 @@
-def add_to_event_adds(p_batches, p_cal_name, p_summary, p_description):
+def add_to_event_adds(p_batches, p_cal_name, p_summary, p_description, p_date):
     """
     Add an event to a batch of events
     Args:
@@ -6,12 +6,15 @@ def add_to_event_adds(p_batches, p_cal_name, p_summary, p_description):
         p_cal_name:  Calendar name (which will contain the period) (string)
         p_summary: Summary of event (string)
         p_description: Description of event (string)
+        p_date: Date in format 2021-05-28 (string)
 
     Returns:
         The list of events, with one extra one added
     """
     from helper_functions.classroom_functions import get_due_time
 
+    
+#    datetime_string = p_date + 'T'
     p_event = {'summary': p_summary, 'description': p_description,
                'start': {
                    'dateTime': '2021-05-28T09:00:00-07:00',
