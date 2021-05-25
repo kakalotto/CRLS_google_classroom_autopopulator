@@ -21,14 +21,14 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     :param fy: Full year or not (Boolean)
     :return: none
     """
+    import datetime
+
     from generate_calendar_credential import generate_calendar_credential
-    from generate_ro_classroom_credential import generate_ro_classroom_credential
 
     from helper_functions.calendar_functions import get_calendars, get_calendar_id
     from helper_functions.classroom_functions import class_name_2_id
     import re
     import calendar
-    import datetime
     # from copy import deepcopy
     from generate_docs_credential import generate_docs_credential
     from generate_sheets_credential import generate_sheets_credential
@@ -37,18 +37,21 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
         add_regular_text, add_bold_normal, add_italic_normal, add_link, get_assignment_link, iter4obj_2_list, \
         insert_page_break
     from helper_functions.dr_lam_requests import requests_header, requests_links
-    from helper_functions.read_course_daily_data_all import read_course_daily_data_all
+    from helper_functions.sheets_functions import read_course_daily_data_all
     from helper_functions.quarters import quarter_dates
     from helper_functions.read_in_holidays import read_in_holidays
 
     service_calendar = generate_calendar_credential()
     service_classroom_ro = generate_ro_classroom_credential()
-
+    service_sheets = generate_sheets_credential()
+    [q_start, q_end] = quarter_dates(fy=fy)
+    events = []
     calendars = get_calendars(service_calendar)
     calendar_id = get_calendar_id('test this calendar', calendars)
     print(calendar_id)
     calendar_items = service_calendar.events().list(calendarId=calendar_id).execute()
     calendar_items = calendar_items['items']
+    print("Got calendar items")
     for item in calendar_items:
         print(item)
 
@@ -60,34 +63,89 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     courseworks = service_classroom_ro.courses().courseWork().list(courseId=course_id).execute().get('courseWork', [])
     for coursework in courseworks:
         print(coursework)
+    materials = service_classroom_ro.courses(). \
+        courseWorkMaterials().list(courseId=course_id).execute().get('courseWorkMaterial', [])
 
-    event = {
-        'summary': 'Google I/O 2015',
-        'description': 'A chance to hear more about Google\'s developer products.',
-        'start': {
-            'dateTime': '2021-05-28T09:00:00-07:00',
-            'timeZone': 'America/Los_Angeles',
-        },
-        'end': {
-            'dateTime': '2021-05-28T17:00:00-07:00',
-            'timeZone': 'America/Los_Angeles',
-        },
+    sheet_values = read_course_daily_data_all(spreadsheet_id, sheet_id, service_sheets)
+    for i, value in enumerate(sheet_values):
+        date = value[1]
+        [month, dom, year] = date.split('/')
+        date_obj = datetime.datetime(int(year), int(month), int(dom))
+        print(date_obj)
+        today_obj = datetime.datetime(int(year), int(month), int(dom))
+        if date_obj < today_obj:
+            # print("skipping, this date is before today")
+            continue
 
-    }
+        # do "Today"
+        all_assignments = value[3]
+        assignments = all_assignments.split('and ')
+        for assignment in assignments:
+            # clean the assignment up
+            clean_assignment = re.sub(r'^\s+', r'', assignment)
+            clean_assignment = re.sub(r'\s+$', r'', clean_assignment)
 
-    event2 = {
-        'summary': 'Rocky Balboa',
-        'description': 'more products.',
-        'start': {
-            'dateTime': '2021-05-22T09:00:00-07:00',
-            'timeZone': 'America/Los_Angeles',
-        },
-        'end': {
-            'dateTime': '2021-05-22T17:00:00-07:00',
-            'timeZone': 'America/Los_Angeles',
-        },
+            summary = 'Today: ' + clean_assignment
+            link = get_assignment_link(assignments_dictionary, clean_assignment, courseworks, materials)
+            description = link
+            if clean_assignment not in calendar_items.values():
+                event = {'summary': summary, 'description': description,
+                         'start': {
+                             'dateTime': '2021-05-28T09:00:00-07:00',
+                             'timeZone': 'America/Los_Angeles',
+                         },
+                         'end': {
+                             'dateTime': '2021-05-28T17:00:00-07:00',
+                             'timeZone': 'America/Los_Angeles',
+                         },
+                         }
+                events.append(event)
+            else:
+                # Check to see if they are the same date
+                for event in events:
+                    if re.search('Assignment', event['summary']):
+                        continue
+                    elif summary == event['summary']:
+                        print("yes")
+                        # test_datetime =
+                        # if different
+                        # delete old
+                        # batch put in new
+                        # Check t
 
-    }
+            # Do notes
+            #             notes = ' '
+            #             if len(value) >= 8:
+            #                 notes = value[7]
+            # same check here - check to see if it's in events.  If so, then deleteold and batch the new one.
+
+    # event = {
+    #     'summary': 'Google I/O 2015',
+    #     'description': 'A chance to hear more about Google\'s developer products.',
+    #     'start': {
+    #         'dateTime': '2021-05-28T09:00:00-07:00',
+    #         'timeZone': 'America/Los_Angeles',
+    #     },
+    #     'end': {
+    #         'dateTime': '2021-05-28T17:00:00-07:00',
+    #         'timeZone': 'America/Los_Angeles',
+    #     },
+    #
+    # }
+    #
+    # event2 = {
+    #     'summary': 'Rocky Balboa',
+    #     'description': 'more products.',
+    #     'start': {
+    #         'dateTime': '2021-05-22T09:00:00-07:00',
+    #         'timeZone': 'America/Los_Angeles',
+    #     },
+    #     'end': {
+    #         'dateTime': '2021-05-22T17:00:00-07:00',
+    #         'timeZone': 'America/Los_Angeles',
+    #     },
+    #
+    # }
     #abcevent = service_calendar.events().insert(calendarId=calendar_id, body=event).execute()
     #print(abcevent)
 

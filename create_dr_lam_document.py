@@ -32,7 +32,7 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
         add_regular_text, add_bold_normal, add_italic_normal, add_link, get_assignment_link, iter4obj_2_list, \
         insert_page_break
     from helper_functions.dr_lam_requests import requests_header, requests_links
-    from helper_functions.read_course_daily_data_all import read_course_daily_data_all
+    from helper_functions.sheets_functions import read_course_daily_data_all
     from helper_functions.quarters import quarter_dates
     from helper_functions.read_in_holidays import read_in_holidays
 
