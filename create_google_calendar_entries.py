@@ -25,6 +25,7 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     from generate_ro_classroom_credential import generate_ro_classroom_credential
 
     from helper_functions.calendar_functions import get_calendars, get_calendar_id
+    from helper_functions.classroom_functions import class_name_2_id
     import re
     import calendar
     import datetime
@@ -44,21 +45,24 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     service_classroom_ro = generate_ro_classroom_credential()
 
     calendars = get_calendars(service_calendar)
-    id = get_calendar_id('test this calendar', calendars)
-    print(id)
-    calendar_items = service_calendar.events().list(calendarId=id).execute()
+    calendar_id = get_calendar_id('test this calendar', calendars)
+    print(calendar_id)
+    calendar_items = service_calendar.events().list(calendarId=calendar_id).execute()
     calendar_items = calendar_items['items']
     for item in calendar_items:
         print(item)
 
     # Read Google classroom for all of the course info
+    print("Geting Google classroom ID")
+    course_id = class_name_2_id(service_classroom_ro, classname)
+
     print("Getting assignments from Google Classroom")
     courseworks = service_classroom_ro.courses().courseWork().list(courseId=course_id).execute().get('courseWork', [])
-
+    for coursework in courseworks:
+        print(coursework)
 
     event = {
         'summary': 'Google I/O 2015',
-        'location': '800 Howard St., San Francisco, CA 94103',
         'description': 'A chance to hear more about Google\'s developer products.',
         'start': {
             'dateTime': '2021-05-28T09:00:00-07:00',
@@ -68,36 +72,23 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
             'dateTime': '2021-05-28T17:00:00-07:00',
             'timeZone': 'America/Los_Angeles',
         },
-        'reminders': {
-            'useDefault': False,
-            'overrides': [
-                {'method': 'email', 'minutes': 24 * 60},
-                {'method': 'popup', 'minutes': 10},
-            ],
-        },
+
     }
 
     event2 = {
-        'summary': 'Rocky smash 2015',
-        'location': '800 Howard St., San Francisco, CA 94103',
+        'summary': 'Rocky',
         'description': 'A chance to hear more about Google\'s developer products.',
         'start': {
-            'dateTime': '2021-05-23T09:00:00-07:00',
+            'dateTime': '2021-05-22T09:00:00-07:00',
             'timeZone': 'America/Los_Angeles',
         },
         'end': {
-            'dateTime': '2021-05-23T17:00:00-07:00',
+            'dateTime': '2021-05-22T17:00:00-07:00',
             'timeZone': 'America/Los_Angeles',
         },
-        'reminders': {
-            'useDefault': False,
-            'overrides': [
-                {'method': 'email', 'minutes': 24 * 60},
-                {'method': 'popup', 'minutes': 10},
-            ],
-        },
+
     }
-    abcevent = service_calendar.events().insert(calendarId=id, body=event).execute()
+    #abcevent = service_calendar.events().insert(calendarId=calendar_id, body=event).execute()
     #print(abcevent)
 
     from googleapiclient.http import BatchHttpRequest
@@ -107,9 +98,10 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
 
 
     batch = service_calendar.new_batch_http_request()
-    batch.add(service_calendar.events().insert(calendarId=id, body=event))
-    batch.add(service_calendar.events().insert(calendarId=id, body=event2))
+    batch.add(service_calendar.events().insert(calendarId=calendar_id, body=event2))
+    batch.add(service_calendar.events().insert(calendarId=calendar_id, body=event))
     batch.execute()
+    print(batch)
     # batch.add(service.calendars().insert(body={'summary': 'Using batch'}, fields='id'), callback=.., request_id=..)
     # batch.execute(http=http)
 

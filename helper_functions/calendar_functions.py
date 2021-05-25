@@ -39,7 +39,6 @@ def get_calendar_id(p_name, p_calendars):
         return id
 
 #
-from apiclient.http import BatchHttpRequest
 #
 # def insert_event(request_id, response, exception):
 #   if exception is not None:

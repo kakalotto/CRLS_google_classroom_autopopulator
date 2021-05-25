@@ -1,5 +1,5 @@
 from create_google_calendar_entries import create_google_calendar_entries
-create_google_calendar_entries()
+create_google_calendar_entries(classname='test this calendar')
 #from create_dr_lam_document import create_dr_lam_document
 # for gc_class in create_dr_lam_document_config.classes:
 #     document_id = gc_class['document_id']
