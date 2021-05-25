@@ -1,3 +1,29 @@
+def add_to_event_adds(p_batches, p_summary, p_description):
+    """
+    Add an event to a batch of events
+    Args:
+        p_batches: the batch of events to add (list of events)
+        p_summary: Summary of event (string)
+        p_description: Description of event (string)
+
+    Returns:
+        The list of events, with one extra one added
+    """
+
+    p_event = {'summary': p_summary, 'description': p_description,
+             'start': {
+                 'dateTime': '2021-05-28T09:00:00-07:00',
+                 'timeZone': 'America/Los_Angeles',
+             },
+             'end': {
+                 'dateTime': '2021-05-28T17:00:00-07:00',
+                 'timeZone': 'America/Los_Angeles',
+             },
+             }
+    p_batches.append(p_event)
+    return p_batches
+
+
 def get_calendars(p_service_calendar):
     """
     Gets list of all calendars in Google classroom

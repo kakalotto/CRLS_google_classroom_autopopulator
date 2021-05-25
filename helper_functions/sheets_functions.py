@@ -1,3 +1,22 @@
+def get_all_sheets(spreadsheet_id, p_service):
+    """
+    Gets the names of all of the sheets in the spreadsheet
+    Args:
+        spreadsheet_id:  ID of the Google spreadsheet (str)
+        p_service:  Google sheets API object
+
+    Returns:
+
+    """
+    sheet_metadata = p_service.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
+    sheets = sheet_metadata.get('sheets', '')
+    sheet_list = []
+    for sheet in sheets:
+        sheet_list.append(sheet['properties']['title'])
+    print('List of sheets in the {} Google sheet is: {}'.format(spreadsheet_id, sheet_list))
+    return sheet_list
+
+
 def read_course_daily_data_all(spreadsheet_id, sheet, service):
     """
     Reads in all the data about assignments, coursework, etc... from Google sheets
