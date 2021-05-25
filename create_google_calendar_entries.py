@@ -76,8 +76,8 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     }
 
     event2 = {
-        'summary': 'Rocky',
-        'description': 'A chance to hear more about Google\'s developer products.',
+        'summary': 'Rocky Balboa',
+        'description': 'more products.',
         'start': {
             'dateTime': '2021-05-22T09:00:00-07:00',
             'timeZone': 'America/Los_Angeles',
