@@ -22,3 +22,26 @@ def read_course_daily_data_all(spreadsheet_id, sheet, service):
         raise ValueError("Tried to read from course {} on spreadsheet {}, but there were no values".
                          format(sheet, spreadsheet_id))
     return values
+
+
+def read_in_holidays(spreadsheet_id, service):
+    """
+    Reads in all t holidays from Google sheets
+    :param spreadsheet_id: ID of the Google spreadsheet (str)
+    :param service: Google sheets API object
+    Returns:
+    List of holiday dates (lists)
+    """
+
+    p_holidays = []
+    range_name = 'Calendar' + '!G3:G99'  # Cells for holidays.  Max of 99, but it'll never get that high
+    result = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+    values = result.get('values', [])
+    if not values:
+        raise ValueError('Expected to see holidays filled in in cell G3:G99 of spreadsheet ID {},'
+                         ' but no nothing there.  Fill in the dates and try again.'.format(spreadsheet_id))
+    else:
+        for row in values:
+            p_holidays.append(row[0])
+    return p_holidays
+
