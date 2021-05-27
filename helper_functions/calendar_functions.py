@@ -13,7 +13,7 @@ def add_to_event_adds(p_batches, p_cal_name, p_summary, p_description, p_date):
     """
     from helper_functions.classroom_functions import get_due_time
 
-    
+
 #    datetime_string = p_date + 'T'
     p_event = {'summary': p_summary, 'description': p_description,
                'start': {
