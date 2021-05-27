@@ -565,8 +565,10 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
 
                 # print(f"aspen col name XX{aspen_assignment_col_name}XX scholar_id {aspen_scholar_id}")
                 # print(f"p_aspen_assignments {p_aspen_assignments}")
-
+                print(f"p_aspen_assignments[col_name] {p_aspen_assignments[col_name]}  aspen_scholar_id {aspen_scholar_id} "
+                      f"student name {gc_student}")
                 cell_id = p_aspen_assignments[col_name] + '|' + aspen_scholar_id
+                # need a try and except here to see otherwise need to reload page
                 edit_cell_id = 'e' + cell_id
 
                 sql = 'select * from recorded_scores WHERE id ="' + cell_id + '" AND score =' + str(gc_score)

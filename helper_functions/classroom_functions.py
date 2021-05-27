@@ -78,10 +78,12 @@ def add_time(p_time, p_offset):
     import datetime
     time_obj = datetime.datetime.now()
     [hour, minute] = p_time.split(':')
-    time_obj.replace(hour=hour, minute=minute)
+#    print(hour, minute)
+    time_obj = time_obj.replace(hour=int(hour), minute=int(minute))
     one_minute = datetime.timedelta(minutes=1)
-    offset_obj = p_offset * one_minute
-    return offset_obj.hour, offset_obj.min
+    new_time = time_obj + one_minute * p_offset
+#    print("wut" + str(time_obj) + " " + str(new_time))
+    return [new_time.hour, new_time.minute]
 
 
 def get_due_time(p_days_to_complete, p_section, *, p_filename='', offset=5, utc=True):
@@ -107,10 +109,10 @@ def get_due_time(p_days_to_complete, p_section, *, p_filename='', offset=5, utc=
 
     if 'PERIODS' in config:
         quarters = config['PERIODS']
-        p1 = quarters['q1']
-        p2 = quarters['q2']
-        p3 = quarters['q3']
-        p4 = quarters['q4']
+        p1 = quarters['p1']
+        p2 = quarters['p2']
+        p3 = quarters['p3']
+        p4 = quarters['p4']
     else:
         raise ValueError("In your " + p_filename + " ini file, need to have a section called PERIODS")
 
@@ -119,11 +121,13 @@ def get_due_time(p_days_to_complete, p_section, *, p_filename='', offset=5, utc=
     is_p3 = re.search('P3', p_section, re.X | re.M | re.S)
     is_p4 = re.search('P4', p_section, re.X | re.M | re.S)
 
+    # print(p_section)
     # All times are -4 (UTC TO EDT converter)
     if int(p_days_to_complete) == 0:
         p_hours = 18
         p_minutes = 29
     elif is_p1:
+        print("P1!!" + str(p1))
         [p_hours, p_minutes] = add_time(p1, offset)
     elif is_p2:
         [p_hours, p_minutes] = add_time(p2, offset)
@@ -132,7 +136,12 @@ def get_due_time(p_days_to_complete, p_section, *, p_filename='', offset=5, utc=
     elif is_p4:
         [p_hours, p_minutes] = add_time(p4, offset)
     if utc:
-        p_hours += 4
+        p_hours -= 3
+    print(f"newtime {p_hours} {p_minutes}")
+    if p_hours < 10:
+        p_hours = '0' + str(p_hours)
+    if p_minutes < 10:
+        p_minutes = '0' + str(p_minutes)
     return [p_hours, p_minutes]
 
 

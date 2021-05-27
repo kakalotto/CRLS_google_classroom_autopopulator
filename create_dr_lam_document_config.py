@@ -8,6 +8,7 @@ ics_2021_s2_p1 = {'document_id': '12BgUzPEsYC3Z8EuJ9aQEStRw5BSgX-EeowEcPJ3sJ-A',
                   'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
                   'assignments_dictionary': {},
                   'fy': False,
+                  'calendar_name': 'Murphy S2 P1 Intro to CS',
                   }
 it2_2021_fy_p3 = {'document_id': '1BXeTkfvxq4qMKOWT2Gshkhg7RbzgSjsW_OWUHCkBqDs',
                   'classroom_id': 'MTY0ODk5Mjc3OTU5',

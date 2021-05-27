@@ -1,31 +1,28 @@
-def add_event_starttime(p_event, ):
+def add_event_starttime(p_event, p_classname, p_datestring, *, p_offset=11):
     """
     Add a starttime to an event
     Args:
         p_event: Event with summary and description already (dict)
-
+        p_classname: class name from Google calendar (should include period. APCSP P1 S2 or something)
+        p_datestring: something like 2021-11-12
+        p_offset: offset from the start of class time (int)
     Returns:
         The list of events, with one extra one added
     """
     from helper_functions.classroom_functions import get_due_time
+    [start_hour, start_minute] = get_due_time(1, p_classname, offset=p_offset, utc=True)
+    [end_hour, end_minute] = get_due_time(1, p_classname, offset=p_offset + 1, utc=True)
+    start_time = p_datestring + 'T' + str(start_hour) + ':' + str(start_minute) + ':00-07:00'
+    end_time = p_datestring + 'T' + str(end_hour) + ':' + str(end_minute) + ':00-07:00'
 
-
-#    datetime_string = p_date + 'T'
-    p_event['start'] = some_dictionary
-    p_event['end'] = some_dictionary
-
-    # event = {
-    #     'summary': 'Google I/O 2015',
-    #     'description': 'A chance to hear more about Google\'s developer products.',
-    #     'start': {
-    #         'dateTime': '2021-05-28T09:00:00-07:00',
-    #         'timeZone': 'America/Los_Angeles',
-    #     },
-    #     'end': {
-    #         'dateTime': '2021-05-28T17:00:00-07:00',
-    #         'timeZone': 'America/Los_Angeles',
-    #     },
-
+    p_event['start'] = {
+             'dateTime': start_time,
+             'timeZone': 'America/New_York',
+         },
+    p_event['end'] = {
+             'dateTime': end_time,
+             'timeZone': 'America/New_York',
+         },
     return p_event
 
 
@@ -58,7 +55,7 @@ def get_calendar_id(p_name, p_calendars):
     candidate_calendars = []
     for calendar in p_calendars:
         # print(calendar)
-        if re.search(p_name, calendar[ 'summary']):
+        if re.search(p_name, calendar['summary']):
             candidate_calendars.append(calendar)
     if len(candidate_calendars) > 1:
         raise ValueError("The calendar you are looking for is not unique.  Here are candidate calendars: " +
@@ -66,8 +63,8 @@ def get_calendar_id(p_name, p_calendars):
     elif len(candidate_calendars) == 0:
         raise ValueError("Did not find a calendar with this name in it: " + str(p_name))
     else:
-        id = candidate_calendars[0]['id']
-        return id
+        calendar_id = candidate_calendars[0]['id']
+        return calendar_id
 
 
 def get_calendar_start_datetime(p_event):
@@ -85,4 +82,5 @@ def get_calendar_start_datetime(p_event):
     [year, month, day] = creation_time_to_coursework_duedate(start)
     event_dateobj = datetime.datetime(int(year), int(month), int(day))
     return event_dateobj
+
 
