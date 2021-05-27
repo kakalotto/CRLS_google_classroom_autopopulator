@@ -295,7 +295,6 @@ def verify_due_date_exists(p_courseworks, ignore_noduedate):
     import datetime
     from helper_functions.quarters import which_quarter_today
 
-
     bad_courseworks = []
     new_courseworks = []
     for coursework in p_courseworks:

@@ -25,7 +25,7 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
 
     from generate_calendar_credential import generate_calendar_credential
 
-    from helper_functions.calendar_functions import get_calendars, get_calendar_id, add_to_event_adds, \
+    from helper_functions.calendar_functions import get_calendars, get_calendar_id, add_event_starttime, \
         get_calendar_start_datetime
     from helper_functions.classroom_functions import class_name_2_id
     import re
@@ -68,12 +68,12 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     print(today_datetime)
     for event in calendar_events:
         if re.search('Assignment:', event['summary']):
-            print("assignment! skip " + str(event['summary']))
+            print("delete assignment! skip " + str(event['summary']))
             continue
         elif today_datetime > get_calendar_start_datetime(event):
-            print("event was in he past.  Skipping " + str(event['summary']))
+            print("delete event was in he past.  Skipping " + str(event['summary']))
         elif counter < 49:
-            print("Going to delete this one: " + str(event['summary']))
+            print("delete Going to delete this one: " + str(event['summary']))
             counter += 1
             event_id = event['id']
             batch_delete.add(service_calendar.events().delete(calendarId=calendar_id, eventId=event_id))
@@ -99,6 +99,7 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     sheet_values = read_course_daily_data_all(spreadsheet_id, sheet_id, service_sheets)
 
     # Loop over Google sheet, add to events_add and events_delete
+    batch = service_calendar.new_batch_http_request()
     for i, value in enumerate(sheet_values):
         date = value[1]
         [month, dom, year] = date.split('/')
@@ -111,48 +112,33 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
 
         # do "Today"
         print(date_obj)
-        is_assignment = True
+        is_today = True
         is_note = True
         try:
-            all_assignments = value[3]
+            all_todays = value[3]
         except TypeError:
-            is_assignment = False
+            is_today = False
         try:
             note = value[7]
         except TypeError:
             is_note = False
-        if is_assignment is False and is_note is False:
+        if is_today is False and is_note is False:
             continue
-
-        if is_assignment:
-            assignments = all_assignments.split('and ')
-            for assignment in assignments:
+        if is_today:
+            todays = all_todays.split('and ')
+            for today in todays:
                 # clean the assignment up
-                clean_assignment = re.sub(r'^\s+', r'', assignment)
-                clean_assignment = re.sub(r'\s+$', r'', clean_assignment)
+                clean_today = re.sub(r'^\s+', r'', today)
+                clean_today = re.sub(r'\s+$', r'', clean_today)
 
-                summary = 'Today: ' + clean_assignment
-                link = get_assignment_link(assignments_dictionary, clean_assignment, courseworks, materials)
+                summary = 'Today: ' + clean_today
+                link = get_assignment_link(assignments_dictionary, clean_today, courseworks, materials)
                 description = link
 
-                print(f"Here is the clean assignment {clean_assignment} here are the events {calendar_events}")
-                # Brand new one
-                if clean_assignment not in calendar_events.values():
-                    events_add = add_to_event_adds(events_add, calendar_name,  summary, description,
-                                                   year + '-' + month + '-' + date)
-                else:
-                    print("no")
-                    # Check to see if they are the same date
-                    #for event in events:
-                        # if re.search('Assignment', event['summary']):
-                        #     continue
-                        # elif summary == event['summary']:
-                        #     print("yes")
-                            # test_datetime =
-                            # if different
-                            # delete old
-                            # batch put in new
-                            # Check t
+                print(f"Here is the clean assignment: {clean_today} \nhere are the event:s {calendar_events}")
+                event = {'summary': summary, 'description': description}
+                event = add_event_starttime(event)
+                batch.add(service_calendar.events().insert(calendarId=calendar_id, body=event))
 
             # Do notes
             #             notes = ' '
@@ -197,7 +183,7 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
 
     batch = service_calendar.new_batch_http_request()
 
-    batch.add(service_calendar.events().insert(calendarId=calendar_id, body=event2))
+#    batch.add(service_calendar.events().insert(calendarId=calendar_id, body=event2))
     batch.add(service_calendar.events().insert(calendarId=calendar_id, body=event))
     batch.execute()
     print(batch)
