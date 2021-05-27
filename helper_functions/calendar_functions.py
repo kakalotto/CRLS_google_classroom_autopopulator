@@ -69,8 +69,24 @@ def get_calendar_id(p_name, p_calendars):
         id = candidate_calendars[0]['id']
         return id
 
+
+def get_calendar_start_datetime(p_event):
+    """
+    From the calendar event, converts starttime to datetime obj
+    Args:
+        p_event: calendar event from Google API (dictionary)
+    Returns:
+        datetime obj of start time
+    """
+    import datetime
+    print(p_event)
+    start = p_event['start']['dateTime']
+    [date, _] = start.split('T')
+    [year, month, day] = date.split('-')
+    event_dateobj = datetime.datetime(int(year), int(month), int(day))
+    return event_dateobj
 #
-#
+    #
 # def insert_event(request_id, response, exception):
 #   if exception is not None:
 #     # Do something with the exception

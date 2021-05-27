@@ -5,7 +5,7 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
                            course_contract_link='https://docs.google.com/document/d/'
                                                 '1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/edit',
                            zoom_links=None,
-                           assignments_dictionary=None):
+                           assignments_dictionary={}):
     """
     This creates a calendar document with daily activities, items due and notes.  Named after Dr. Lam, who does
     the same thing
@@ -25,7 +25,8 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
 
     from generate_calendar_credential import generate_calendar_credential
 
-    from helper_functions.calendar_functions import get_calendars, get_calendar_id, add_to_event_adds
+    from helper_functions.calendar_functions import get_calendars, get_calendar_id, add_to_event_adds, \
+        get_calendar_start_datetime
     from helper_functions.classroom_functions import class_name_2_id
     import re
     import calendar
@@ -46,7 +47,6 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     service_sheets = generate_sheets_credential()
 
     # batch does things in random order. So delete before add
-    events_delete = []
     events_add = []
 
     # Get ID and name of calendar
@@ -59,8 +59,29 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     calendar_events = service_calendar.events().list(calendarId=calendar_id).execute()
     calendar_events = calendar_events['items']
     print("Got calendar events")
+
+    # Delete everything after today that isn't an assignment:
+    counter = 0
+    batch_delete = service_calendar.new_batch_http_request()
+    today_datetime = datetime.datetime.today()
+    today_datetime = datetime.datetime.combine(today_datetime, datetime.datetime.min.time())
+    print(today_datetime)
     for event in calendar_events:
-        print(event)
+        if re.search('Assignment:', event['summary']):
+            print("assignment! skip " + str(event['summary']))
+            continue
+        elif today_datetime > get_calendar_start_datetime(event):
+            print("event was in he past.  Skipping " + str(event['summary']))
+        elif counter < 49:
+            print("Going to delete this one: " + str(event['summary']))
+            counter += 1
+            event_id = event['id']
+            batch_delete.add(service_calendar.events().delete(calendarId=calendar_id, eventId=event_id))
+        else:  # 50 items in list, away we go!
+            counter = 0
+            batch_delete.execute()
+            batch_delete = service_calendar.new_batch_http_request()
+    batch_delete.execute()
 
     # Get ID of Google classroom
     print("Getting Google classroom ID")
@@ -114,6 +135,7 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
                 link = get_assignment_link(assignments_dictionary, clean_assignment, courseworks, materials)
                 description = link
 
+                print(f"Here is the clean assignment {clean_assignment} here are the events {calendar_events}")
                 # Brand new one
                 if clean_assignment not in calendar_events.values():
                     events_add = add_to_event_adds(events_add, calendar_name,  summary, description,
@@ -173,8 +195,8 @@ def create_google_calendar_entries(*, classname='', document_id='1KLMCq-Nvq-fCNn
     from googleapiclient import discovery
 
 
-
     batch = service_calendar.new_batch_http_request()
+
     batch.add(service_calendar.events().insert(calendarId=calendar_id, body=event2))
     batch.add(service_calendar.events().insert(calendarId=calendar_id, body=event))
     batch.execute()
