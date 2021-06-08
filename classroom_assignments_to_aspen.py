@@ -19,7 +19,11 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content
     course_id = class_name_2_id(service_classroom, p_gc_classname)
     courseworks = get_assignments_from_classroom(service_classroom, course_id, today_quarter_obj)
 
-    # Print out for testing purposes
+    print(f"The name of the class is this: {p_gc_classname}")
+    if p_gc_classname == 'AP Computer Science Principles':
+        return
+
+    # Print out for testing purposes1
     print("initial courses")
     for coursework in courseworks:
         print(coursework['title'])
@@ -49,13 +53,14 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content
         verify_points_exists(courseworks)
     else:
         print("We are ignoring assignments without a maxpoint value in Google classroom.")
-    print("Here are the list of assignments we are putting in:")
+    print("Here is the list of assignments we are putting in:")
 
     # DB stuff; create connection, add table if not there, select all, remove duplicates from coursework
     print("Opening up the sqlite DB, which has info about classes that have already been put in Aspen.\n"
           "If you need something to edit this manually: https://sqlitebrowser.org/")
     db_filename = 'database_gc_assignments_put_in_aspen_' + p_gc_classname + '.db'
     db_conn = create_connection(db_filename)
+    print("connection created")
     sql = 'CREATE TABLE IF NOT EXISTS aspen_assignments (id varchar(60) PRIMARY KEY);'
     execute_sql(db_conn, sql)
     sql = 'SELECT * FROM aspen_assignments;'
@@ -72,6 +77,9 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content
     if len(courseworks) == 0:
         print("No assignments to enter into Aspen!")
     else:
+        print("Here are the final courseworks!")
+        for course in courseworks:
+            print(course['title'])
         # Aspen
         driver = generate_driver()
         aspen_login(driver, username=username, password=password)

@@ -6,7 +6,9 @@ def create_connection(db_file):
     """
     import sqlite3
     from sqlite3 import Error
+    import re
 
+    db_file = re.sub('/', '_', db_file)
     conn = None
     try:
         conn = sqlite3.connect(db_file)

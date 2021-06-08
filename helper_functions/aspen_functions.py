@@ -138,6 +138,12 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
     :param p_quarter: This quarter (Q1, Q3, Q3, etc...) (string)
     :return: none
     """
+    from selenium.webdriver.support import expected_conditions as ec
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.common.exceptions import TimeoutException
+
+
     goto_scores(p_driver, p_aspen_class)
     wait_for_element(p_driver, p_xpath_el="//select[@name='termFilter']")  # term pulldown menu
     xpath = "//select[@name='termFilter']/option[text()='" + str(p_quarter) + "']"
@@ -150,6 +156,15 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
     xpath += "/option[text()='All']"
     wait_for_element(p_driver, p_xpath_el=xpath)
     p_driver.find_element_by_xpath(xpath).click()
+    good_to_go = False
+    while good_to_go is False:
+        try:
+            WebDriverWait(p_driver, 10).until(
+                ec.presence_of_element_located((By.XPATH,"//div[@class='scrollCell invisible-horizontal-scrollbar']")))
+            good_to_go = True
+        except TimeoutException:
+            p_driver.refresh()
+
     wait_for_element(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
     wait_for_element(p_driver, p_xpath_el="//a")
     wait_for_element(p_driver, p_xpath_el="//select[@name='termFilter']")  # term pulldown menu
@@ -297,6 +312,7 @@ def check_new_aspen_names(p_dict, p_content_knowledge_completion):
     :param p_content_knowledge_completion Boolean whether you are going to have two categories
     :return: Boolean (True if good)
     """
+    import re
     print("Checking Google classroom names to be sure there are no duplicates after"
           " we shrink them to 7 or 9 characters for "
           "Aspen")
@@ -304,6 +320,12 @@ def check_new_aspen_names(p_dict, p_content_knowledge_completion):
     for coursework in p_dict:
         gc_name = coursework['title']
         aspen_name = convert_assignment_name(gc_name, p_content_knowledge_completion)
+        if re.search(r':-\)', gc_name):
+            print("skipping " + str(gc_name))
+            continue
+        if re.search(r'SKIPTHI', aspen_name):
+            continue
+        print(aspen_name)
         proposed_names.append(aspen_name)
     for name in proposed_names:
         if proposed_names.count(name) > 1:
@@ -327,8 +349,10 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     else:
         len_title = 9
 
+    print(f"initial title p_name ")
     new_title = p_name
     new_title = re.sub('Python ', 'py', new_title)
+    new_title = re.sub('Arduino Day ', 'ar', new_title)
     new_title = re.sub('Scratch ', 'Sc', new_title)
     new_title = re.sub('Autograder', 'AG', new_title)
     new_title = re.sub('Encryption', 'Encrp', new_title)
@@ -342,6 +366,8 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
         column_name = new_title[:len_title]
     else:
         column_name = new_title
+    print(f"final title {column_name}")
+
     return column_name
 
 
@@ -529,8 +555,32 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
     import re
     from selenium.webdriver.common.action_chains import ActionChains
     from selenium.webdriver.common.keys import Keys
-
+    import time
     from helper_functions.db_functions import execute_sql, query_db
+
+    good_load = False
+    while good_load is False:
+        inputs = p_driver.find_elements_by_xpath('//tr')
+        row_count = 0
+        for p_input in inputs:
+            if re.search(r'grdrow[0-9]+', p_input.get_attribute('id')):
+                row_count += 1
+        if row_count != len(p_aspen_student_ids):
+            print(row_count)
+            print(p_aspen_student_ids)
+            print(len(p_aspen_student_ids))
+            print("Aspen bug in loading page, reloading now...")
+            p_driver.get(p_driver.current_url)
+            p_driver.refresh()
+            wait_for_element(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
+            time.sleep(1.5)
+            print("restarting")
+        else:
+            good_load = True
+    print("finished with the load of student grades in aspen!")
+    # print(row_count)
+    # print(p_aspen_student_ids)
+    # print(len(p_aspen_student_ids))
 
     for key in p_assignments_from_classroom.keys():
         gc_assignment_name = key
@@ -631,7 +681,7 @@ def wait_for_element(p_driver, *, message='', timeout=10, p_link_text='', p_xpat
             if message:
                 print(message)
             p_driver.quit()
-            raise ValueError(f"Could not find this Xpath element in the page:{p_xpath_el}")
+            raise ValueError("Could not find this Xpath element in the page:" + str(p_xpath_el))
     elif p_link_text:
         try:
             WebDriverWait(p_driver, timeout).until(ec.presence_of_element_located((By.LINK_TEXT, p_link_text)))

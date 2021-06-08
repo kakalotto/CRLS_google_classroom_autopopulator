@@ -35,7 +35,8 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
     gc_student_profiles = get_student_profiles(service_classroom, course_id)
     print("Here are Google classroom student profiles")
     print(gc_student_profiles)
-
+    num_gc_students = len(gc_student_profiles
+                          )
     # Use gc assignments and student profiles to figure out which scores I potentially want to record.
     print("Using student profiles to find potential grades to put into Aspen")
     gc_assignment_scores_student_id = get_assignment_scores_from_classroom(service_classroom, gc_student_profiles,
@@ -73,13 +74,17 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
         print(f"{key}       {aspen_assignments[key]}")
 
     # Put in the scores
-    print("Getting the Aspen student ID's")
-    goto_scores_this_quarter(driver, p_aspen_classname, quarter)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    aspen_students = get_student_ids_from_aspen(driver)
-    print("here are the  aspen student IDs")
-    for key in aspen_students:
-        print(f"{key}        {aspen_students[key]}")
+    students_done = False
+    while students_done is False:
+        print("Getting the Aspen student ID's")
+        goto_scores_this_quarter(driver, p_aspen_classname, quarter)
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        aspen_students = get_student_ids_from_aspen(driver)
+        print("here are the  aspen student IDs")
+        for key in aspen_students:
+            print(f"{key}        {aspen_students[key]}")
+        if len(aspen_students) + 6 > num_gc_students:
+            students_done = True
 
     print("Putting in the grades now")
     input_assignments_into_aspen(driver, gc_assignment_scores_student_id, aspen_students,
