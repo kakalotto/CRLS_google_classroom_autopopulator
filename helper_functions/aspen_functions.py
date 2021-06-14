@@ -145,7 +145,15 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
 
 
     goto_scores(p_driver, p_aspen_class)
-    wait_for_element(p_driver, p_xpath_el="//select[@name='termFilter']")  # term pulldown menu
+    good_to_go = False
+    while good_to_go is False:
+        try:
+            WebDriverWait(p_driver, 10).until(
+                ec.presence_of_element_located((By.XPATH,"//select[@name='termFilter']")))
+            good_to_go = True
+        except TimeoutException:
+            p_driver.refresh()
+   #  wait_for_element(p_driver, p_xpath_el="//select[@name='termFilter']")  # term pulldown menu
     xpath = "//select[@name='termFilter']/option[text()='" + str(p_quarter) + "']"
     wait_for_element(p_driver, p_xpath_el=xpath)  # term pulldown menu
     p_driver.find_element_by_xpath(xpath).click()
@@ -201,13 +209,13 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
     # Get aspen Grade term, using datetime
     python_due_date = datetime.datetime(int(p_coursework['dueDate']['year']), int(p_coursework['dueDate']['month']),
                                         int(p_coursework['dueDate']['day']))
-    if python_due_date <= constants.Q1:
+    if constants.Q1 <= python_due_date < constants.Q2:
         grade_term = 'Q1'
-    elif python_due_date <= constants.Q2:
+    elif constants.Q2 <= python_due_date < constants.Q3:
         grade_term = 'Q2'
-    elif python_due_date <= constants.Q3:
+    elif constants.Q3 <= python_due_date < constants.Q4:
         grade_term = 'Q3'
-    elif python_due_date <= constants.Q4:
+    elif constants.Q4 <= python_due_date <= constants.summer:
         grade_term = 'Q4'
     else:  # doesn't fit at all, change the due date
         grade_term = 'Q4'
@@ -215,6 +223,16 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
         p_coursework['dueDate']['day'] = constants.summer.day
         p_coursework['dueDate']['year'] = constants.summer.year
 
+    # print('grade_term  ' + str(grade_term))
+    # print(python_due_date)
+    # print(constants.Q1)
+    # print(constants.Q2)
+    # print(constants.Q3)
+    # print(constants.Q4)
+
+    # print(p_coursework['dueDate']['month'])
+    # print(p_coursework['dueDate']['day'] )
+    # raise ValueError("wut")
     # get aspen Due date
     aspen_date_due = str(p_coursework['dueDate']['month']) + "/" + str(p_coursework['dueDate']['day']) \
         + "/" + str(p_coursework['dueDate']['year'])
@@ -622,12 +640,14 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                 edit_cell_id = 'e' + cell_id
 
                 sql = 'select * from recorded_scores WHERE id ="' + cell_id + '" AND score =' + str(gc_score)
+
                 rows = query_db(p_db_conn, sql)
 
                 action = ActionChains(p_driver)
 
                 old_score = 0
                 if len(rows) == 0:
+                    print("sql is this " + str(sql))
                     # print("HERE IS CELL ID " + str(cell_id))
                     # wait_for_element(p_driver, p_id=cell_id)
                     if p_content_knowledge_completion and re.search('-C$', col_name):

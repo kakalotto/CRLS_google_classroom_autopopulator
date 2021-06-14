@@ -53,4 +53,4 @@ def execute_sql(p_db_conn, p_sql):
         c.execute(p_sql)
         p_db_conn.commit()
     except Error as e:
-        print("Had an error while running execute_sql:" + str(e))
+        print("Had an error while running execute_sql:" + str(e) + '\n This command: ' + str(p_sql) )

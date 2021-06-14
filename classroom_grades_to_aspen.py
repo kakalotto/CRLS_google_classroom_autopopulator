@@ -48,9 +48,16 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
     # Get the DB stuff and clean the data
     db_filename = 'database_gc_grades_put_in_aspen_' + p_aspen_classname + '.db'
     db_conn = create_connection(db_filename)
-    sql = 'CREATE TABLE IF NOT EXISTS recorded_scores (id varchar(60) PRIMARY KEY, assignment varchar(60),' \
-          'name varchar(60), score integer NOT NULL );'
+    # sql = 'CREATE TABLE IF NOT EXISTS recorded_scores (id varchar(60) PRIMARY KEY, assignment varchar(60),' \
+    #       'name varchar(60), score integer NOT NULL );'
+    sql = 'CREATE TABLE IF NOT EXISTS  "recorded_scores" ("id"	varchar(60), "assignment"	varchar(60), ' \
+          '"name"	varchar(60), "score" integer NOT NULL, PRIMARY KEY("id","score"));'
     execute_sql(db_conn, sql)
+
+    # sql = 'ALTER TABLE recorded_scores DROP PRIMARY KEY '
+    # execute_sql(db_conn, sql)
+    # sql = 'ALTER TABLE  recorded_scores  ADD CONSTRAINT PK_CUSTID PRIMARY KEY (id, score);'
+    # execute_sql(db_conn, sql)
     sql = 'SELECT * FROM recorded_scores;'
     rows = query_db(db_conn, sql)
     gc_assignment_scores_student_id = scrub_assignment_scores_student_id(gc_assignment_scores_student_id, rows)
@@ -60,38 +67,41 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
         print(f"{key}         {gc_assignment_scores_student_id[key]}")
 
     # Logon to Aspen
-    print("Opening up Aspen now")
-    driver = generate_driver()
-    aspen_login(driver, username=username, password=password)
+    if len(gc_assignment_scores_student_id) != 0:
+        print("Opening up Aspen now")
+        driver = generate_driver()
+        aspen_login(driver, username=username, password=password)
 
-    # Get this quarter's assignments from aspen
-    print("Getting this quarter's assignments from Aspen")
-    quarter = which_quarter_today_string()
-    goto_assignments_this_quarter(driver, p_aspen_classname, quarter)
-    aspen_assignments = get_assignments_and_assignment_ids_from_aspen(driver)
-    print("Here are the aspen assignments and IDs from this quarter:")
-    for key in aspen_assignments:
-        print(f"{key}       {aspen_assignments[key]}")
+        # Get this quarter's assignments from aspen
+        print("Getting this quarter's assignments from Aspen")
+        quarter = which_quarter_today_string()
+        goto_assignments_this_quarter(driver, p_aspen_classname, quarter)
+        aspen_assignments = get_assignments_and_assignment_ids_from_aspen(driver)
+        print("Here are the aspen assignments and IDs from this quarter:")
+        for key in aspen_assignments:
+            print(f"{key}       {aspen_assignments[key]}")
 
-    # Put in the scores
-    students_done = False
-    while students_done is False:
-        print("Getting the Aspen student ID's")
-        goto_scores_this_quarter(driver, p_aspen_classname, quarter)
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        aspen_students = get_student_ids_from_aspen(driver)
-        print("here are the  aspen student IDs")
-        for key in aspen_students:
-            print(f"{key}        {aspen_students[key]}")
-        if len(aspen_students) + 6 > num_gc_students:
-            students_done = True
+        # Put in the scores
+        students_done = False
+        while students_done is False:
+            print("Getting the Aspen student ID's")
+            goto_scores_this_quarter(driver, p_aspen_classname, quarter)
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            aspen_students = get_student_ids_from_aspen(driver)
+            print("here are the  aspen student IDs")
+            for key in aspen_students:
+                print(f"{key}        {aspen_students[key]}")
+            if len(aspen_students) + 6 > num_gc_students:
+                students_done = True
 
-    print("Putting in the grades now")
-    input_assignments_into_aspen(driver, gc_assignment_scores_student_id, aspen_students,
-                                 aspen_assignments,
-                                 content_knowledge_completion, db_conn)
-    print("All done!")
+        print("Putting in the grades now")
+        input_assignments_into_aspen(driver, gc_assignment_scores_student_id, aspen_students,
+                                     aspen_assignments,
+                                     content_knowledge_completion, db_conn)
+        print("All done!")
+    else:
+        print("No assignments to input grades for for this class.  Next!\n\n\n")
 
-    driver.close()
+   #  driver.close()
 
 
