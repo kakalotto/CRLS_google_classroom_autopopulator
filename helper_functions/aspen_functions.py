@@ -577,6 +577,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
     from helper_functions.db_functions import execute_sql, query_db
 
     good_load = False
+    counter = 0
     while good_load is False:
         inputs = p_driver.find_elements_by_xpath('//tr')
         row_count = 0
@@ -584,17 +585,21 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
             if re.search(r'grdrow[0-9]+', p_input.get_attribute('id')):
                 row_count += 1
         if row_count != len(p_aspen_student_ids):
-            print(row_count)
+            print('row count found in page' + str(row_count))
             print(p_aspen_student_ids)
-            print(len(p_aspen_student_ids))
+            print('aspen student ids from original ' + str(len(p_aspen_student_ids)))
             print("Aspen bug in loading page, reloading now...")
             p_driver.get(p_driver.current_url)
             p_driver.refresh()
             wait_for_element(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
             time.sleep(1.5)
             print("restarting")
+            counter += 1
         else:
             good_load = True
+        if counter == 12:
+            print("Could not get this page to work! Try again later")
+            good_load = False
     print("finished with the load of student grades in aspen!")
     # print(row_count)
     # print(p_aspen_student_ids)
