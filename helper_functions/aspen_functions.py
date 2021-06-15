@@ -597,8 +597,8 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
             counter += 1
         else:
             good_load = True
-        if counter == 12:
-            print("Could not get this page to work! Try again later")
+        if counter == 10:
+            print("Could not get this page to work after 10 reloads! Try again later")
             good_load = False
     print("finished with the load of student grades in aspen!")
     # print(row_count)
