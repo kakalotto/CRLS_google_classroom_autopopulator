@@ -15,10 +15,12 @@ username = config.get('LOGIN', 'username', fallback='')
 password = config.get('LOGIN', 'password', fallback='')
 content_knowledge_completion_value = config.getboolean("ASPEN", "content_knowledge_completion", fallback=False)
 ignore_noduedate_value = config.getboolean('CLASSROOM', 'ignore_no_duedate', fallback=False)
+use_stored_gc_students_value = config.getboolean('CLASSROOM', 'use_stored_gc_students', fallback=False)
 
 for key in all_classes.keys():
     classroom_grades_to_aspen(key, all_classes[key],
                               content_knowledge_completion=content_knowledge_completion_value,
                               username=username, password=password, p_config_filename=config_filename,
-                              p_ignore_noduedate=ignore_noduedate_value)
+                              p_ignore_noduedate=ignore_noduedate_value,
+                              p_use_stored_gc_students=use_stored_gc_students_value)
 input("Press enter 2x to end")
