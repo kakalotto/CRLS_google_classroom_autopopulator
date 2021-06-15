@@ -99,9 +99,9 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
                                      aspen_assignments,
                                      content_knowledge_completion, db_conn)
         print("All done!")
+        driver.close()
     else:
         print("No assignments to input grades for for this class.  Next!\n\n\n")
 
-   #  driver.close()
 
 
