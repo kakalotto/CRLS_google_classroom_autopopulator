@@ -407,10 +407,7 @@ def scrub_assignment_scores_student_id(p_gc_assignment_scores_student_id, p_rows
         for turnin in turnins:
             # print(f"This is the turnin {turnin}")
             turnin_tuple = (key, turnin[0], math.ceil(turnin[1]))
-            # print(turnin_tuple)
-            if turnin_tuple[1] == 'MADISON BARTEE':
-                print(turnin_tuple)
-                print(new_p_rows)
+
             if turnin_tuple not in new_p_rows: # duplicate
                 if key in new_gc_assignment_scores_student_id.keys():
                     new_gc_assignment_scores_student_id[key].append([turnin[0], turnin[1]])
