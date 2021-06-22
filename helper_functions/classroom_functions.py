@@ -101,7 +101,6 @@ def get_due_time(p_days_to_complete, p_section, *, p_filename='', offset=5, utc=
     """
     import re
     import configparser
-    import datetime
     config = configparser.ConfigParser()
     if not p_filename:
         p_filename = "crls_teacher_tools.ini"
@@ -123,6 +122,8 @@ def get_due_time(p_days_to_complete, p_section, *, p_filename='', offset=5, utc=
 
     # print(p_section)
     # All times are -4 (UTC TO EDT converter)
+    p_hours = 0
+    p_minutes = 0
     if int(p_days_to_complete) == 0:
         p_hours = 18
         p_minutes = 29
@@ -172,11 +173,9 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
     Given a classroom, students profiles, and courseworks, finds assignments that are returned and potentially
     up for putting into Aspen
     :param p_service_classroom:  Google classroom API service object (google classroom api object)
-    :param students_dict: dictionary with keys id and name, student INFo and IDs (dict)
+    :param p_student_profiles: dictionary with keys id and name, student INFo and IDs (dict)
     :param p_courseworks: Dictionary of student courseworks in Google classroom
     :param p_course_id: ID of the course (str)
-    :param p_ignore_noduedate: Whether to ignore whether or not we have no due date on assignments (False))
-    :param p_ignore_noduedate: Ignore that some assignments have no due date.  If this is True, it will use quarters
     :return: dictionary of lists.  assignments_scores_to_aspen = {'python1.040': [ [111142, 40], [123123, 50]} etc...
     """
     import datetime
@@ -198,7 +197,7 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
                 for student_work in student_works:
                     if 'assignedGrade' in student_work.keys():
                         if student_work['state'] == 'RETURNED':
-                            coursework_title = re.sub(r'\s:-\)', '', coursework_title) # remove the smiley from title
+                            coursework_title = re.sub(r'\s:-\)', '', coursework_title)  # remove the smiley from title
                             p_student_id = student_work['userId']
                             student_name = p_student_profiles[p_student_id]
                             grade = student_work['assignedGrade']
@@ -208,25 +207,6 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
                                 assignments_scores_to_aspen[coursework_title] = [[student_name, grade]]
 
     return assignments_scores_to_aspen
-
-
-def creation_time_to_coursework_duedate(p_creationtime):
-    """
-    converts creation time from Google classroom coursework to datetime object of creation time
-    :param p_creationtime: Something like this: 2021-05-06T12:11:29.408
-    :return: Date time object of the DATE of this creation time
-    """
-    import datetime
-
-    creationtime_list = p_creationtime.split('T')
-    creation_date = creationtime_list[0]
-    # creation_time = creationtime_list[1]
-    creation_date_list = creation_date.split('-')
-    creation_year = creation_date_list[0]
-    creation_month = creation_date_list[1]
-    creation_day = creation_date_list[2]
-    creation_date_obj = datetime.datetime(int(creation_year), int(creation_month), int(creation_day))
-    return creation_date_obj
 
 
 def creation_time_to_coursework_duedate(p_creationtime):
@@ -316,7 +296,7 @@ def verify_due_date_exists(p_courseworks, ignore_noduedate):
             duedate_datetime = datetime.datetime(int(creation_year), int(creation_month), int(creation_day))
             new_coursework = coursework
             # 'creationTime': '2021-05-06T12:11:29.408
-            #dueDate': {'year': 2021, 'month': 5, 'day': 8}, 'dueTime': {'hours': 3, 'minutes': 59}
+            # dueDate': {'year': 2021, 'month': 5, 'day': 8}, 'dueTime': {'hours': 3, 'minutes': 59}
 #
             today_quarter = which_quarter_today()
             if duedate_datetime < today_quarter:
@@ -402,16 +382,12 @@ def scrub_assignment_scores_student_id(p_gc_assignment_scores_student_id, p_rows
     # print(new_p_rows)
     for key in p_gc_assignment_scores_student_id:
         turnins = p_gc_assignment_scores_student_id[key]  # a turnin is a list with student, and score.
-                                                          # Made up term.  turnin_list is all turnins for that
-                                                          # assignment
+        # Made up term.  turnin_list is all turnins for that assignment
         for turnin in turnins:
             # print(f"This is the turnin {turnin}")
             turnin_tuple = (key, turnin[0], math.ceil(turnin[1]))
-            # print(turnin_tuple)
-            # if turnin_tuple[1] == 'ANTINOE KOTSOPOULOS':
-            #    print('ANTINOE' + str(turnin_tuple))
-                # print(new_p_rows)
-            if turnin_tuple not in new_p_rows: # duplicate
+
+            if turnin_tuple not in new_p_rows:  # duplicate
                 if key in new_gc_assignment_scores_student_id.keys():
                     new_gc_assignment_scores_student_id[key].append([turnin[0], math.ceil(turnin[1])])
                 else:
@@ -433,12 +409,12 @@ def get_assignments_from_classroom_and_students(p_service_classroom, course_id, 
     students = p_service_classroom.courses().students().list(courseId=course_id,).execute()
     students = students['students']
     gc_students = {}
-    #print("In getting_assignments, getting students")
+    # print("In getting_assignments, getting students")
     for student in students:
         p_student_id = student['userId']
         student_profiles = p_service_classroom.userProfiles().\
             get(userId=p_student_id,).execute()
-        #print(student_profiles)
+        # print(student_profiles)
         # print(student_profiles['emailAddress'])
         gc_students[p_student_id] = student_profiles['name']['fullName']
     #  print(gc_students)
@@ -456,7 +432,7 @@ def get_assignments_from_classroom_and_students(p_service_classroom, course_id, 
             # print(f"Coursework {coursework} duedate {due_date_obj} quarter {p_quarter_start_obj}")
             if due_date_obj > p_quarter_start_obj:
                 student_works = p_service_classroom.courses(). \
-                    courseWork().studentSubmissions().list(courseId=COURSE_ID, courseWorkId=coursework_id).execute()
+                    courseWork().studentSubmissions().list(courseId=course_id, courseWorkId=coursework_id).execute()
                 student_works = student_works['studentSubmissions']
                 for student_work in student_works:
                     # print(f"STUDENT WORK {student_work}")

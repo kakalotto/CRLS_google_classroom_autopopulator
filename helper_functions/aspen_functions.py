@@ -367,7 +367,6 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     else:
         len_title = 9
 
-    print(f"initial title p_name ")
     new_title = p_name
     new_title = re.sub('Python ', 'py', new_title)
     new_title = re.sub('Arduino Day ', 'ar', new_title)
@@ -579,12 +578,13 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
     good_load = False
     counter = 0
     while good_load is False:
+        time.sleep(1.0)
         inputs = p_driver.find_elements_by_xpath('//tr')
         row_count = 0
         for p_input in inputs:
             if re.search(r'grdrow[0-9]+', p_input.get_attribute('id')):
                 row_count += 1
-        if row_count != len(p_aspen_student_ids):
+        if row_count != len(p_aspen_student_ids) and counter != 10:
             print('row count found in page' + str(row_count))
             print(p_aspen_student_ids)
             print('aspen student ids from original ' + str(len(p_aspen_student_ids)))
@@ -593,7 +593,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
             p_driver.refresh()
             wait_for_element(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
             time.sleep(1.5)
-            print("restarting")
+            print("restarting, current counter is this: " + str(counter))
             counter += 1
         else:
             good_load = True
