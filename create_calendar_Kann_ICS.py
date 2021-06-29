@@ -1,3 +1,0 @@
-from create_calendar import create_calendar
-SPREADSHEET_ID = '1r59q_BQgFtZAXTgwqHhAbcz5Do0BIDuEQbBFCogj6Xk'
-create_calendar(SPREADSHEET_ID)
