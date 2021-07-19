@@ -84,6 +84,41 @@ def read_classes_info(p_filename):
     return p_all_classes
 
 
+def read_sheets_info(p_filename):
+    import configparser
+    config = configparser.ConfigParser()
+    config.read(p_filename)
+
+    p_spreadsheet_ids = []
+
+    if 'CREATE_ASSIGNMENTS_ANNOUNCEMENTS' in config:
+        spreadsheet_1 = config.get('CREATE_ASSIGNMENTS_ANNOUNCEMENTS', 'spreadsheet_id_1', fallback='')
+        spreadsheet_2 = config.get('CREATE_ASSIGNMENTS_ANNOUNCEMENTS', 'spreadsheet_id_2', fallback='')
+        spreadsheet_3 = config.get('CREATE_ASSIGNMENTS_ANNOUNCEMENTS', 'spreadsheet_id_3', fallback='')
+        spreadsheet_4 = config.get('CREATE_ASSIGNMENTS_ANNOUNCEMENTS', 'spreadsheet_id_4', fallback='')
+        spreadsheet_5 = config.get('CREATE_ASSIGNMENTS_ANNOUNCEMENTS', 'spreadsheet_id_5', fallback='')
+        spreadsheet_6 = config.get('CREATE_ASSIGNMENTS_ANNOUNCEMENTS', 'spreadsheet_id_6', fallback='')
+    else:
+        raise ValueError("Need to have a file called: " +
+                         str(p_filename) +
+                         "\nThis file needs to have a CREATE_ASSIGNMENTS_ANNOUNCEMENTS section "
+                         "with variables spreadsheet_id_1, and so on")
+    if spreadsheet_1:
+        p_spreadsheet_ids.append(spreadsheet_1)
+    if spreadsheet_2:
+        p_spreadsheet_ids.append(spreadsheet_2)
+    if spreadsheet_3:
+        p_spreadsheet_ids.append(spreadsheet_3)
+    if spreadsheet_4:
+        p_spreadsheet_ids.append(spreadsheet_4)
+    if spreadsheet_5:
+        p_spreadsheet_ids.append(spreadsheet_5)
+    if spreadsheet_6:
+        p_spreadsheet_ids.append(spreadsheet_6)
+    print(p_spreadsheet_ids)
+    return p_spreadsheet_ids
+
+
 def read_mailer_info(p_filename):
     import configparser
     config = configparser.ConfigParser()

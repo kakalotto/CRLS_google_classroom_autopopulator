@@ -27,8 +27,11 @@ for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
                                                         majorDimension='COLUMNS').execute()
     value = result.get('values', [])
     if not value:
+        print("no value in this column " + str(column) + " no course here")
         continue   # no more courses
     elif len(value[0]) == 7:
+        print(value[0])
+        print("In column " + str(column) + " 9th row is populated - course already created")
         continue  # 7th row (courseID) is populated.  This means course already created.
     else:
         # Course hasn't been created yet.  Create it now.
