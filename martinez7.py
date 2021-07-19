@@ -29,12 +29,12 @@ path_were_the_Google_webdriver_is_stored = r'C:\Users\dimmyfinster\Dropbox\dimmy
 flag = " :-)"
 
 # Check into ASPEN and GC, fill this dictionary:
-ASPEN_vs_Gclassroom_dictionary = {#'IT1/CS1':'T604-001',
+ASPEN_vs_Gclassroom_dictionary = {'IT1/CS1':'T604-IP-001',
                                  #'AP Computer Science Principles P4':'T608-003',
-                                 'AP Computer Science Principles S2P4':'T608-IP-004',
-                                #    'Murphy S1 P1 Intro to CS' : 'M415-001',
+                                # 'AP Computer Science Principles S2P4':'T608-IP-004',
+                                #  'Murphy S2 P1 Intro to CS' : 'M415-IP-002',
                                  # 'IT3 2020-2021':'T986-001',
-                                 # 'IT2 2020-2021': 'T746-001',
+                               #   'IT2 2020-2021': 'T746-IP-001',
                                  # 'T527A-001: SY2020-21 TC Web Design & Development':'T527A-001',
                                   }
 
@@ -129,6 +129,8 @@ def obtain_Gclassrooms_dictionary_only_for_ASPEN_classes(service): # Names is th
                         new_title = re.sub('Scratch ', 'Sc', new_title)
                         new_title = re.sub('Autograder', 'AG', new_title)
                         new_title = re.sub('Encryption', 'Encrp', new_title)
+                        new_title = re.sub('Password ', 'PW', new_title)
+                        new_title = re.sub('password ', 'PW', new_title)
                         new_title = re.sub(r'Final\sreview', 'Frev', new_title, re.X | re.S | re.M)
                         print("New title is this " + str(new_title))
                         if re.search("extra \s credit", new_title.lower(), re.X | re.M | re.S):
@@ -247,7 +249,7 @@ def open_and_log_into_ASPEN(ASPEN_webdriver_path):
     chrome_webdriver_robot = webdriver.Chrome(executable_path=ASPEN_webdriver_path)
 
     # navigate to aspen
-    chrome_webdriver_robot.get("https://aspen.cpsd.us/aspen/home.do")
+    chrome_webdriver_robot.get(3320."https://aspen.cpsd.us/aspen/home.do")
     # chrome_webdriver_robot.get("https://www.youtube.com")
 
     # # see the title of the website and decide if we are in the right website indeed

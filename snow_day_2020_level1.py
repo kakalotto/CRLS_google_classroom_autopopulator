@@ -1,11 +1,10 @@
 import copy
 
 from create_calendar import create_calendar
-from helper_functions.get_all_sheets import get_all_sheets
 from generate_classroom_credential import generate_classroom_credential
 from generate_sheets_credential import generate_sheets_credential
 from helper_functions.read_course_id import read_course_id
-from helper_functions.read_course_daily_data_all import read_course_daily_data_all
+from helper_functions.sheets_functions import read_course_daily_data_all, get_all_sheets
 from helper_functions.read_day_info import read_day_info
 from helper_functions.is_in_past import is_in_past
 

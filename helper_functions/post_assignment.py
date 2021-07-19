@@ -9,7 +9,7 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
     import googleapiclient
 
     from helper_functions.get_due_date import get_due_date
-    from helper_functions.get_due_time import get_due_time
+    from helper_functions.classroom_functions import get_due_time
     from helper_functions.date_to_ISO8601 import date_to_iso8601
     from helper_functions.get_topic_ids import get_topic_ids
 
@@ -28,7 +28,7 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
 
     # Get due time (searched course description for P1, P2, P3, P4)
     [due_hour, due_minute] = get_due_time(p_days_to_complete, p_course_description)
-    due_date_obj = due_date_obj.replace(hour=due_hour, minute=due_minute)
+    due_date_obj = due_date_obj.replace(hour=int(due_hour), minute=int(due_minute))
 
     # get scheduled time.  Stagger entries so not all at once.
     new_scheduled_time = date_to_iso8601(month, dom, year, p_offset)

@@ -18,6 +18,8 @@ def generate_classroom_credential():
               'https://www.googleapis.com/auth/classroom.rosters',
               'https://www.googleapis.com/auth/classroom.topics',
               'https://www.googleapis.com/auth/classroom.courseworkmaterials',
+              'https://www.googleapis.com/auth/classroom.profile.emails',
+              'https://www.googleapis.com/auth/classroom.guardianlinks.students.readonly',
               ]
 
 
