@@ -42,7 +42,8 @@ def post_materials(p_topic, p_title, p_text, p_attachments, p_date, p_offset,
         raise Exception("'Request contains an invalid argument' - is the topic you want for this assignment one that "
                         "exists in this class within Google classroom?\n"
                         "Alternatively, if there is a message 'materials: Duplicate materials are not allowed', you"
-                        "probably have two of the same link on your lesson plan.")
+                        "probably have two of the same link on your lesson plan.\n"
+                        "Alternatively, you posted a material with student copy")
     return material_id
 
 
