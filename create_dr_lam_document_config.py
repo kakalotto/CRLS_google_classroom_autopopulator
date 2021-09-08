@@ -33,6 +33,17 @@ it1_2022_fy_p1 = {'document_id': '14uKkNw6tHo8foESJsgNcLpKNtjYcEkOhQ8ZDfdC4iRI',
                   'fy': True
                   }
 
+web_2022_s1_p2 = {'document_id': '16NOrXYyOCI_VZYEhi7VgyzJlysp6CnOVIbokAk-ZkrA',
+                  'classroom_id': 'Mzg4ODk0NTQxMjc4',
+                  'spreadsheet_id': '1ysWjn5UiMbLcB5EyYT7DtEFdr7HruLmKkIasnGv-UHs',
+                  'sheet_id': 'T527A',
+                  'header_text': 'Web Development\n',
+                  'course_id': 388894541278,
+                  'course_contract': 'https://docs.google.com/document/d/1fcWp1rsAPTt0s48HRxABHsvQWKuwOBFuEInSritw02E/edit',
+                  'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
+                  'assignments_dictionary': {},
+                  'fy': False
+                  }
 apcsp_2021_s2_p1 = {'document_id': '12thEXqiR-M2ligPF5Y2g4VR7jYRR4si2pwpkEeNRSqE',
                     'classroom_id': 'MjQ3Njk3ODQzNjM5',
                     'spreadsheet_id': '1ZenTcQlCQhbYvBvPOVq8XIB2FQgseIGHH4gTBTcw-KY',
@@ -99,5 +110,5 @@ apcsp_2021_s2_p4 = {'document_id': '1miz7EgIEna8W5fn8wJPqn0U3TL2i49tTORKTOaGoLQs
                     'fy': False
                     }
 
-classes = [it1_2022_fy_p1]
+classes = [web_2022_s1_p2, it1_2022_fy_p1]
 
