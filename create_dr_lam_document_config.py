@@ -22,12 +22,13 @@ it2_2021_fy_p3 = {'document_id': '1BXeTkfvxq4qMKOWT2Gshkhg7RbzgSjsW_OWUHCkBqDs',
                   'fy': True
                   }
 it1_2022_fy_p1 = {'document_id': '14uKkNw6tHo8foESJsgNcLpKNtjYcEkOhQ8ZDfdC4iRI',
-                  'classroom_id': 'MzcxMjM2NDgwODAz',
-                  'spreadsheet_id': '1PgRLC-fUnUwskXp4h-1Mxf7exF_6KLhnUfqyMgs7aOI',
+                  'classroom_id': 'Mzg4ODk5OTY3NjU1',
+                  'spreadsheet_id': '1veaJaPo--jFET5b5LGi71RujwKtIq4IAmuWu3YX8tUo',
                   'sheet_id': 'IT1/CS1',
                   'header_text': 'Level 1 Intro to CS/Cybersecurity\n',
-                  'course_id': 371236480803,
-                  'course_contract': 'https://docs.google.com/document/d/1zJArrh4Xq0YlF-vFZu3SCYznJhjMpM9pBs2GOLSsJV0/edit',
+                  'course_id': 388899967655,
+                  'course_contract': 'https://docs.google.com/document/d/'
+                                     '1zJArrh4Xq0YlF-vFZu3SCYznJhjMpM9pBs2GOLSsJV0/edit',
                   'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
                   'assignments_dictionary': {},
                   'fy': True
@@ -44,15 +45,14 @@ web_2022_s1_p2 = {'document_id': '16NOrXYyOCI_VZYEhi7VgyzJlysp6CnOVIbokAk-ZkrA',
                   'assignments_dictionary': {},
                   'fy': False
                   }
-apcsp_2021_s2_p1 = {'document_id': '12thEXqiR-M2ligPF5Y2g4VR7jYRR4si2pwpkEeNRSqE',
-                    'classroom_id': 'MjQ3Njk3ODQzNjM5',
-                    'spreadsheet_id': '1ZenTcQlCQhbYvBvPOVq8XIB2FQgseIGHH4gTBTcw-KY',
-                    'sheet_id': 'APCSP_S2_P1',
-                    'header_text': 'AP CSP S2 P1\n',
-                    'course_id': 247697843639,
-                    'course_contract': 'https://docs.google.com/document/d/1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/',
-                    'zoom_links': ['https://zoom.us/j/4968074808?pwd=ZVBJQzQ4Uk1NREpGNEhLakJ4blExUT09',
-                                   'https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09',
+apcsp_2022_s1_p1 = {'document_id': '1LbKCRPsGATdy0HREKPVnk05L0TNTAlHYm2qipvtFYTg',
+                    'classroom_id': 'Mzg4OTAwMTg5NjU2',
+                    'spreadsheet_id': '1veaJaPo--jFET5b5LGi71RujwKtIq4IAmuWu3YX8tUo',
+                    'sheet_id': 'APCSP_S1_P1',
+                    'header_text': 'AP CSP S1 P1\n',
+                    'course_id': 388900189656,
+                    'course_contract': 'https://docs.google.com/document/d/1eR5rxgTZ0PXy_fYIFK2SS_Ro770IXxT9sM90vZr_OcU/edit',
+                    'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09',
                                    'https://us02web.zoom.us/j/7890036306?pwd=WlpkV1JKUXZlQ3orYTd2dFBhZkdzdz09'],
                     'assignments_dictionary': {
                         'Create task practice 1': 'Create task practice',
@@ -110,5 +110,5 @@ apcsp_2021_s2_p4 = {'document_id': '1miz7EgIEna8W5fn8wJPqn0U3TL2i49tTORKTOaGoLQs
                     'fy': False
                     }
 
-classes = [web_2022_s1_p2, it1_2022_fy_p1]
+classes = [apcsp_2022_s1_p1, it1_2022_fy_p1, web_2022_s1_p2, ]
 
