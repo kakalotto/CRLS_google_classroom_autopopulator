@@ -14,12 +14,12 @@ def get_due_date(p_post_day, days_until_due, spreadsheet_id, service):
     p_one_day = datetime.timedelta(days=1)
     p_counter = 0
     p_due_date_obj = p_post_day_obj
-
+    p_due_date_obj = p_due_date_obj.replace(hour=12, minute=0)
     holidays = read_in_holidays(spreadsheet_id, service)
-
+    print('posted ' + str(p_due_date_obj))
     while p_counter < int(days_until_due):
         p_due_date_obj += p_one_day
-
+        print("checking this " + str(p_due_date_obj))
         # Check to see if proposed due date is weekend
         if p_due_date_obj.isoweekday() == 7 or p_due_date_obj.isoweekday() == 6:
             continue
@@ -34,6 +34,7 @@ def get_due_date(p_post_day, days_until_due, spreadsheet_id, service):
                     break
             if holiday_match is False:
                 p_counter += 1
+    # print("aaa " + str(p_due_date_obj))
     return p_due_date_obj
 
 # from generate_sheets_credential import generate_sheets_credential
