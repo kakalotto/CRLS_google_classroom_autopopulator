@@ -1,3 +1,0 @@
-from create_assignments_announcements import create_assignments_announcements
-SPREADSHEET_ID= '1i9KozJhUkkfWsoy0Z-PocHto9BgL9qEKOsYLMXFaS7w'
-create_assignments_announcements(SPREADSHEET_ID)
