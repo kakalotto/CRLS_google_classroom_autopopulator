@@ -22,7 +22,7 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
     # Get due date
     post_day = str(month) + '-' + str(dom) + '-' + str(year)
     due_date_obj = get_due_date(post_day, p_days_to_complete, p_spreadsheet_id, p_service_sheet)
-    due_date_obj = due_date_obj - timedelta(days=1)
+    due_date_obj = due_date_obj  # - timedelta(days=1)
 
     # get topic IDs
     topic_dict = get_topic_ids(p_course_id, p_service_classroom)
