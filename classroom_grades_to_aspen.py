@@ -45,6 +45,7 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
         print(coursework['title'])
 
     # Get the DB stuff and clean the data
+    print("Doing DB stuff")
     db_filename = 'database_gc_grades_put_in_aspen_' + p_aspen_classname + '.db'
     db_conn = create_connection(db_filename)
     # sql = 'CREATE TABLE IF NOT EXISTS recorded_scores (id varchar(60) PRIMARY KEY, assignment varchar(60),' \
@@ -56,6 +57,7 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
     execute_sql(db_conn, sql)
 
     # Get student profiles
+    print("Getting student profiles")
     gc_student_profiles = {}
     if p_use_stored_gc_students is False:
         gc_student_profiles = get_student_profiles(service_classroom, course_id)
@@ -68,6 +70,7 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
             sql = 'INSERT INTO "gc_students" VALUES ( "' + id + '", "' + gc_student_profiles[id] + '" );'
             execute_sql(db_conn, sql)
     else:
+        print("Using stored student profiles")
         sql = 'SELECT * FROM "gc_students";'
         rows = query_db(db_conn, sql)
         for row in rows:
@@ -115,7 +118,9 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
 
         # Put in the scores
         students_done = False
+        counter = 0
         while students_done is False:
+            counter += 1
             print("Getting the Aspen student ID's")
             goto_scores_this_quarter(driver, p_aspen_classname, quarter)
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -123,7 +128,7 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
             print("here are the  aspen student IDs")
             for key in aspen_students:
                 print(f"{key}        {aspen_students[key]}")
-            if len(aspen_students) + 6 > num_gc_students:
+            if len(aspen_students) + 6 > num_gc_students or counter > 10:
                 students_done = True
 
         print("Putting in the grades now")

@@ -381,7 +381,9 @@ def scrub_assignment_scores_student_id(p_gc_assignment_scores_student_id, p_rows
     new_p_rows = [x[1:] for x in p_rows]
     # print(new_p_rows)
     for key in p_gc_assignment_scores_student_id:
+
         turnins = p_gc_assignment_scores_student_id[key]  # a turnin is a list with student, and score.
+        # print("This is the key " + str(key))
         # Made up term.  turnin_list is all turnins for that assignment
         for turnin in turnins:
             # print(f"This is the turnin {turnin}")

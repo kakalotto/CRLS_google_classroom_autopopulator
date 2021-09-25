@@ -77,9 +77,9 @@ def read_classes_info(p_filename):
     if gc6 and aspen6:
         p_all_classes[gc6] = aspen6
     if gc7 and aspen7:
-        p_all_classes[gc7] = aspen6
+        p_all_classes[gc7] = aspen7
     if gc8 and aspen8:
-        p_all_classes[gc8] = aspen6
+        p_all_classes[gc8] = aspen8
 
     return p_all_classes
 

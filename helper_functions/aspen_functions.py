@@ -183,8 +183,9 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
     from selenium.webdriver.common.keys import Keys
     from selenium.webdriver.common.action_chains import ActionChains
     import time
-    from helper_functions import constants
+    # from helper_functions import constants
     from helper_functions.db_functions import execute_sql
+    from helper_functions.quarters import which_quarter_today_string
 
     # get aspen assignment and column names
     assignment_name = p_coursework['title']
@@ -209,19 +210,27 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
     # Get aspen Grade term, using datetime
     python_due_date = datetime.datetime(int(p_coursework['dueDate']['year']), int(p_coursework['dueDate']['month']),
                                         int(p_coursework['dueDate']['day']))
-    if constants.Q1 <= python_due_date < constants.Q2:
-        grade_term = 'Q1'
-    elif constants.Q2 <= python_due_date < constants.Q3:
-        grade_term = 'Q2'
-    elif constants.Q3 <= python_due_date < constants.Q4:
-        grade_term = 'Q3'
-    elif constants.Q4 <= python_due_date <= constants.summer:
-        grade_term = 'Q4'
-    else:  # doesn't fit at all, change the due date
-        grade_term = 'Q4'
-        p_coursework['dueDate']['month'] = constants.summer.month
-        p_coursework['dueDate']['day'] = constants.summer.day
-        p_coursework['dueDate']['year'] = constants.summer.year
+    one_minute = datetime.timedelta(minutes=1)
+    if python_due_date.hour == 0 and python_due_date.minute == 0:
+        python_due_date -= one_minute
+    print("xxx  " + str(python_due_date.hour) + " " + str(python_due_date.minute))
+    print("python due date "+ str(python_due_date))
+    grade_term = which_quarter_today_string(datetime_obj=python_due_date)
+#    print(constants.Q1, constants.Q2, constants.Q3)
+#    if constants.Q1 <= python_due_date < constants.Q2:
+#         grade_term = 'Q1'
+#     elif constants.Q2 <= python_due_date < constants.Q3:
+#         grade_term = 'Q2'
+#     elif constants.Q3 <= python_due_date < constants.Q4:
+#         grade_term = 'Q3'
+#     elif constants.Q4 <= python_due_date <= constants.summer:
+#         grade_term = 'Q4'
+#     else:  # doesn't fit at all, change the due date
+#         grade_term = 'Q4'
+#     if grade_term == 'Q4':
+#         p_coursework['dueDate']['month'] = constants.summer.month
+#         p_coursework['dueDate']['day'] = constants.summer.day
+#         p_coursework['dueDate']['year'] = constants.summer.year
 
     # print('grade_term  ' + str(grade_term))
     # print(python_due_date)
@@ -352,7 +361,8 @@ def check_new_aspen_names(p_dict, p_content_knowledge_completion):
                   f"\nand it appears this many times: {proposed_names.count(name)}")
             input("Press enter to continue")
             raise ValueError(f"This name will conflict (two assignments that are the same after you shrink them)"
-                             f" Rename your Google classroom assignments.  Here is the shrunk name:\n{name}"
+                             f" Rename your Google classroom assignments.  You can edit  convert_assignment_name"
+                             f"in aspen functions.  Here is the shrunk name:\n{name}"
                              f"\nand it appears this many times: {proposed_names.count(name)}")
 
 
@@ -373,8 +383,15 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub('Scratch ', 'Sc', new_title)
     new_title = re.sub('Autograder', 'AG', new_title)
     new_title = re.sub('Encryption', 'Encrp', new_title)
+    new_title = re.sub('Encoding', 'Enc', new_title)
     new_title = re.sub(r'Final\sreview', 'Frev', new_title, re.X | re.S | re.M)
-    # print("New title is this " + str(new_title))
+    new_title = re.sub(r'Post\sgraduate\splans,\s', 'grad', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Mondrian', 'Mon', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Wireless', 'W', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Cracking', 'Cr', new_title, re.X | re.S | re.M)
+
+    new_title = re.sub(r'\s+$', '', new_title)
+
     if re.search(r"extra \s credit", new_title.lower(), re.X | re.M | re.S):
         return 'SKIPTHIS'
     if re.search(r"create \s task \s checkin", new_title.lower(), re.X | re.M | re.S):
@@ -383,6 +400,7 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
         column_name = new_title[:len_title]
     else:
         column_name = new_title
+    column_name = re.sub(r'\s+$', '', column_name)
     print(f"final title {column_name}")
 
     return column_name
@@ -575,6 +593,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
     import time
     from helper_functions.db_functions import execute_sql, query_db
 
+    print("These are all th e aspen assignments! " + str(p_aspen_assignments))
     good_load = False
     counter = 0
     while good_load is False:
@@ -599,6 +618,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
             good_load = True
         if counter == 10:
             print("Could not get this page to work after 10 reloads! Try again later")
+            raise ValueError
             good_load = False
     print("finished with the load of student grades in aspen!")
     # print(row_count)

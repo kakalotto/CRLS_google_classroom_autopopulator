@@ -89,7 +89,7 @@ def which_quarter_today(*, p_filename=''):
         return q4
 
 
-def which_quarter_today_string():
+def which_quarter_today_string(*, datetime_obj=''):
     """
     Tells me what quarter I'm int oday in string (i.e. Q1, Q2, Q3, Q4)
     Returns: String of which quarter it is ('Q1', 'Q2', 'Q3', or 'Q4')
@@ -118,12 +118,16 @@ def which_quarter_today_string():
     q2 = datetime.datetime(int(q2_list[0]), int(q2_list[1]), int(q2_list[2]))
     q3 = datetime.datetime(int(q3_list[0]), int(q3_list[1]), int(q3_list[2]))
     q4 = datetime.datetime(int(q4_list[0]), int(q4_list[1]), int(q4_list[2]))
-    today = datetime.datetime.now()
-    if q2 > today > q1:
+
+    if datetime_obj:
+        test_dateobj = datetime_obj
+    else:
+        test_dateobj = datetime.datetime.now()
+    if q2 > test_dateobj > q1:
         return 'Q1'
-    elif q3 > today > q2:
+    elif q3 > test_dateobj > q2:
         return 'Q2'
-    elif q4 > today > q3:
+    elif q4 > test_dateobj > q3:
         return 'Q3'
     else:
         return 'Q4'

@@ -9,6 +9,7 @@ classes = mailerinfo[0]
 scholar_guardians = mailerinfo[3]
 send_email = mailerinfo[4]
 
+print(classes)
 for i, gc_name in enumerate(classes):
     if not gc_name:
         continue

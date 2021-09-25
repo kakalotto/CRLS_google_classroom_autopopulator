@@ -1,0 +1,1 @@
+cd C:\Users\dimmyfinster\Dropbox\PycharmProjects\CRLS_google_classroom_autopopulator\ && C:\Users\dimmyfinster\Dropbox\PycharmProjects\CRLS_google_classroom_autopopulator\venv3\Scripts\activate.bat && python C:\Users\dimmyfinster\Dropbox\PycharmProjects\CRLS_google_classroom_autopopulator\classroom_grades_to_aspen_wrapper.py

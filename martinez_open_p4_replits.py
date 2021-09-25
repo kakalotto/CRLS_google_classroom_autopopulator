@@ -3,20 +3,35 @@ import os #use for new instance of chrome
 import time
 #urls I want to open in array
 URLS = (
-    "https://repl.it/join/tvswfevs-antoniobarandao",
-    "https://repl.it/join/syzsrhbv-nebiyudemie",
-    "https://repl.it/join/xtwfabhx-lucyengels",
-    "https://repl.it/join/puptgept-elikanner",
-    "https://repl.it/join/ykhairng-mahek15",
-    "https://repl.it/join/tbqpkmmn-sergeykoenig",
-    "https://repl.it/join/jcyecgjw-jinhoho3",
-    "https://repl.it/join/vtemevex-cedarlarson",
-    "https://repl.it/join/knqauwxr-matthewliu3",
-    "https://repl.it/join/sspdcbyk-zaccariamir",
-    "https://repl.it/join/nbjdxvik-23munger",
-    "https://repl.it/join/eughppjc-tavienpollard",
-    "https://repl.it/@EliasEliasElais/2020Elias2032apy",
-    "https://repl.it/join/khtpyvpl-clairewang3",
+    'https://replit.com/join/thidpscvyz-ninaaubourg',
+    'https://replit.com/join/tvdhzvpxdr-moniquebennett',
+    'https://replit.com/join/bjgjhuyznw-jacobbronstein',
+    'https://replit.com/join/umxvtmvaud-brayzenchase',
+    'https://replit.com/join/ciizlqttjs-riverdoyle',
+    'https://replit.com/join/rpvdqayctf-keanufeik',
+    'https://replit.com/join/xswphjbtrn-maeghanfischer',
+    'https://replit.com/join/smbzvrwoob-farhankalam',
+    'https://replit.com/join/umrskjmgqo-simonmebatsion',
+    'https://replit.com/join/mhsjqmzuuv-kputr',
+    'https://replit.com/join/scmwbhwqur-jamesrochberg',
+    'https://replit.com/join/pqtlgzqizd-ethanromaine',
+    'https://replit.com/join/vmgzllecuy-sarasabry',
+    'https://replit.com/join/cfijpavvkq-robeltedla1',
+    'https://replit.com/join/gagjoswzte-lavaslug',
+    'https://replit.com/join/drtgxwkghv-michaelzaccagni',
+    # https://replit.com/join/vflzxfizoz-arilavine
+
+
+    # "https://replit.com/join/dgdjkyxxyy-claudiaharmer",
+    # "https://replit.com/join/zbeeyrnghw-jaylenramirez1",
+    # "https://replit.com/join/gnhwadhspd-lyricemartin",
+    # "https://replit.com/join/gxfrxyeexk-marwa17",
+    # "https://replit.com/join/ipjzwbgjzv-zavierpoklop",
+    # "https://replit.com/@habaman/HTML1html#css/style.css",
+    # "https://replit.com/join/oxzketokkr-josiahpizarro",
+    # "https://replit.com/join/baudfobvap-edwinjm27",
+    # "https://replit.com/join/cpdbsiwtst-nianjahson",
+    # "https://replit.com/join/mlicgeymmj-miladmansour",
 
 )
 p4 = ['https://repl.it/login?goto=/join/yjiayarx-sophiaprice']
