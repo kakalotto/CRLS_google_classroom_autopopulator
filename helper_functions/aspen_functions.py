@@ -275,10 +275,11 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
     p_driver.switch_to.window(window_after)
 
     action = ActionChains(p_driver)
-    field_value = {'propertyValue(gcdColCode)': gb_column_name, "propertyValue(gcdColName)": assignment_name,
+    field_value = { '#propertyValue(gcdGtmOID)': grade_term,
+                    'propertyValue(gcdColCode)': gb_column_name, "propertyValue(gcdColName)": assignment_name,
                    'propertyValue(gcdTotalPoints)': total_points, 'propertyValue(gcdExtraCredPt)': extra_credit,
                    '#propertyValue(gcdGctOID)': category, 'propertyValue(gcdDateDue)': aspen_date_due,
-                   'propertyValue(gcdDateAsgn)': date_assigned, '#propertyValue(gcdGtmOID)': grade_term,
+                   'propertyValue(gcdDateAsgn)': date_assigned,
                    }
     for key in field_value.keys():
         wait_for_element(p_driver, p_name=key)
@@ -389,6 +390,7 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'Mondrian', 'Mon', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Wireless', 'W', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Cracking', 'Cr', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Warmup', 'wup', new_title, re.X | re.S | re.M)
 
     new_title = re.sub(r'\s+$', '', new_title)
 
@@ -658,41 +660,44 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
 
                 # print(f"aspen col name XX{aspen_assignment_col_name}XX scholar_id {aspen_scholar_id}")
                 # print(f"p_aspen_assignments {p_aspen_assignments}")
-                print(f"p_aspen_assignments[col_name] {p_aspen_assignments[col_name]}  aspen_scholar_id {aspen_scholar_id} "
-                      f"student name {gc_student}")
-                cell_id = p_aspen_assignments[col_name] + '|' + aspen_scholar_id
-                # need a try and except here to see otherwise need to reload page
-                edit_cell_id = 'e' + cell_id
+                if col_name in p_aspen_assignments.keys():
+                    print(f"p_aspen_assignments[col_name] {p_aspen_assignments[col_name]}  aspen_scholar_id {aspen_scholar_id} "
+                          f"student name {gc_student}")
+                    cell_id = p_aspen_assignments[col_name] + '|' + aspen_scholar_id
+                    # need a try and except here to see otherwise need to reload page
+                    edit_cell_id = 'e' + cell_id
 
-                sql = 'select * from recorded_scores WHERE id ="' + cell_id + '" AND score =' + str(gc_score)
+                    sql = 'select * from recorded_scores WHERE id ="' + cell_id + '" AND score =' + str(gc_score)
 
-                rows = query_db(p_db_conn, sql)
+                    rows = query_db(p_db_conn, sql)
 
-                action = ActionChains(p_driver)
+                    action = ActionChains(p_driver)
 
-                old_score = 0
-                if len(rows) == 0:
-                    print("sql is this " + str(sql))
-                    # print("HERE IS CELL ID " + str(cell_id))
-                    # wait_for_element(p_driver, p_id=cell_id)
-                    if p_content_knowledge_completion and re.search('-C$', col_name):
-                        old_score = gc_score
-                        gc_score = 1
-                    grade_element = p_driver.find_element_by_id(cell_id)
-                    action.move_to_element(grade_element).perform()
-                    print("jjj this cell ID " + str(cell_id))
-                    grade_element.click()
-                    # wait_for_element(p_driver, p_id=edit_cell_id)
-                    grade_element2 = p_driver.find_element_by_id(edit_cell_id)
-                    grade_element2.send_keys(gc_score)
-                    grade_element2.send_keys(Keys.RETURN)
+                    old_score = 0
+                    if len(rows) == 0:
+                        print("sql is this " + str(sql))
+                        # print("HERE IS CELL ID " + str(cell_id))
+                        # wait_for_element(p_driver, p_id=cell_id)
+                        if p_content_knowledge_completion and re.search('-C$', col_name):
+                            old_score = gc_score
+                            gc_score = 1
+                        grade_element = p_driver.find_element_by_id(cell_id)
+                        action.move_to_element(grade_element).perform()
+                        print("jjj this cell ID " + str(cell_id))
+                        grade_element.click()
+                        # wait_for_element(p_driver, p_id=edit_cell_id)
+                        grade_element2 = p_driver.find_element_by_id(edit_cell_id)
+                        grade_element2.send_keys(gc_score)
+                        grade_element2.send_keys(Keys.RETURN)
 
-                    sql = 'INSERT INTO recorded_scores VALUES ("' + \
-                          cell_id + '", "' + gc_assignment_name + '", "' + gc_student + '", ' + \
-                          str(gc_score) + ' )'
-                    execute_sql(p_db_conn, sql)
-                    print(f"adding  this record.  Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
-                    gc_score = old_score
+                        sql = 'INSERT INTO recorded_scores VALUES ("' + \
+                              cell_id + '", "' + gc_assignment_name + '", "' + gc_student + '", ' + \
+                              str(gc_score) + ' )'
+                        execute_sql(p_db_conn, sql)
+                        print(f"adding  this record.  Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
+                        gc_score = old_score
+                    else:
+                        print(f"{col_name} is not in aspen assignments {p_aspen_assignments}")
                 else:
                     print(
                         f"Record is in the DB already.   "

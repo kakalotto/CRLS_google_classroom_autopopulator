@@ -137,6 +137,8 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
             continue
         if len(value) == 10:
             is_holiday = True
+        # if i > 17:
+        #     continue;
         # if i < 88:
         #     continue
         # if i < 93:
@@ -318,7 +320,7 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
             # last_index += 2
             # print("This is last index at end of day" + str(last_index))
 
-    print("Printing out the schedule now...\n")
-    # print(batch_requests)
+    # print("Printing out the schedule now...\n")
+    print(batch_requests)
 
     service_doc.documents().batchUpdate(documentId=document_id, body={'requests': batch_requests}).execute()
