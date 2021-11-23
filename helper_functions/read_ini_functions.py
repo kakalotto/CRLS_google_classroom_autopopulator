@@ -156,6 +156,15 @@ def read_mailer_info(p_filename):
         p_student4 = config.get('MAILER', 'email4', fallback='')
         p_student5 = config.get('MAILER', 'email5', fallback='')
         p_student6 = config.get('MAILER', 'email6', fallback='')
+        p_student7 = config.get('MAILER', 'email7', fallback='')
+        p_student8 = config.get('MAILER', 'email8', fallback='')
+        p_student9 = config.get('MAILER', 'email9', fallback='')
+        p_student10 = config.get('MAILER', 'email10', fallback='')
+        p_student11 = config.get('MAILER', 'email11', fallback='')
+        p_student12 = config.get('MAILER', 'email12', fallback='')
+        p_student13 = config.get('MAILER', 'email13', fallback='')
+        p_student14 = config.get('MAILER', 'email14', fallback='')
+        p_student15 = config.get('MAILER', 'email15', fallback='')
 
         p_guardian1 = config.get('MAILER', 'guardian1', fallback='')
         p_guardian2 = config.get('MAILER', 'guardian2', fallback='')
@@ -163,6 +172,16 @@ def read_mailer_info(p_filename):
         p_guardian4 = config.get('MAILER', 'guardian4', fallback='')
         p_guardian5 = config.get('MAILER', 'guardian5', fallback='')
         p_guardian6 = config.get('MAILER', 'guardian6', fallback='')
+        p_guardian7 = config.get('MAILER', 'guardian7', fallback='')
+        p_guardian8 = config.get('MAILER', 'guardian8', fallback='')
+        p_guardian9 = config.get('MAILER', 'guardian9', fallback='')
+        p_guardian10 = config.get('MAILER', 'guardian10', fallback='')
+        p_guardian11 = config.get('MAILER', 'guardian11', fallback='')
+        p_guardian12 = config.get('MAILER', 'guardian12', fallback='')
+        p_guardian13 = config.get('MAILER', 'guardian13', fallback='')
+        p_guardian14 = config.get('MAILER', 'guardian14', fallback='')
+        p_guardian15 = config.get('MAILER', 'guardian15', fallback='')
+
     else:
         raise ValueError("Need to have a file called: " +
                          str(p_filename) +
@@ -175,6 +194,9 @@ def read_mailer_info(p_filename):
                   p_teachercc7, p_teachercc8]
     p_messages = [p_message1, p_message2, p_message3, p_message4, p_message5, p_message6, p_message7, p_message8]
     p_student_cc = {p_student1: p_guardian1, p_student2: p_guardian2, p_student3: p_guardian3, p_student4: p_guardian4,
-                    p_student5: p_guardian5, p_student6: p_guardian6}
+                    p_student5: p_guardian5, p_student6: p_guardian6, p_student7: p_guardian7, p_student8: p_guardian8,
+                    p_student9: p_guardian9, p_student10: p_guardian10, p_student11: p_guardian11,
+                    p_student12: p_guardian12, p_student13: p_guardian13, p_student14: p_guardian14,
+                    p_student15: p_guardian15}
 
     return [p_mailclasses, p_teachercc, p_messages, p_student_cc, p_send_email, ]

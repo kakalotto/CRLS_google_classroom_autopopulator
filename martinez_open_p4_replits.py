@@ -3,6 +3,7 @@ import os #use for new instance of chrome
 import time
 #urls I want to open in array
 URLS = (
+    'https://replit.com/join/fwocufyteo-eleanoraminoff',
     'https://replit.com/join/thidpscvyz-ninaaubourg',
     'https://replit.com/join/tvdhzvpxdr-moniquebennett',
     'https://replit.com/join/bjgjhuyznw-jacobbronstein',
@@ -11,6 +12,9 @@ URLS = (
     'https://replit.com/join/rpvdqayctf-keanufeik',
     'https://replit.com/join/xswphjbtrn-maeghanfischer',
     'https://replit.com/join/smbzvrwoob-farhankalam',
+    'https://replit.com/join/ixlnocfmyx-abdiladifgurhan',
+    'https://replit.com/join/lsrbesllqy-evakaufman',
+    'https://replit.com/join/vflzxfizoz-arilavine',
     'https://replit.com/join/umrskjmgqo-simonmebatsion',
     'https://replit.com/join/mhsjqmzuuv-kputr',
     'https://replit.com/join/scmwbhwqur-jamesrochberg',
@@ -19,7 +23,6 @@ URLS = (
     'https://replit.com/join/cfijpavvkq-robeltedla1',
     'https://replit.com/join/gagjoswzte-lavaslug',
     'https://replit.com/join/drtgxwkghv-michaelzaccagni',
-    # https://replit.com/join/vflzxfizoz-arilavine
 
 
     # "https://replit.com/join/dgdjkyxxyy-claudiaharmer",

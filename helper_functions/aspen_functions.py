@@ -142,7 +142,7 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.common.exceptions import TimeoutException
-
+    import time
 
     goto_scores(p_driver, p_aspen_class)
     good_to_go = False
@@ -158,6 +158,7 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
     wait_for_element(p_driver, p_xpath_el=xpath)  # term pulldown menu
     p_driver.find_element_by_xpath(xpath).click()
     xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select'
+    time.sleep(3) #can't figure this out, something.
     wait_for_element(p_driver, p_xpath_el=xpath)
 
     p_driver.find_element_by_xpath(xpath).click()  # clicks on Grade Columns ALL (all categories)
@@ -391,6 +392,7 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'Wireless', 'W', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Cracking', 'Cr', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Warmup', 'wup', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Create Task Practice', 'CrTaPr', new_title, re.X | re.S | re.M)
 
     new_title = re.sub(r'\s+$', '', new_title)
 

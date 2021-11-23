@@ -19,7 +19,7 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
     from helper_functions.aspen_functions import generate_driver, aspen_login,  goto_assignments_this_quarter, \
         goto_scores_this_quarter, get_student_ids_from_aspen, get_assignments_and_assignment_ids_from_aspen, \
         input_assignments_into_aspen
-    from helper_functions.quarters import which_quarter_today, which_quarter_today_string
+    from helper_functions.quarters import which_quarter_today, which_quarter_today_string, which_next_quarter
     from helper_functions.classroom_functions import get_assignments_from_classroom, class_name_2_id, \
         get_student_profiles, get_assignment_scores_from_classroom, scrub_assignment_scores_student_id, \
         verify_due_date_exists
@@ -30,9 +30,12 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
     print("Transferring this classroom's grades:" + str(p_gc_classname) +
           " to this aspen class " + str(p_aspen_classname))
     today_quarter_obj = which_quarter_today(p_filename=p_config_filename)
+    next_quarter_obj = which_next_quarter(p_filename=p_config_filename)
+
     service_classroom = generate_ro_classroom_credential()
     course_id = class_name_2_id(service_classroom, p_gc_classname)
-    courseworks = get_assignments_from_classroom(service_classroom, course_id, today_quarter_obj)
+    courseworks = get_assignments_from_classroom(service_classroom, course_id, today_quarter_obj,
+                                                 p_next_quarter_start_obj=next_quarter_obj)
 
     print("Here are the Google classroom assignments from this quarter or with no due date")
     for coursework in courseworks:
@@ -123,6 +126,8 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
             counter += 1
             print("Getting the Aspen student ID's")
             goto_scores_this_quarter(driver, p_aspen_classname, quarter)
+            # print("sleeping")
+            # time.sleep(1)
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             aspen_students = get_student_ids_from_aspen(driver)
             print("here are the  aspen student IDs")

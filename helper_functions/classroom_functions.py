@@ -36,12 +36,14 @@ def class_name_2_id(p_service_classroom, name):
     return course_id
 
 
-def get_assignments_from_classroom(p_service_classroom, p_course_id, p_quarter_start_obj):
+def get_assignments_from_classroom(p_service_classroom, p_course_id, p_quarter_start_obj, *,
+                                   p_next_quarter_start_obj=''):
     """
     Gets all the assignments from the classroom, given a course ID and start date
     :param p_service_classroom:  Google classroom API service object (google classroom api object)
     :param p_course_id: course ID of Google classroom (str)
     :param p_quarter_start_obj: datetime object, 1st day of current quarter (datetime obj)
+    :param p_next quarter_start_obj: datetime object, 1st day of NEXT quarter (datetime obj)
     :return:
     """
     import datetime
@@ -55,12 +57,23 @@ def get_assignments_from_classroom(p_service_classroom, p_course_id, p_quarter_s
         if 'dueDate' in coursework:
             due_date = coursework['dueDate']
             due_date_obj = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
-            if due_date_obj > p_quarter_start_obj:
-                print("This assignment will be processed: " + str(coursework['title']))
-                final_courseworks.append(coursework)
+            if not p_next_quarter_start_obj:
+                if due_date_obj > p_quarter_start_obj:
+                    print("This assignment will be processed: " + str(coursework['title']))
+                    final_courseworks.append(coursework)
+                else:
+                    print("     --- Skipping this assignment, due date was before start of this quarter: " +
+                          str(coursework['title']))
             else:
-                print("     --- Skipping this assignment, due date was before start of this quarter: " +
-                      str(coursework['title']))
+                if due_date_obj < p_quarter_start_obj:
+                    print("     --- Skipping this assignment, due date was before start of this quarter: " +
+                          str(coursework['title']))
+                elif due_date_obj > p_next_quarter_start_obj:
+                    print("     --- Skipping this assignment, due date is in next quarter: " +
+                          str(coursework['title']))
+                else:
+                    print("This assignment will be processed: " + str(coursework['title']))
+                    final_courseworks.append(coursework)
         else:
             final_courseworks.append(coursework)
     return final_courseworks

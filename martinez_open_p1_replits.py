@@ -3,32 +3,26 @@ import os #use for new instance of chrome
 import time
 #urls I want to open in array
 URLS = (
-#    'https://replit.com/join/nprkhrpsqw-milobell',
     'https://replit.com/join/cwyjhhfnwa-milobell',
     'https://replit.com/join/zlhoiaiypc-eyalben-dov',
-   # 'https://replit.com/join/gtdektvbln-elliemberman',
     'https://replit.com/join/ykdocbzech-elliemberman',
     'https://replit.com/join/huptiizwii-deanbittker',
     'https://replit.com/join/gnorjkhbza-henrybonney',
     'https://replit.com/join/qqeiigekln-kristenchun1',
+    'https://replit.com/join/zjpucylnzy-justincolon',
     'https://replit.com/join/aaojtgiste-uridarom',
-#    'https://replit.com/join/borroiqkih-evanfay',
-#    'https://replit.com/join/dhkefmthux-evanfay',
     'https://replit.com/join/snuwrsqhxh-benjamindavis11',
     'https://replit.com/join/tbyhrfdlrk-evanfay',
     'https://replit.com/join/smuhhfbxqa-aniahearn',
-    #'https://replit.com/join/bdobbcyjhn-alexandramahaja',
     'https://replit.com/join/wklvbdprzs-alexandramahaja',
     'https://replit.com/join/oarqnxfkgk-mohammedalial10',
+    'https://replit.com/join/dpgfvcnqng-thomasmoraine-r',
     'https://replit.com/join/bgmcatgtmg-emmarandalljarr',
     'https://replit.com/join/uabfcsqvty-camillerheault',
     'https://replit.com/join/rujrikknmr-addisonrosenblu',
     'https://replit.com/join/jdznfnjrvv-iloraroy',
-#    'https://replit.com/@ILORAROY/apcsp-hw#.replit',
-#    'https://replit.com/join/htsmldkzmd-nasreenwashingt',
-
     'https://replit.com/join/thcocbblbj-alexanderwarre2',
-    'https://replit.com/join/jxoahzintl-nasreenwashingt',
+    'https://replit.com/@NasreenWashingt/apcsp-2021-22#main.py',
 
 
 
