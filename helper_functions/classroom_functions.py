@@ -206,18 +206,23 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
             if due_date_obj > p_quarter_start_obj:
                 student_works = p_service_classroom.courses(). \
                     courseWork().studentSubmissions().list(courseId=p_course_id, courseWorkId=coursework_id).execute()
-                student_works = student_works['studentSubmissions']
-                for student_work in student_works:
-                    if 'assignedGrade' in student_work.keys():
-                        if student_work['state'] == 'RETURNED':
-                            coursework_title = re.sub(r'\s:-\)', '', coursework_title)  # remove the smiley from title
-                            p_student_id = student_work['userId']
-                            student_name = p_student_profiles[p_student_id]
-                            grade = student_work['assignedGrade']
-                            if coursework_title in assignments_scores_to_aspen.keys():
-                                assignments_scores_to_aspen[coursework_title].append([student_name, grade])
-                            else:
-                                assignments_scores_to_aspen[coursework_title] = [[student_name, grade]]
+                # print(student_works)
+                # print()
+                if 'studentSubmissions' not in student_works:
+                    continue
+                else:
+                    student_works = student_works['studentSubmissions']
+                    for student_work in student_works:
+                        if 'assignedGrade' in student_work.keys():
+                            if student_work['state'] == 'RETURNED':
+                                coursework_title = re.sub(r'\s:-\)', '', coursework_title)  # remove the smiley from title
+                                p_student_id = student_work['userId']
+                                student_name = p_student_profiles[p_student_id]
+                                grade = student_work['assignedGrade']
+                                if coursework_title in assignments_scores_to_aspen.keys():
+                                    assignments_scores_to_aspen[coursework_title].append([student_name, grade])
+                                else:
+                                    assignments_scores_to_aspen[coursework_title] = [[student_name, grade]]
 
     return assignments_scores_to_aspen
 

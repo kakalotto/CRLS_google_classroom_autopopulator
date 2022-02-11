@@ -198,5 +198,5 @@ def read_mailer_info(p_filename):
                     p_student9: p_guardian9, p_student10: p_guardian10, p_student11: p_guardian11,
                     p_student12: p_guardian12, p_student13: p_guardian13, p_student14: p_guardian14,
                     p_student15: p_guardian15}
-
+    print(f"Here is the studentCC's {p_student_cc}")
     return [p_mailclasses, p_teachercc, p_messages, p_student_cc, p_send_email, ]

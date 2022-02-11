@@ -10,7 +10,7 @@ def create_calendar(spreadsheet_id):
     #spreadsheet_id = '1Bows1MWZ8sQAbLZW9t7QTRD-NwNh8bYwua1n1eRvcAE'
     # spreadsheet_id = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA' # Test_APCSP_Computer_principles
     # spreadsheet_id = '1o_YPtSYB75fk9-r79GhNVqTDdkWr0VZA497nrC4r1h0'
-    spreadsheet_id = '1veaJaPo--jFET5b5LGi71RujwKtIq4IAmuWu3YX8tUo'
+    #spreadsheet_id = '1veaJaPo--jFET5b5LGi71RujwKtIq4IAmuWu3YX8tUo'
     SHEET_NAME = 'Calendar'
 
     # Generate sheets service object
@@ -52,7 +52,7 @@ def create_calendar(spreadsheet_id):
     values = result.get('values', [])
     for row in values:
         snow_days.append(row[0])
-
+    print(snow_days)
     # All days off is the sum of holidays + snow days
     all_vacation_days = holidays + snow_days
 

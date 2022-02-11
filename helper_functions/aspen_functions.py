@@ -121,11 +121,14 @@ def goto_scores(p_driver, p_aspen_class):
     :param p_aspen_class: Name of the class in Aspen.
     :return:
     """
+    import time
     goto_gradebook(p_driver, p_aspen_class)
     wait_for_element(p_driver, p_link_text='Assignments')  # just to be sure loading is done
     p_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
     wait_for_element(p_driver, p_link_text='Scores')  # just to be sure loading is done
     p_driver.find_element_by_link_text("Scores").click()
+    # time.sleep(2)
     wait_for_element(p_driver, p_link_text='Scores')  # just to be sure loading is done
     #        wait.until(EC.invisibility_of_element_located((By.XPATH, '//img[contains(@src, "loading")]')))
 
@@ -145,6 +148,7 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
     import time
 
     goto_scores(p_driver, p_aspen_class)
+    # time.sleep(2)
     good_to_go = False
     while good_to_go is False:
         try:
@@ -156,9 +160,10 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
    #  wait_for_element(p_driver, p_xpath_el="//select[@name='termFilter']")  # term pulldown menu
     xpath = "//select[@name='termFilter']/option[text()='" + str(p_quarter) + "']"
     wait_for_element(p_driver, p_xpath_el=xpath)  # term pulldown menu
+    # time.sleep(2)
     p_driver.find_element_by_xpath(xpath).click()
     xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select'
-    time.sleep(3) #can't figure this out, something.
+    # time.sleep(3) #can't figure this out, something.
     wait_for_element(p_driver, p_xpath_el=xpath)
 
     p_driver.find_element_by_xpath(xpath).click()  # clicks on Grade Columns ALL (all categories)
@@ -418,6 +423,7 @@ def get_student_ids_from_aspen(p_driver):
     {'Fakir, Shahnawaz': 'STD0000007I3ZV', 'Hailemichael, Daniel': 'stdX2002052929'}
     """
     import re
+    import time
     id_scholars = {}
     height = 0
     wait_for_element(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
@@ -427,7 +433,10 @@ def get_student_ids_from_aspen(p_driver):
         wait_for_element(p_driver, p_xpath_el="//a")
         names = p_driver.find_elements_by_xpath("//a")
         new_names = []
+        time.sleep(0.5)
         for a in names:
+            # print("sleeping")
+            # time.sleep(0.5)
             a_attrib = a.get_attribute('href')
             if re.search('openGradeInputDetail', a_attrib) and \
                     (re.search('STD', a_attrib) or re.search('std', a_attrib)):
@@ -605,6 +614,8 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
         inputs = p_driver.find_elements_by_xpath('//tr')
         row_count = 0
         for p_input in inputs:
+            print('xxx')
+            print(p_input)
             if re.search(r'grdrow[0-9]+', p_input.get_attribute('id')):
                 row_count += 1
         if row_count != len(p_aspen_student_ids) and counter != 10:
