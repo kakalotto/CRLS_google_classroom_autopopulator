@@ -125,8 +125,8 @@ def goto_scores(p_driver, p_aspen_class):
     goto_gradebook(p_driver, p_aspen_class)
     wait_for_element(p_driver, p_link_text='Assignments')  # just to be sure loading is done
     p_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(2)
-    wait_for_element(p_driver, p_link_text='Scores')  # just to be sure loading is done
+    # time.sleep(2)
+    wait_for_element_clickable(p_driver, p_link_text='Scores')  # just to be sure loading is done
     p_driver.find_element_by_link_text("Scores").click()
     # time.sleep(2)
     wait_for_element(p_driver, p_link_text='Scores')  # just to be sure loading is done
@@ -160,7 +160,6 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
    #  wait_for_element(p_driver, p_xpath_el="//select[@name='termFilter']")  # term pulldown menu
     xpath = "//select[@name='termFilter']/option[text()='" + str(p_quarter) + "']"
     wait_for_element(p_driver, p_xpath_el=xpath)  # term pulldown menu
-    # time.sleep(2)
     p_driver.find_element_by_xpath(xpath).click()
     xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select'
     # time.sleep(3) #can't figure this out, something.
@@ -430,13 +429,15 @@ def get_student_ids_from_aspen(p_driver):
     scr = p_driver.find_element_by_xpath("//div[@class='scrollCell invisible-horizontal-scrollbar']")
     old_names = []
     for i in range(10):
-        wait_for_element(p_driver, p_xpath_el="//a")
+        wait_for_element_clickable(p_driver, p_xpath_el="//a")
+        time.sleep(1.5)  # wut?  can't redefine names inside of list so  will just sleep
         names = p_driver.find_elements_by_xpath("//a")
         new_names = []
-        time.sleep(0.5)
         for a in names:
             # print("sleeping")
             # time.sleep(0.5)
+
+            p_driver.find_elements_by_xpath("//a")
             a_attrib = a.get_attribute('href')
             if re.search('openGradeInputDetail', a_attrib) and \
                     (re.search('STD', a_attrib) or re.search('std', a_attrib)):
@@ -523,7 +524,7 @@ def get_assignments_and_assignment_ids_from_aspen(p_driver):
             wait_for_element(p_driver, p_xpath_el=xpath_string)
             aspen_assignment_id_el = p_driver.find_element_by_xpath(xpath_string)
             aspen_assignment_id = aspen_assignment_id_el.get_attribute('id')
-            xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[8]'
+            xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[9]'
             wait_for_element(p_driver, p_xpath_el=xpath_string)
             gb_column_name_el = p_driver.find_element_by_xpath(xpath_string)
             gb_column_name = gb_column_name_el.text
@@ -614,8 +615,8 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
         inputs = p_driver.find_elements_by_xpath('//tr')
         row_count = 0
         for p_input in inputs:
-            print('xxx')
-            print(p_input)
+            # print('xxx')
+            # print(p_input)
             if re.search(r'grdrow[0-9]+', p_input.get_attribute('id')):
                 row_count += 1
         if row_count != len(p_aspen_student_ids) and counter != 10:
@@ -625,7 +626,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
             print("Aspen bug in loading page, reloading now...")
             p_driver.get(p_driver.current_url)
             p_driver.refresh()
-            wait_for_element(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
+            wait_for_element_clickable(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
             time.sleep(1.5)
             print("restarting, current counter is this: " + str(counter))
             counter += 1
@@ -668,15 +669,26 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                     continue
                 assignment_col_names.append(aspen_assignment_col_name)
             aspen_scholar_id = match_gc_name_with_aspen_id(gc_student, p_aspen_student_ids)
-            print(f'assignments {assignment_col_names}')
+            # print(f'assignments {assignment_col_names}')
+            # print("keys are here!")
+            # print(p_aspen_assignments.keys())
+            # print("assignment col names")
+            # print(assignment_col_names)
             for col_name in assignment_col_names:
-
                 # print(f"aspen col name XX{aspen_assignment_col_name}XX scholar_id {aspen_scholar_id}")
                 # print(f"p_aspen_assignments {p_aspen_assignments}")
+                # print(f"Col name is this: {col_name}")
+                # #print(f"p_aspen_assignments[col_name] {p_aspen_assignments[col_name]}")
+
+                # print(f"p_aspen_asisgnment_keys is this: {p_aspen_assignments.keys()}")
                 if col_name in p_aspen_assignments.keys():
-                    print(f"p_aspen_assignments[col_name] {p_aspen_assignments[col_name]}  aspen_scholar_id {aspen_scholar_id} "
-                          f"student name {gc_student}")
-                    cell_id = p_aspen_assignments[col_name] + '|' + aspen_scholar_id
+                    # print(f"p_aspen_assignments[col_name] {p_aspen_assignments[col_name]}  aspen_scholar_id {aspen_scholar_id} "
+                    #       f"student name {gc_student}")
+                    try:
+                        cell_id = p_aspen_assignments[col_name] + '|' + aspen_scholar_id
+                    except TypeError:
+                        print("Could not concatenate assignment col and ID.  Does student exist in aspen?")
+                        continue
                     # need a try and except here to see otherwise need to reload page
                     edit_cell_id = 'e' + cell_id
 
@@ -694,6 +706,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                         if p_content_knowledge_completion and re.search('-C$', col_name):
                             old_score = gc_score
                             gc_score = 1
+                        # wait_for_element_clickable(p_driver, p_id=cell_id)
                         grade_element = p_driver.find_element_by_id(cell_id)
                         action.move_to_element(grade_element).perform()
                         print("jjj this cell ID " + str(cell_id))
@@ -713,7 +726,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                         print(f"{col_name} is not in aspen assignments {p_aspen_assignments}")
                 else:
                     print(
-                        f"Record is in the DB already.   "
+                        f"Assignment needs to be put into Aspen   "
                         f"Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
 
 
@@ -755,7 +768,7 @@ def wait_for_element(p_driver, *, message='', timeout=10, p_link_text='', p_xpat
             raise ValueError(f"Could not find this exact link text in the page:{p_link_text}")
     elif p_id:
         try:
-            WebDriverWait(p_driver, timeout).until(ec.presence_of_element_located((By.ID, p_link_text)))
+            WebDriverWait(p_driver, timeout).until(ec.presence_of_element_located((By.ID, p_id)))
         except TimeoutException:
             if message:
                 print(message)
@@ -777,3 +790,65 @@ def wait_for_element(p_driver, *, message='', timeout=10, p_link_text='', p_xpat
                 print(message)
             p_driver.quit()
             raise ValueError(f"Could not find this exact name in the page:{p_class}")
+
+
+def wait_for_element_clickable(p_driver, *, message='', timeout=10, p_link_text='', p_xpath_el='',
+                               p_id='', p_name='', p_class=''):
+    """
+
+    :param p_driver: Selenium driver object
+    :param message: Message to print in case unsuccessful (string)
+    :param timeout: Time out in seconds (int)
+    :param p_xpath_el: Xpath of element we are looking for (string)
+    :param p_link_text: Text element we are looking for (string)
+    :param p_id: ID of element we are looking for (string)
+    :param p_name: name of element we are looking for (string)
+    :param p_class: class of element we are looking for (string)
+
+    :return: none
+    """
+    from selenium.webdriver.support import expected_conditions as ec
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.common.exceptions import TimeoutException
+
+    if p_xpath_el:
+        try:
+            WebDriverWait(p_driver, timeout).until(ec.element_to_be_clickable((By.XPATH, p_xpath_el)))
+        except TimeoutException:
+            if message:
+                print(message)
+            p_driver.quit()
+            raise ValueError("Could not find this Xpath element in the page:" + str(p_xpath_el))
+    elif p_link_text:
+        try:
+            WebDriverWait(p_driver, timeout).until(ec.element_to_be_clickable((By.LINK_TEXT, p_link_text)))
+        except TimeoutException:
+            if message:
+                print(message)
+            p_driver.quit()
+            raise ValueError(f"Could not find this exact link text in the page:{p_link_text}")
+    elif p_id:
+        try:
+            WebDriverWait(p_driver, timeout).until(ec.element_to_be_clickable((By.ID, p_id)))
+        except TimeoutException:
+            if message:
+                print(message)
+            p_driver.quit()
+            raise ValueError(f"Could not find this exact ID in the page:{p_id}")
+    # elif p_name:
+    #     try:
+    #         WebDriverWait(p_driver, timeout).until(ec.presence_of_element_located((By.NAME, p_name)))
+    #     except TimeoutException:
+    #         if message:
+    #             print(message)
+    #         p_driver.quit()
+    #         raise ValueError(f"Could not find this exact name in the page:{p_name}")
+    # elif p_class:
+    #     try:
+    #         WebDriverWait(p_driver, timeout).until(ec.presence_of_element_located((By.CLASS_NAME, p_class)))
+    #     except TimeoutException:
+    #         if message:
+    #             print(message)
+    #         p_driver.quit()
+    #         raise ValueError(f"Could not find this exact name in the page:{p_class}")

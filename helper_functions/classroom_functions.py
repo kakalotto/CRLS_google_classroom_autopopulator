@@ -394,6 +394,8 @@ def scrub_assignment_scores_student_id(p_gc_assignment_scores_student_id, p_rows
     :return:  Scrubbed  gc_assignment_scores_student_id, the anti-union of gc_assignment_scores_student_id and rows
     """
     import math
+    import re
+
     new_gc_assignment_scores_student_id = {}
     # print(f"p rows {p_rows}")
     new_p_rows = [x[1:] for x in p_rows]
@@ -406,8 +408,9 @@ def scrub_assignment_scores_student_id(p_gc_assignment_scores_student_id, p_rows
         for turnin in turnins:
             # print(f"This is the turnin {turnin}")
             turnin_tuple = (key, turnin[0], math.ceil(turnin[1]))
-
-            if turnin_tuple not in new_p_rows:  # duplicate
+            if re.search(r':-o', key):
+                continue
+            elif turnin_tuple not in new_p_rows:  # duplicate
                 if key in new_gc_assignment_scores_student_id.keys():
                     new_gc_assignment_scores_student_id[key].append([turnin[0], math.ceil(turnin[1])])
                 else:

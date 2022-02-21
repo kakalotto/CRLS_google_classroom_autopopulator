@@ -4,12 +4,12 @@ from helper_functions.read_ini_functions import read_classes_info
 
 config = configparser.ConfigParser()		
 
-config_filename = "crls_teacher_tools.ini"
+config_filename = "crls_teacher_tools_assignments.ini"
 all_classes = read_classes_info(config_filename)
 
 
 config = configparser.ConfigParser()
-config.read("crls_teacher_tools.ini")
+config.read(config_filename)
 
 username = config.get('LOGIN', 'username', fallback='')
 password = config.get('LOGIN', 'password', fallback='')

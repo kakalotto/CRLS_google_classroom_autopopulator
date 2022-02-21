@@ -37,15 +37,15 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
     courseworks = get_assignments_from_classroom(service_classroom, course_id, today_quarter_obj,
                                                  p_next_quarter_start_obj=next_quarter_obj)
 
-    print("Here are the Google classroom assignments from this quarter or with no due date")
-    for coursework in courseworks:
-        print(coursework['title'])
+    # print("Here are the Google classroom assignments from this quarter or with no due date")
+    # for coursework in courseworks:
+    #     print(coursework['title'])
 
     # Crash out if there is no due date for assignment unless p_ignore_noduedaste is True.
     courseworks = verify_due_date_exists(courseworks, p_ignore_noduedate)
-    print("\nHere are the Google classroom assignments that we will try to process")
-    for coursework in courseworks:
-        print(coursework['title'])
+    # print("\nHere are the Google classroom assignments that we will try to process")
+    # for coursework in courseworks:
+    #     print(coursework['title'])
 
     # Get the DB stuff and clean the data
     print("Doing DB stuff")
