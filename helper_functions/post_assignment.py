@@ -68,7 +68,8 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
         raise Exception("'Request contains an invalid argument' - is the topic you want for this assignment one that "
                         "exists in this class within Google classroom?\n"
                         "Alternatively, if there is a message 'materials: Duplicate materials are not allowed', you"
-                        "probably have two of the same link on your lesson plan.")
+                        "probably have two of the same link on your lesson plan.\n"
+                        "Alternatively, did you update your b1 cell, classroom ID?")
     return assignment_id
 
 #

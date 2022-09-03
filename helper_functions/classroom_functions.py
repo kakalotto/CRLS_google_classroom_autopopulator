@@ -333,6 +333,7 @@ def verify_due_date_exists(p_courseworks, ignore_noduedate):
         raise ValueError(f"Every assignment should have a due date.  Here are the assignments without a due date:"
                          f" {bad_courseworks}  \nProgram will exit now.")
 
+
     if ignore_noduedate is False:
         return p_courseworks
     else:
@@ -352,18 +353,21 @@ def verify_points_exists(p_courseworks):
         if 'maxPoints' not in coursework:
             bad_courseworks.append(coursework['title'])
     if bad_courseworks:
-        print(f"Every assignment should have a points.  Here are the assignments without points for the "
-              f"assignment:"
+        # print(f"Every assignment should have a points.  Here are the assignments without points for the "
+        #       f"assignment:"
+        #       f" {bad_courseworks} ")
+        # input("Press enter to continue.")
+        # raise ValueError(f"Every assignment should have a points.  Here are the assignments without points for the "
+        #                  f"assignment:"
+        #                  f" {bad_courseworks} ")
+        print(f"Skipping this one, no points"
               f" {bad_courseworks} ")
-        input("Press enter to continue.")
-        raise ValueError(f"Every assignment should have a points.  Here are the assignments without points for the "
-                         f"assignment:"
-                         f" {bad_courseworks} ")
-
+    return bad_courseworks
 
 def scrub_courseworks(p_courseworks, list_name, p_list, p_content_knowledge):
     """
     takes courseworks and if the assignment is in p_list, removes that from courseworks
+    If assignment has 0 points, remove
     :param p_courseworks: list of Google classroom coursework objects
     :param list_name: name of list (for printouts) string
     :param p_list: list of items that you don't want the column to be (list of str)
@@ -375,6 +379,11 @@ def scrub_courseworks(p_courseworks, list_name, p_list, p_content_knowledge):
     new_courseworks = []
     for coursework in p_courseworks:
         found = False
+        if 'maxPoints' not in coursework:
+            print(f"Skipping this one with no points {coursework['title']}")
+
+            continue
+
         new_proposed_name = convert_assignment_name(coursework['title'], p_content_knowledge)
         if new_proposed_name in p_list or new_proposed_name + '-C' in p_list or \
                 new_proposed_name + '-K' in p_list:

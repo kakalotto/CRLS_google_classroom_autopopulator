@@ -75,6 +75,57 @@ def goto_gradebook(p_driver, p_aspen_class):
     p_driver.find_element_by_link_text("Scores").click()
 
 
+def goto_students(p_driver):
+    """
+    Goto Students tab in navbar.
+    :param p_driver: Selenium driver object
+    :return:
+    """
+    wait_for_element(p_driver, p_link_text='Student')
+    p_driver.find_element_by_link_text("Student").click()
+
+def search_name(p_driver, p_name):
+    """
+    Clicks on lasaid to sort assumes already in students navtab.
+    :param p_driver: Selenium driver object
+    :return:
+    """
+    wait_for_element(p_driver, p_id='findMenuBarWidget-textInput')
+    p_driver.find_element_by_id('findMenuBarWidget-textInput').click()
+    p_driver.find_element_by_id('findMenuBarWidget-textInput').send_keys(p_name)
+    wait_for_element(p_driver, p_id='findMenuBarWidget-searchButton')
+    p_driver.find_element_by_id("findMenuBarWidget-searchButton").click()
+
+
+
+def goto_sort_lasid(p_driver):
+    """
+    Clicks on lasaid to sort assumes already in students navtab.
+    :param p_driver: Selenium driver object
+    :return:
+    """
+    wait_for_element(p_driver, p_id='stdIDLocal')
+    p_driver.find_element_by_id('stdIDLocal').click()
+
+
+
+def goto_student(p_driver, p_student_id):
+    """
+    Goto Student, given an id. assumes already in students navtab.
+    :param p_driver: Selenium driver object
+    :return:
+    """
+    wait_for_element(p_driver, p_link_text=p_student_id)
+    p_driver.find_element_by_link_text(p_student_id).click()
+
+
+def extract_email(p_driver):
+    # assumes already on page
+    wait_for_element(p_driver, p_id='propertyValue(relStdPsnOid_psnEmail02)-span')
+    abc =  p_driver.find_element_by_id('propertyValue(relStdPsnOid_psnEmail02)-span').text
+    return abc
+
+
 def goto_assignments(p_driver, p_aspen_class):
     """
     Goto Assignments.  Assumes are are at the aspen login.
@@ -291,10 +342,11 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
         element = p_driver.find_element_by_name(key)
         action.move_to_element(element).perform()
         element.click()
-        for i in range(10):
+        for i in range(17):
             element.send_keys(Keys.BACKSPACE)
         element.send_keys(field_value[key])
     wait_for_element(p_driver, p_name='saveButton')
+    time.sleep(4)
     p_driver.find_element_by_name('saveButton').click()
     p_driver.switch_to.window(window_before)
 
