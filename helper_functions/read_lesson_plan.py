@@ -51,6 +51,12 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                                 .format(p_spreadsheet_id))
             else:
                 column_dict['assignment_or_announcement'] = 'assignment'
+                try:
+                    if column[5].isdigit():
+                        column_dict['points'] = column[5]
+                except IndexError:
+                    raise Exception(f"List index out of range.  Did you forget to put points?  Here is column {column}")
+
                 if column[5].isdigit() or column[5].replace(".", "", 1).isdigit():
                     column_dict['points'] = column[5]
                 else:

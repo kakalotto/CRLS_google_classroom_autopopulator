@@ -56,7 +56,7 @@ cs2_2023_fy = {'document_id': '1STKDLmpKgSdgNhPdZrsjVr2CnkUMyJGRlMG6DBTVJQE',
                'classroom_id': 'NTQ1NTMwOTI0MDAw',
                'spreadsheet_id': '1lBLPUmEkaFIa3j3dItuOVnS_iQ9K2e2m0pGEWWDUEP0',
                'sheet_id': 'CS2',
-               'header_text': 'Computer Science 2 2\n',
+               'header_text': 'Computer Science 2\n',
                'course_id': 545530924000,
                'course_contract': 'https://docs.google.com/document/d/'
                                   '1zJArrh4Xq0YlF-vFZu3SCYznJhjMpM9pBs2GOLSsJV0/edit',
@@ -65,6 +65,19 @@ cs2_2023_fy = {'document_id': '1STKDLmpKgSdgNhPdZrsjVr2CnkUMyJGRlMG6DBTVJQE',
                'fy': True
                }
 
+
+cs3_2023_fy = {'document_id': '1H8qyFWDIEDP-CTc1GE4xX9BZkIscRcFGwBL8_-mdtS4',
+               'classroom_id': 'NTI3MTE1NzE1MjA3',
+               'spreadsheet_id': '1lBLPUmEkaFIa3j3dItuOVnS_iQ9K2e2m0pGEWWDUEP0',
+               'sheet_id': 'CS3',
+               'header_text': 'Computer Science 3\n',
+               'course_id': 527115715207,
+               'course_contract': 'https://docs.google.com/document/d/'
+                                  '1zJArrh4Xq0YlF-vFZu3SCYznJhjMpM9pBs2GOLSsJV0/edit',
+               'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
+               'assignments_dictionary': {},
+               'fy': True
+               }
 
 ics_2023_s1 = {'document_id': '1JB9tm4D0geIC-ft1JipV2n2dQJZys_a-bYVFAYNDbzs',
                'classroom_id': 'NDg5MzEwNTA4MjM4',
@@ -309,5 +322,6 @@ apcsp_2023_s1_p4_005 = {'document_id': '1bskgjiqO-RD68AS-EYHV-tzbHnIdMUrqGhysAqL
 
 
 #classes = [ it1_2022_fy_p1, exploratory_2023_s1, ]
-classes = [it3_2023_fy, it2_2023_fy, apcsp_2023_s1_p1, apcsp_2023_s1_p4_001, apcsp_2023_s1_p4_005, ics_2023_s1, it1cs1_2023_fy_p1,
+classes = [cs2_2023_fy, cs3_2023_fy, it3_2023_fy, it2_2023_fy,
+           apcsp_2023_s1_p1, apcsp_2023_s1_p4_001, apcsp_2023_s1_p4_005, ics_2023_s1, it1cs1_2023_fy_p1,
            exploratory_2023_s1 ]
