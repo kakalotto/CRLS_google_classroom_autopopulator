@@ -212,14 +212,19 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
     xpath = "//select[@name='termFilter']/option[text()='" + str(p_quarter) + "']"
     wait_for_element(p_driver, p_xpath_el=xpath)  # term pulldown menu
     p_driver.find_element_by_xpath(xpath).click()
-    xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select'
-    # time.sleep(3) #can't figure this out, something.
-    wait_for_element(p_driver, p_xpath_el=xpath)
+    print("found pulldown maybe")
 
-    p_driver.find_element_by_xpath(xpath).click()  # clicks on Grade Columns ALL (all categories)
-    xpath += "/option[text()='All']"
+  # xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select'
+    xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[2]/table/tbody/tr/td[1]/select/option[1]'
+    time.sleep(3) #can't figure this out, something.
     wait_for_element(p_driver, p_xpath_el=xpath)
-    p_driver.find_element_by_xpath(xpath).click()
+# /html/body/form/table/tbody/tr[2]/td/div/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[4]/select/option[4]
+# /html/body/form/table/tbody/tr[2]/td/div/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[2]/table/tbody/tr/td[1]/select/option[1]
+#           //*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[2]/table/tbody/tr/td[1]/select/option[1]
+    p_driver.find_element_by_xpath(xpath).click()  # clicks on Grade Columns ALL (all categories)
+    # xpath += "/option[text()='All']"
+    # wait_for_element(p_driver, p_xpath_el=xpath)
+    # p_driver.find_element_by_xpath(xpath).click()
     good_to_go = False
     while good_to_go is False:
         try:
@@ -387,6 +392,7 @@ def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_d
             add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn,
                            p_category='k')
         else:
+            print(f"Adding this one: {coursework}")
             add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn)
 
 
@@ -436,6 +442,12 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
         len_title = 9
 
     new_title = p_name
+    new_title = re.sub(r'Python - Dictionaries', 'Dict', new_title, re.X | re.S | re.M)
+    new_title = re.sub('Anchor', 'A', new_title)
+    new_title = re.sub('Module', 'M', new_title)
+    new_title = re.sub('JavaScript', 'J', new_title)
+    new_title = re.sub('section', 's', new_title)
+    new_title = re.sub('Quiz', 'Q', new_title)
     new_title = re.sub('Python ', 'py', new_title)
     new_title = re.sub('Arduino Day ', 'ar', new_title)
     new_title = re.sub('Scratch ', 'Sc', new_title)
@@ -444,11 +456,11 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub('Encoding', 'Enc', new_title)
     new_title = re.sub(r'Final\sreview', 'Frev', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Post\sgraduate\splans,\s', 'grad', new_title, re.X | re.S | re.M)
-    new_title = re.sub(r'Mondrian', 'Mon', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Wireless', 'W', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Cracking', 'Cr', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Warmup', 'wup', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Create Task Practice', 'CrTaPr', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Project', 'P w', new_title, re.X | re.S | re.M)
 
     new_title = re.sub(r'\s+$', '', new_title)
 
@@ -486,20 +498,29 @@ def get_student_ids_from_aspen(p_driver):
         names = p_driver.find_elements_by_xpath("//a")
         new_names = []
         for a in names:
+            try:
+                a_attrib = a.get_attribute('href')
+               # print(f"current name: {a_attrib}")
+            except:
+                print("FAILED ONE!")
+                continue
             # print("sleeping")
-            # time.sleep(0.5)
-
-            p_driver.find_elements_by_xpath("//a")
-            a_attrib = a.get_attribute('href')
-            if re.search('openGradeInputDetail', a_attrib) and \
-                    (re.search('STD', a_attrib) or re.search('std', a_attrib)):
-                match_obj = re.match(r"javascript:openGradeInputDetail\('((std|STD).+)'\)",
-                                     a_attrib, re.X | re.M | re.S)
-                first_id = match_obj.group(1)
-                name = a.text
-                if name:
-                    new_names.append(name)
-                    id_scholars[name] = first_id
+            # time.sleep(1)
+            try:
+                p_driver.find_elements_by_xpath("//a")
+                a_attrib = a.get_attribute('href')
+                if re.search('openGradeInputDetail', a_attrib) and \
+                        (re.search('STD', a_attrib) or re.search('std', a_attrib)):
+                    match_obj = re.match(r"javascript:openGradeInputDetail\('((std|STD).+)'\)",
+                                         a_attrib, re.X | re.M | re.S)
+                    first_id = match_obj.group(1)
+                    name = a.text
+                    if name:
+                        new_names.append(name)
+                        id_scholars[name] = first_id
+            except:
+                print("FAILURE!")
+                continue
 
         # Basically you will run this an extra time.
         # If the names you extract both times are the same, you are done scrolling down.
@@ -510,7 +531,10 @@ def get_student_ids_from_aspen(p_driver):
         else:
             old_names = new_names
             height += 120
-            p_driver.execute_script("arguments[0].scrollTo(0," + str(height) + ") ", scr)
+            try:
+                p_driver.execute_script("arguments[0].scrollTo(0," + str(height) + ") ", scr)
+            except:
+                print("FAILURE TO MOVE AND SCROLL")
     return id_scholars
 
 
@@ -775,7 +799,9 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                         print(f"adding  this record.  Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
                         gc_score = old_score
                     else:
-                        print(f"{col_name} is not in aspen assignments {p_aspen_assignments}")
+                        print(f"'{col_name}' is not in aspen assignments {p_aspen_assignments}")
+                        print(f"'keys what the heck {p_aspen_assignments.keys()}")
+
                 else:
                     print(
                         f"Assignment needs to be put into Aspen   "

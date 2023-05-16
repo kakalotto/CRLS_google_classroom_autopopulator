@@ -1,15 +1,28 @@
-exploratory_2023_s1 = {'document_id': '1pYf1-CfokKnod-JIqFulmA5-FjqX0L2vHxg_OqvWZJc',
+ics_2023_s2 = {'document_id': '1hh9o_3DYDHBC9dI9HXZ60KyFO0jeXnIVOTK6h9iVBB0',
+               'classroom_id': 'NTg1NDUyNTgwNjQ2',
+               'spreadsheet_id': '1Ea92piMS2ffIswrBDtgjj_9e9OiUy5SR3i3L6aUGDLU',
+               'sheet_id': 'ICS_S2P2',
+               'header_text': 'Intro to Computer Science\n',
+               'course_id': 585452580646,
+               'course_contract': '',
+               'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
+               'assignments_dictionary': {},
+               'fy': False,
+               }
 
-                       'classroom_id': 'NDkwNTM0OTAzNTAz',
-                       'spreadsheet_id': '1VPDOIVO1_9gFYpEQmjBeS37v0lAr35U6UjXGgDpRtQs',
-                       'sheet_id': 'R3',
-                       'header_text': 'Exploratory rotation 3\n',
-                       'course_id': 490534903503,
-                       'course_contract': 'https://docs.google.com/document/d/10UgK6pP2UcaXu8ErPBk_MNNDZ82i93AwijWXLplN01M/edit?usp=drive_open&ouid=110067882309555165220',
-                       'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
-                       'assignments_dictionary': {},
-                       'fy': False,
-                       }
+
+web_2023_s2 = {'document_id': '1w_IhGndL_Us4AbKtdgHpaj9Qy671PlQR3vm2ikTCMDU',
+
+               'classroom_id': 'NTg1NDUyNDU5MDQ3',
+               'spreadsheet_id': '1lBLPUmEkaFIa3j3dItuOVnS_iQ9K2e2m0pGEWWDUEP0',
+               'sheet_id': 'Web_Design',
+               'header_text': 'Web Design\n',
+               'course_id': 585452459047,
+               'course_contract': 'https://docs.google.com/document/d/1fcWp1rsAPTt0s48HRxABHsvQWKuwOBFuEInSritw02E/edit',
+               'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
+               'assignments_dictionary': {},
+               'fy': False,
+               }
 
 it1cs1_2023_fy_p1 = {'document_id': '1JbLsEZeRIoz8YtPmCcCc8lAjGVMQQNMvEv21b7ayhFA',
                      'classroom_id': 'NTQ1NTMyMzE2Mzc1',
@@ -92,41 +105,30 @@ ics_2023_s1 = {'document_id': '1JB9tm4D0geIC-ft1JipV2n2dQJZys_a-bYVFAYNDbzs',
                'fy': False,
                }
 
-apcsp_2023_s1_p1 = {'document_id': '1AX1tUFVfEoe5Nkjs0jL8lH9d5BLvmQ4rcwX1fLPtkww',
-                    'classroom_id': 'NTQ1NTMxNDI2MzU1',
+apcsp_2023_s2_p1 = {'document_id': '1sHvhUURA5_uJcQ51th_0vz7Y-63n55qOOIjnhVyqSos',
+                    'classroom_id': 'NTg1NDUxNzEyMDM1',
                     'spreadsheet_id': '1b9rnK5B1Ft9IBwmBgd-vouXi6WuEVMMfV5p7kMoYMcA',
-                    'sheet_id': 'APCSP_S1_P1',
+                    'sheet_id': 'APCSP_S2_P1',
                     'header_text': 'AP Computer Science Principles P1\n',
-                    'course_id': 545531426355,
+                    'course_id': 585451712035,
                     'course_contract': 'https://docs.google.com/document/d/17SyCeu83T7xssjeaySVfYJntEnobHYGCgAIeX1vcRfE/edit',
                     'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
                     'assignments_dictionary': {},
                     'fy': False,
                     }
 
-apcsp_2023_s1_p4_001 = {'document_id': '1_uT_uMkOxLYu8DALK8ijVoDUKRhdvADhUkDr1FMJpWE',
-                        'classroom_id': 'NTQ1NTMxOTc3MzY5',
-                        'spreadsheet_id': '1b9rnK5B1Ft9IBwmBgd-vouXi6WuEVMMfV5p7kMoYMcA',
-                        'sheet_id': 'APCSP_S1_P4_001',
-                        'header_text': 'AP Computer Science Principles P4 section 001\n',
-                        'course_id': 545531977369,
-                        'course_contract': 'https://docs.google.com/document/d/17SyCeu83T7xssjeaySVfYJntEnobHYGCgAIeX1vcRfE/edit',
-                        'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
-                        'assignments_dictionary': {},
-                        'fy': False,
-                        }
+apcsp_2023_s2_p4 = {'document_id': '1hYXqBUZzI17nwt1PiMSRKJLxBcvZH1wqts7ZPOIlDK0',
+                    'classroom_id': 'NTg1NDUwNzU2OTg5',
+                    'spreadsheet_id': '1b9rnK5B1Ft9IBwmBgd-vouXi6WuEVMMfV5p7kMoYMcA',
+                    'sheet_id': 'APCSP_S2_P4_002',
+                    'header_text': 'AP Computer Science Principles P4\n',
+                    'course_id': 585449768574,
+                    'course_contract': 'https://docs.google.com/document/d/17SyCeu83T7xssjeaySVfYJntEnobHYGCgAIeX1vcRfE/edit',
+                    'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
+                    'assignments_dictionary': {},
+                    'fy': False,
+                    }
 
-apcsp_2023_s1_p4_005 = {'document_id': '1bskgjiqO-RD68AS-EYHV-tzbHnIdMUrqGhysAqLoxqA',
-                        'classroom_id': 'NTQ1NTMxNTE0OTY1',
-                        'spreadsheet_id': '1b9rnK5B1Ft9IBwmBgd-vouXi6WuEVMMfV5p7kMoYMcA',
-                        'sheet_id': 'APCSP_S1_P4_005',
-                        'header_text': 'AP Computer Science Principles P4 section 005\n',
-                        'course_id': 545531514965,
-                        'course_contract': 'https://docs.google.com/document/d/17SyCeu83T7xssjeaySVfYJntEnobHYGCgAIeX1vcRfE/edit',
-                        'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
-                        'assignments_dictionary': {},
-                        'fy': False,
-                        }
 
 # ics_2022_s1_p1 = {'document_id': '19sDv_eBO4xjey9e2oD-sjRoHk987VKud5-VWNMA0vKE',
 #                   'classroom_id': 'Mzg5MTY2MTY2NTU2',
@@ -321,8 +323,6 @@ apcsp_2023_s1_p4_005 = {'document_id': '1bskgjiqO-RD68AS-EYHV-tzbHnIdMUrqGhysAqL
 # classes = [apcsp_2022_s2_p4, apcsp_2022_s2_p1, it3_2022_fy_p3, it2_2022_fy_p3, it1_2022_fy_p1, ]
 
 
-
+# cs2_2023_fy, cs3_2023_fy, it3_2023_fy, it2_2023_fy,it1cs1_2023_fy_p1,
 #classes = [ it1_2022_fy_p1, exploratory_2023_s1, ]
-classes = [cs2_2023_fy, cs3_2023_fy, it3_2023_fy, it2_2023_fy,
-           apcsp_2023_s1_p1, apcsp_2023_s1_p4_001, apcsp_2023_s1_p4_005, ics_2023_s1, it1cs1_2023_fy_p1,
-           exploratory_2023_s1 ]
+classes = [ics_2023_s2, apcsp_2023_s2_p1, apcsp_2023_s2_p4, it1cs1_2023_fy_p1, web_2023_s2  ]

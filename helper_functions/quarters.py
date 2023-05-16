@@ -118,11 +118,12 @@ def which_next_quarter(*, p_filename=''):
     q2_list = q2.split('/')
     q3_list = q3.split('/')
     q4_list = q4.split('/')
+    summer_list = summer.split('/')
     q1 = datetime.datetime(int(q1_list[0]), int(q1_list[1]), int(q1_list[2]))
     q2 = datetime.datetime(int(q2_list[0]), int(q2_list[1]), int(q2_list[2]))
     q3 = datetime.datetime(int(q3_list[0]), int(q3_list[1]), int(q3_list[2]))
     q4 = datetime.datetime(int(q4_list[0]), int(q4_list[1]), int(q4_list[2]))
-
+    summer = datetime.datetime(int(summer_list[0]), int(summer_list[1]), int(summer_list[2]))
     today = datetime.datetime.now()
     if q2 > today > q1:
         return q2

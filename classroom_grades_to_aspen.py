@@ -31,7 +31,9 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
           " to this aspen class " + str(p_aspen_classname))
     today_quarter_obj = which_quarter_today(p_filename=p_config_filename)
     next_quarter_obj = which_next_quarter(p_filename=p_config_filename)
+    print(f'next quarter obj {today_quarter_obj}')
 
+    print(f'next quarter obj {next_quarter_obj}')
     service_classroom = generate_ro_classroom_credential()
     course_id = class_name_2_id(service_classroom, p_gc_classname)
     courseworks = get_assignments_from_classroom(service_classroom, course_id, today_quarter_obj,
@@ -128,7 +130,9 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
             goto_scores_this_quarter(driver, p_aspen_classname, quarter)
             # print("sleeping")
             # time.sleep(1)
+            print("Got the scores")
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            print("getting student IDs")
             aspen_students = get_student_ids_from_aspen(driver)
             print("here are the  aspen student IDs")
             for key in aspen_students:
