@@ -473,7 +473,7 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     else:
         column_name = new_title
     column_name = re.sub(r'\s+$', '', column_name)
-    print(f"final title {column_name}")
+    print(f"aspen functions/convert_assignment_name final title {column_name}")
 
     return column_name
 
@@ -726,6 +726,8 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
             if abs(int(gc_score) - gc_score) > 0.01:
                 print("Rounding up assignment score to nearest 1")
                 gc_score = round(gc_score)
+            if gc_score == -9999:
+                gc_score = 'M'
             print(f"test assignment {gc_assignment_name} test_name {gc_student} test_score {gc_score}")
 
             assignment_col_names = []
@@ -776,7 +778,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
 
                     old_score = 0
                     if len(rows) == 0:
-                        print("sql is this " + str(sql))
+                        print("aspen_functions/input_assignments_into_aspen sql is this " + str(sql))
                         # print("HERE IS CELL ID " + str(cell_id))
                         # wait_for_element(p_driver, p_id=cell_id)
                         if p_content_knowledge_completion and re.search('-C$', col_name):
@@ -785,19 +787,19 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                         # wait_for_element_clickable(p_driver, p_id=cell_id)
                         grade_element = p_driver.find_element_by_id(cell_id)
                         action.move_to_element(grade_element).perform()
-                        print("jjj this cell ID " + str(cell_id))
+                        # print("jjj this cell ID " + str(cell_id))
                         grade_element.click()
                         # wait_for_element(p_driver, p_id=edit_cell_id)
                         grade_element2 = p_driver.find_element_by_id(edit_cell_id)
                         grade_element2.send_keys(gc_score)
                         grade_element2.send_keys(Keys.RETURN)
-
-                        sql = 'INSERT INTO recorded_scores VALUES ("' + \
-                              cell_id + '", "' + gc_assignment_name + '", "' + gc_student + '", ' + \
-                              str(gc_score) + ' )'
-                        execute_sql(p_db_conn, sql)
-                        print(f"adding  this record.  Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
-                        gc_score = old_score
+                        if gc_score != 'M':
+                            sql = 'INSERT INTO recorded_scores VALUES ("' + \
+                                  cell_id + '", "' + gc_assignment_name + '", "' + gc_student + '", ' + \
+                                  str(gc_score) + ' )'
+                            execute_sql(p_db_conn, sql)
+                            print(f"adding  this record.  Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
+                            gc_score = old_score
                     else:
                         print(f"'{col_name}' is not in aspen assignments {p_aspen_assignments}")
                         print(f"'keys what the heck {p_aspen_assignments.keys()}")

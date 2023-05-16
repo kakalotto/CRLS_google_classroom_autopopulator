@@ -59,24 +59,31 @@ def get_assignments_from_classroom(p_service_classroom, p_course_id, p_quarter_s
             due_date_obj = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
             if not p_next_quarter_start_obj:
                 if due_date_obj > p_quarter_start_obj:
-                    print("This assignment will be processed: " + str(coursework['title']))
+                    print("classroom_functions/get_assignments_from_classroom: This assignment will be processed: " + str(coursework['title']))
                     final_courseworks.append(coursework)
                 else:
-                    print("     --- Skipping this assignment, due date was before start of this quarter: " +
+                    print("classroom_functions/get_assignments_from_classroom:     --- Skipping this assignment, due date was before start of this quarter: " +
                           str(coursework['title']))
             else:
                 if due_date_obj < p_quarter_start_obj:
-                    print("     --- Skipping this assignment, due date was before start of this quarter: " +
+                    print("classroom_functions/get_assignments_from_classroom:     --- Skipping this assignment, due date was before start of this quarter: " +
                           str(coursework['title']))
                 elif due_date_obj > p_next_quarter_start_obj:
                     print("     --- Skipping this assignment, due date is in next quarter: " +
                           str(coursework['title']))
                 else:
-                    print("This assignment will be processed: " + str(coursework['title']))
+                    print("classroom_functions/get_assignments_from_classroom:This assignment will be processed: " + str(coursework['title']))
                     final_courseworks.append(coursework)
         else:
             final_courseworks.append(coursework)
     return final_courseworks
+
+#
+# def get_submissions_from_coursework(p_service_classroom, p_course_id, p_coursework_id):
+#     p_submissions = p_service_classroom.courses().courseWork().\
+#         studentSubmissions.list(courseId=p_course_id, courseWorkId=p_coursework_id).execute()
+#
+#     return p_submissions
 
 
 def add_time(p_time, p_offset):
@@ -206,13 +213,13 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
             if due_date_obj > p_quarter_start_obj:
                 student_works = p_service_classroom.courses(). \
                     courseWork().studentSubmissions().list(courseId=p_course_id, courseWorkId=coursework_id).execute()
-                # print(student_works)
-                # print()
+                print(f"classroom_functions/get_assignment_scores_from_classroom student_works: {student_works}")
                 if 'studentSubmissions' not in student_works:
                     continue
                 else:
                     student_works = student_works['studentSubmissions']
                     for student_work in student_works:
+                        today_obj = datetime.datetime.today()
                         if 'assignedGrade' in student_work.keys():
                             if student_work['state'] == 'RETURNED':
                                 coursework_title = re.sub(r'\s:-\)', '', coursework_title)  # remove the smiley from title
@@ -223,7 +230,14 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
                                     assignments_scores_to_aspen[coursework_title].append([student_name, grade])
                                 else:
                                     assignments_scores_to_aspen[coursework_title] = [[student_name, grade]]
-
+                        elif student_work['state'] == 'CREATED' and due_date_obj < today_obj:
+                            coursework_title = re.sub(r'\s:-\)', '', coursework_title)  # remove the smiley from title
+                            p_student_id = student_work['userId']
+                            student_name = p_student_profiles[p_student_id]
+                            if coursework_title in assignments_scores_to_aspen.keys():
+                                assignments_scores_to_aspen[coursework_title].append([student_name, -9999])
+                            else:
+                                assignments_scores_to_aspen[coursework_title] = [[student_name, -9999]]
     return assignments_scores_to_aspen
 
 
@@ -295,7 +309,10 @@ def verify_due_date_exists(p_courseworks, ignore_noduedate):
     """
     Verifies every assignment has a due date
     :param p_courseworks:  courseworks list of coursework objects
-    :param ignore_noduedate: Boolean, which tells me if I should not care if assignment has no due date.
+    :param ignore_no
+
+
+    duedate: Boolean, which tells me if I should not care if assignment has no due date.
 
     :return: NOne
     """

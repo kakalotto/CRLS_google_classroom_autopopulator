@@ -165,6 +165,8 @@ def read_mailer_info(p_filename):
         p_student13 = config.get('MAILER', 'email13', fallback='')
         p_student14 = config.get('MAILER', 'email14', fallback='')
         p_student15 = config.get('MAILER', 'email15', fallback='')
+        p_student16 = config.get('MAILER', 'email16', fallback='')
+        p_student17 = config.get('MAILER', 'email17', fallback='')
 
         p_guardian1 = config.get('MAILER', 'guardian1', fallback='')
         p_guardian2 = config.get('MAILER', 'guardian2', fallback='')
@@ -181,6 +183,8 @@ def read_mailer_info(p_filename):
         p_guardian13 = config.get('MAILER', 'guardian13', fallback='')
         p_guardian14 = config.get('MAILER', 'guardian14', fallback='')
         p_guardian15 = config.get('MAILER', 'guardian15', fallback='')
+        p_guardian16 = config.get('MAILER', 'guardian16', fallback='')
+        p_guardian17 = config.get('MAILER', 'guardian17', fallback='')
 
     else:
         raise ValueError("Need to have a file called: " +
@@ -197,6 +201,6 @@ def read_mailer_info(p_filename):
                     p_student5: p_guardian5, p_student6: p_guardian6, p_student7: p_guardian7, p_student8: p_guardian8,
                     p_student9: p_guardian9, p_student10: p_guardian10, p_student11: p_guardian11,
                     p_student12: p_guardian12, p_student13: p_guardian13, p_student14: p_guardian14,
-                    p_student15: p_guardian15}
+                    p_student15: p_guardian15, p_student16: p_guardian16, p_student17: p_guardian17}
     print(f"Here is the studentCC's {p_student_cc}")
     return [p_mailclasses, p_teachercc, p_messages, p_student_cc, p_send_email, ]

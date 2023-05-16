@@ -5,6 +5,7 @@ from helper_functions.read_ini_functions import read_classes_info
 
 # Read in info
 config_filename = "crls_teacher_tools.ini"
+print(f"Opening up this config file now: {config_filename}")
 all_classes = read_classes_info(config_filename)
 
 

@@ -18,11 +18,10 @@ default_category = config.get("ASPEN", "default_category", fallback='')
 ignore_ungraded_value = config.getboolean('CLASSROOM', 'ignore_ungraded', fallback=False)
 ignore_noduedate_value = config.getboolean('CLASSROOM', 'ignore_no_duedate', fallback=False)
 
-print(all_classes)
+print(f"all_classes {all_classes}")
 
 for key in all_classes.keys():
     classroom_assignments_to_aspen(key, all_classes[key],
-
                                    content_knowledge_completion=content_knowledge_completion_value,
                                    ignore_ungraded=ignore_ungraded_value,
                                    username=username, password=password, default_category=default_category,

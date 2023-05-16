@@ -31,11 +31,12 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
           " to this aspen class " + str(p_aspen_classname))
     today_quarter_obj = which_quarter_today(p_filename=p_config_filename)
     next_quarter_obj = which_next_quarter(p_filename=p_config_filename)
-    print(f'next quarter obj {today_quarter_obj}')
-
-    print(f'next quarter obj {next_quarter_obj}')
+    # print(f'next quarter obj {today_quarter_obj}')
+    #
+    # print(f'next quarter obj {next_quarter_obj}')
     service_classroom = generate_ro_classroom_credential()
     course_id = class_name_2_id(service_classroom, p_gc_classname)
+    print("Getting courseworks")
     courseworks = get_assignments_from_classroom(service_classroom, course_id, today_quarter_obj,
                                                  p_next_quarter_start_obj=next_quarter_obj)
 
@@ -45,12 +46,13 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
 
     # Crash out if there is no due date for assignment unless p_ignore_noduedaste is True.
     courseworks = verify_due_date_exists(courseworks, p_ignore_noduedate)
-    # print("\nHere are the Google classroom assignments that we will try to process")
-    # for coursework in courseworks:
-    #     print(coursework['title'])
+    print("\nHere are the Google classroom assignments that we will try to process")
+    for coursework in courseworks:
+        print(coursework)
+#         print(coursework['title'])
 
     # Get the DB stuff and clean the data
-    print("Doing DB stuff")
+    print("Opening DB/getting students")
     db_filename = 'database_gc_grades_put_in_aspen_' + p_aspen_classname + '.db'
     db_conn = create_connection(db_filename)
     # sql = 'CREATE TABLE IF NOT EXISTS recorded_scores (id varchar(60) PRIMARY KEY, assignment varchar(60),' \
