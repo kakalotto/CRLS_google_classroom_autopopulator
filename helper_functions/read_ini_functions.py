@@ -84,6 +84,46 @@ def read_classes_info(p_filename):
     return p_all_classes
 
 
+def read_quizzes_info(p_filename):
+    import configparser
+    config = configparser.ConfigParser()
+    config.read(p_filename)
+
+
+    if 'QUIZZES' in config:
+        gc_class = config.get('QUIZZES', 'gc_class', fallback='')
+        title = config.get('QUIZZES', 'title', fallback='')
+        due_date = config.get('QUIZZES', 'due_date', fallback='')
+
+        period = config.get('QUIZZES', 'period', fallback=1)
+        quiz1_id = config.get('QUIZZES', 'quiz1_id', fallback='')
+        quiz2_id = config.get('QUIZZES', 'quiz2_id', fallback=quiz1_id)
+        quiz1_assignees = config.get('QUIZZES', 'quiz1_assignees', fallback='')
+        quiz2_assignees = config.get('QUIZZES', 'quiz2_assignees', fallback='')
+        quiz1_et_assignees =  config.get('QUIZZES', 'quiz1_et_assignees', fallback='')
+        quiz2_et_assignees =  config.get('QUIZZES', 'quiz2_et_assignees', fallback='')
+        course_id =  config.get('QUIZZES', 'course_id', fallback='')
+
+    else:
+        raise ValueError("Need to have a file called: " +
+                         str(p_filename) +
+                         "\nThis file needs to have a DEFAULT section with variables gc_class1, and so on")
+    quiz_info = {}
+    quiz_info['gc_class'] = gc_class
+    quiz_info['title'] = title
+    quiz_info['due_date'] = due_date
+    quiz_info['period'] = period
+    quiz_info['quiz1_link'] = quiz1_id
+    quiz_info['quiz2_link'] = quiz2_id
+    quiz_info['quiz1_assignees'] = quiz1_assignees
+    quiz_info['quiz2_assignees'] = quiz2_assignees
+    quiz_info['quiz1_et_assignees'] = quiz1_et_assignees
+    quiz_info['course_id'] = course_id
+
+    return quiz_info
+
+
+
 def read_sheets_info(p_filename):
     import configparser
     config = configparser.ConfigParser()
