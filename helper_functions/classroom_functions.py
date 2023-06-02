@@ -386,27 +386,38 @@ def scrub_courseworks(p_courseworks, list_name, p_list, p_content_knowledge):
     takes courseworks and if the assignment is in p_list, removes that from courseworks
     If assignment has 0 points, remove
     :param p_courseworks: list of Google classroom coursework objects
-    :param list_name: name of list (for printouts) string
-    :param p_list: list of items that you don't want the column to be (list of str)
+    :param list_name: name of list (for printouts) string, printouts only, not important
+    :param p_list: list of items that you don't want the column to be (list of str or list of lists)
     :param p_content_knowledge: Whether or not you are doing content knowledge aspen entries (changes length) Boolean
     :return: new courseworks
     """
     from helper_functions.aspen_functions import convert_assignment_name
-
+    if p_list:
+        if len(p_list[0]) == 1:
+            style = 'no_due_dates'
+        else:
+            style = 'due_dates'
+    else:
+        style = 'due_dates'
+    print(f"classroom_functions/scrub_courseworks Style is this {style}")
     new_courseworks = []
     for coursework in p_courseworks:
         found = False
         if 'maxPoints' not in coursework:
             print(f"Skipping this one with no points {coursework['title']}")
-
             continue
 
         new_proposed_name = convert_assignment_name(coursework['title'], p_content_knowledge)
-        if new_proposed_name in p_list or new_proposed_name + '-C' in p_list or \
-                new_proposed_name + '-K' in p_list:
-            found = True
-            print("Skipping this assignment, is in " + str(list_name) + " already:" + str(coursework['title']))
-        if found is False:
+        if style == 'no_due_dates':
+            if new_proposed_name in p_list or new_proposed_name + '-C' in p_list or \
+                    new_proposed_name + '-K' in p_list:
+                    found = True
+                    print("Skipping this assignment, is in " + str(list_name) + " already:" + str(coursework['title']))
+        else:
+            for item in p_list:
+                if new_proposed_name == item[0] and coursework['dueDate'] == item[1]:
+                    found = True
+        if not found:
             new_courseworks.append(coursework)
     return new_courseworks
 

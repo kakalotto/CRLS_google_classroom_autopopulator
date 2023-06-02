@@ -102,8 +102,8 @@ def read_quizzes_info(p_filename):
         quiz2_assignees = config.get('QUIZZES', 'quiz2_assignees', fallback='')
         quiz1_et_assignees =  config.get('QUIZZES', 'quiz1_et_assignees', fallback='')
         quiz2_et_assignees =  config.get('QUIZZES', 'quiz2_et_assignees', fallback='')
-        course_id =  config.get('QUIZZES', 'course_id', fallback='')
-
+        course_id = config.get('QUIZZES', 'course_id', fallback='')
+        quiz_length = config.get('QUIZZES', 'quiz_length', fallback='')
     else:
         raise ValueError("Need to have a file called: " +
                          str(p_filename) +
@@ -113,16 +113,43 @@ def read_quizzes_info(p_filename):
     quiz_info['title'] = title
     quiz_info['due_date'] = due_date
     quiz_info['period'] = period
-    quiz_info['quiz1_link'] = quiz1_id
-    quiz_info['quiz2_link'] = quiz2_id
+    quiz_info['quiz1_id'] = quiz1_id
+    quiz_info['quiz2_id'] = quiz2_id
     quiz_info['quiz1_assignees'] = quiz1_assignees
     quiz_info['quiz2_assignees'] = quiz2_assignees
     quiz_info['quiz1_et_assignees'] = quiz1_et_assignees
     quiz_info['course_id'] = course_id
-
+    quiz_info['quiz_length'] = quiz_length
     return quiz_info
 
+def read_period_info(p_filename):
+    import configparser
+    config = configparser.ConfigParser()
+    config.read(p_filename)
 
+    if 'PERIODS' in config:
+        p1 = config.get('PERIODS', 'p1', fallback='')
+        p2 = config.get('PERIODS', 'p2', fallback='')
+        p3 = config.get('PERIODS', 'p3', fallback='')
+        p4 = config.get('PERIODS', 'p4', fallback='')
+        p1cm = config.get('PERIODS', 'p1cm', fallback='')
+        p2cm = config.get('PERIODS', 'p2cm', fallback='')
+        p3cm = config.get('PERIODS', 'p3cm', fallback='')
+        p4cm = config.get('PERIODS', 'p4cm', fallback='')
+    else:
+        raise ValueError("Need to have a file called: " +
+                         str(p_filename) +
+                         "\nThis file needs to have a DEFAULT section with variables gc_class1, and so on")
+    period_info = {}
+    period_info['p1'] = p1
+    period_info['p2'] = p2
+    period_info['p3'] = p3
+    period_info['p4'] = p4
+    period_info['p1cm'] = p1cm
+    period_info['p2cm'] = p2cm
+    period_info['p3cm'] = p3cm
+    period_info['p4cm'] = p4cm
+    return period_info
 
 def read_sheets_info(p_filename):
     import configparser
