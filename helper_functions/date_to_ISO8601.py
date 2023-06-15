@@ -20,7 +20,8 @@ def date_to_iso8601(p_month, p_dom, p_year, p_offset):
         p_offset_string = '0' + str(p_offset)
     else:
         p_offset_string = str(p_offset)
-    daytime_iso8601 = str(p_year) + '-' + p_month_string + '-' + p_dom_string + 'T12:00:' + p_offset_string + 'Z'
+    daytime_iso8601 = str(p_year) + '-' + str(p_month_string) + '-' + str(p_dom_string) + 'T12:00:' +\
+                      str(p_offset_string) + 'Z'
     return daytime_iso8601
 
 #

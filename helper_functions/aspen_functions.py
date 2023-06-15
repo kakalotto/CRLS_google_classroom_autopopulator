@@ -239,8 +239,10 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
     wait_for_element(p_driver, p_xpath_el="//select[@name='termFilter']")  # term pulldown menu
 
 
-def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_conn, p_category='c'):
+def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_conn, p_category='c',
+                   p_style="no_due_dates"):
     import datetime
+    import re
     from selenium.webdriver.common.keys import Keys
     from selenium.webdriver.common.action_chains import ActionChains
     import time
@@ -340,8 +342,7 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
                     'propertyValue(gcdColCode)': gb_column_name, "propertyValue(gcdColName)": assignment_name,
                    'propertyValue(gcdTotalPoints)': total_points, 'propertyValue(gcdExtraCredPt)': extra_credit,
                    '#propertyValue(gcdGctOID)': category, 'propertyValue(gcdDateDue)': aspen_date_due,
-                   'propertyValue(gcdDateAsgn)': date_assigned,
-                   }
+                   'propertyValue(gcdDateAsgn)': date_assigned,}
     for key in field_value.keys():
         wait_for_element(p_driver, p_name=key)
         element = p_driver.find_element_by_name(key)
@@ -356,7 +357,15 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
     p_driver.switch_to.window(window_before)
 
     # Put it in the DB
-    sql = 'INSERT INTO aspen_assignments VALUES ("' + gb_column_name + '");'
+    if p_style == 'no_due_dates':
+        sql = 'INSERT INTO aspen_assignments VALUES ("' + gb_column_name + '");'
+    else:
+        year = p_coursework['dueDate']['year']
+        month = p_coursework['dueDate']['month']
+        day = p_coursework['dueDate']['day']
+        sql = 'INSERT INTO aspen_assignments VALUES ("' + gb_column_name + ', "' + \
+              str(year) + '-' + str(month) + '-' + str(day) + '");'
+        print(sql)
     execute_sql(p_db_conn, sql)
 
 
@@ -364,7 +373,8 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
     # raise ValueError("Debugging stop here")
 
 
-def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_db_conn, p_default_category):
+def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_db_conn, p_default_category,
+                    p_style):
 
     # get the name of the first category
     if p_default_category:  # category is set
@@ -388,12 +398,13 @@ def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_d
     for coursework in p_courseworks:
         if p_content_knowledge_completion:
             add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn,
-                           p_category='c')
+                           p_category='c', p_style=p_style)
             add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn,
-                           p_category='k')
+                           p_category='k', p_style=p_style)
         else:
             print(f"Adding this one: {coursework}")
-            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn)
+            add_assignment(p_driver, coursework, p_content_knowledge_completion, p_db_conn,
+                           p_style=p_style)
 
 
 def check_new_aspen_names(p_dict, p_content_knowledge_completion):

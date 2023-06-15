@@ -118,6 +118,8 @@ def read_quizzes_info(p_filename):
     quiz_info['quiz1_assignees'] = quiz1_assignees
     quiz_info['quiz2_assignees'] = quiz2_assignees
     quiz_info['quiz1_et_assignees'] = quiz1_et_assignees
+    quiz_info['quiz2_et_assignees'] = quiz2_et_assignees
+
     quiz_info['course_id'] = course_id
     quiz_info['quiz_length'] = quiz_length
     return quiz_info

@@ -28,22 +28,34 @@ quiz_length = quiz_info_dict['quiz_length']
 quiz1_id = quiz_info_dict['quiz1_id']
 quiz2_id = quiz_info_dict['quiz2_id']
 
-quiz_list = []+ datetime.timedelta(hours=7)
+# quiz_list = [] + datetime.timedelta(hours=7)
 column_dict = {}
 column_dict['assignment_or_announcement'] = 'assignment'
 column_dict['points'] = points
 column_dict['topic'] = topic
 column_dict['title'] = title + ' :-)'
 column_dict['days_to_complete'] = 0
-attachments = []
-p_material = {
+attachments_1 = []
+p_material_1 = {
     'driveFile': {
         'driveFile': {'id': quiz1_id},
         'shareMode': 'STUDENT_COPY',
     }
 }
-attachments.append(p_material)
+attachments_1.append(p_material_1)
+attachments_2 = []
+p_material_2 = {
+    'driveFile': {
+        'driveFile': {'id': quiz2_id},
+        'shareMode': 'STUDENT_COPY',
+    }
+}
+attachments_2.append(p_material_2)
+
 quiz1_assignees_list = quiz_info_dict['quiz1_assignees'].split(',')
+quiz2_assignees_list = quiz_info_dict['quiz2_assignees'].split(',')
+quiz1_et_assignees_list = quiz_info_dict['quiz1_et_assignees'].split(',')
+quiz2_et_assignees_list = quiz_info_dict['quiz2_et_assignees'].split(',')
 
 print(f"description {course_description}")
 
@@ -86,31 +98,53 @@ start_time_hour = start_time_list[0]
 start_time_minute = start_time_list[1]
 start_time_obj = datetime.datetime(year=int(year), month=int(month), day=int(dom),
                                    hour=int(start_time_hour), minute=int(start_time_minute))
-#print(period_dict)
-#print(start_time_obj)
+# print(period_dict)
+# print(start_time_obj)
 
 if date_obj.weekday() == 3 or date_obj.weekday() == 4:
     due_time_obj = start_time_obj + datetime.timedelta(minutes=75)
-    post_time_obj = due_time_obj - datetime.timedelta(minutes=int(quiz_length)) \
-                    - datetime.timedelta(minutes=5)
 else:
     due_time_obj = start_time_obj + datetime.timedelta(minutes=85)
-    post_time_obj = due_time_obj - datetime.timedelta(minutes=int(quiz_length)) \
+
+post_time_obj = due_time_obj - datetime.timedelta(minutes=int(quiz_length)) \
                     - datetime.timedelta(minutes=5)
+post_time_obj_et = post_time_obj - datetime.timedelta(minutes=int(0.5 * int(quiz_length)))
 
 print(due_time_obj)
 print(post_time_obj)
 
+# quiz1
+assignment_id = post_assignment(topic, title, days_to_complete, text, attachments_1,
+                                due_date, assignment_counter, course_description, course_id,
+                                '', '', service_classroom, points, due_time_obj=due_time_obj,
+                                post_time_obj=post_time_obj)
+mode = change_assignment_assignees(course_id, quiz1_assignees_list, [], assignment_id, service_classroom)
 
-id = post_assignment(topic, title, days_to_complete, text, attachments,
-                     due_date, assignment_counter, course_description, course_id,
-                     '', '', service_classroom, points, due_time_obj=due_time_obj,
-                     post_time_obj=post_time_obj)
+# quiz2
+assignment_id = post_assignment(topic, title, days_to_complete, text, attachments_2,
+                                due_date, assignment_counter, course_description, course_id,
+                                '', '', service_classroom, points, due_time_obj=due_time_obj,
+                                post_time_obj=post_time_obj)
 
-print(quiz1_assignees_list)
+mode = change_assignment_assignees(course_id, quiz2_assignees_list, [], assignment_id, service_classroom)
 
-mode = change_assignment_assignees(course_id, quiz1_assignees_list, [], id, service_classroom)
-print(mode)
+# quiz1 et
+assignment_id = post_assignment(topic, title + ' ET', days_to_complete, text, attachments_1,
+                                due_date, assignment_counter, course_description, course_id,
+                                '', '', service_classroom, points, due_time_obj=due_time_obj,
+                                post_time_obj=post_time_obj_et)
+print(quiz1_et_assignees_list)
+
+mode = change_assignment_assignees(course_id, quiz1_et_assignees_list, [], assignment_id, service_classroom)
+
+# quiz 2 et
+assignment_id = post_assignment(topic, title + ' ET', days_to_complete, text, attachments_2,
+                                due_date, assignment_counter, course_description, course_id,
+                                '', '', service_classroom, points, due_time_obj=due_time_obj,
+                                post_time_obj=post_time_obj_et)
+print(quiz2_et_assignees_list)
+mode = change_assignment_assignees(course_id, quiz2_et_assignees_list, [], assignment_id, service_classroom)
+
 # single_id = post_assignment(assignment_announcement['topic'], assignment_announcement['title'],
 #                             assignment_announcement['days_to_complete'],
 #                             assignment_announcement['text'],
