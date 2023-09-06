@@ -1,51 +1,48 @@
-ics_2023_s2 = {'document_id': '1hh9o_3DYDHBC9dI9HXZ60KyFO0jeXnIVOTK6h9iVBB0',
-               'classroom_id': 'NTg1NDUyNTgwNjQ2',
-               'spreadsheet_id': '1Ea92piMS2ffIswrBDtgjj_9e9OiUy5SR3i3L6aUGDLU',
-               'sheet_id': 'ICS_S2P2',
-               'header_text': 'Intro to Computer Science\n',
-               'course_id': 585452580646,
-               'course_contract': '',
-               'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
+apcsp_2024_s1 = {'document_id': '1OCjVV-NbSlKOuq8v-V7xQ-njI1jmt62Obm-Rc3lq6mA',
+                 'classroom_id': 'NTg5NTQzMTcwNDcz',
+                 'spreadsheet_id': '19qEGkr4d8uGFNaOVmJaT4W3yPMk7J_vkoaO1GyuCnms',
+                 'sheet_id': 'APCSP_S1_P4',
+                 'header_text': 'AP CSP\n',
+                 'course_id': 620490286811,
+                 'course_contract': 'https://docs.google.com/document/u/0/d/1fg77V_JX2B6mvH0OnMfJ3IbDb-J67TlI7JDagLN5qGc/edit?usp=drive_web',
+                 'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
+                 'assignments_dictionary': {},
+                 'fy': False,
+                 }
+
+
+l1_2024_s1 = {'document_id': '1Kg27bosspJsHuD16CyAxMsa9j-mdpjaJ0fzfZb1JxuU',
+              'classroom_id': 'NTg5NTQzODg2MjI0',
+              'spreadsheet_id': '19qEGkr4d8uGFNaOVmJaT4W3yPMk7J_vkoaO1GyuCnms',
+              'sheet_id': 'L1_S1',
+              'header_text': 'CS1/IT1\n',
+              'course_id': 620490286811,
+              'course_contract': 'https://docs.google.com/document/u/0/d/1amH3xB51yLi7salXVRgYliaGDUma8Pj1ScudWWOnr18/edit?usp=drive_web',
+              'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
+              'assignments_dictionary': {},
+              'fy': False,
+              }
+
+
+cs2_2024_fy = {'document_id': '1EUrbZp6glYtJq-IoBnysKLysC7uXBuMOSZHyF-Oql_Q',
+               'classroom_id': 'NjIwODgyNTgxMjI3',
+               'spreadsheet_id': '13LpOsLPMBGf5-sSMQOjeUT4L90XaiGhjNEab4XjJXV8',
+               'sheet_id': 'CS2',
+               'header_text': 'Computer Science 2\n',
+               'course_id': 620882581227,
+               'course_contract': 'https://docs.google.com/document/d/1X-FjzNWiyZ-RaxO8NMn2KQ_UTu7lVwTT-7h2IyfJL_g/edit',
+               'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
                'assignments_dictionary': {},
-               'fy': False,
+               'fy': True
                }
 
-
-web_2023_s2 = {'document_id': '1w_IhGndL_Us4AbKtdgHpaj9Qy671PlQR3vm2ikTCMDU',
-
-               'classroom_id': 'NTg1NDUyNDU5MDQ3',
-               'spreadsheet_id': '1lBLPUmEkaFIa3j3dItuOVnS_iQ9K2e2m0pGEWWDUEP0',
-               'sheet_id': 'Web_Design',
-               'header_text': 'Web Design\n',
-               'course_id': 585452459047,
-               'course_contract': 'https://docs.google.com/document/d/1fcWp1rsAPTt0s48HRxABHsvQWKuwOBFuEInSritw02E/edit',
-               'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
-               'assignments_dictionary': {},
-               'fy': False,
-               }
-
-it1cs1_2023_fy_p1 = {'document_id': '1JbLsEZeRIoz8YtPmCcCc8lAjGVMQQNMvEv21b7ayhFA',
-                     'classroom_id': 'NTQ1NTMyMzE2Mzc1',
-                     'spreadsheet_id': '1b9rnK5B1Ft9IBwmBgd-vouXi6WuEVMMfV5p7kMoYMcA',
-                     'sheet_id': 'IT1/CS1',
-                     'header_text': 'Level 1 Intro to CS/Cybersecurity\n',
-                     'course_id': 545532316375,
-                     'course_contract': 'https://docs.google.com/document/d/'
-                                        '1zJArrh4Xq0YlF-vFZu3SCYznJhjMpM9pBs2GOLSsJV0/edit',
-                     'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
-                     'assignments_dictionary': {},
-                     'fy': True
-                     }
-
-
-it2_2023_fy = {'document_id': '1u0wTWhm-0yyvdQjHNWXDHro-FowWc-bkkjDEyEo4pTE',
-               'classroom_id': 'NTQ1NTI2ODYwOTY5',
-               'spreadsheet_id': '1KUkVIDPOl8WdQs7EPp3pFEROflMzZ-JiNm3p04vTAVk',
+it2_2024_fy = {'document_id': '1JOwjzWEEhH5jdbvEkIrtV_FBb2fNr5cNxS3h_hxdEEU',
+               'classroom_id': 'NTg5NTQ1OTk4Mjkz',
+               'spreadsheet_id': '1JKgmfje8z5X2H-BCqwMSqlzd6-F8PEpWekk0f8ouUZk',
                'sheet_id': 'IT2',
                'header_text': 'Cybersecurity/Information Technology 2\n',
-               'course_id': 545526860969,
-               'course_contract': 'https://docs.google.com/document/d/'
-                                  '1zJArrh4Xq0YlF-vFZu3SCYznJhjMpM9pBs2GOLSsJV0/edit',
+               'course_id': 589545998293,
+               'course_contract': 'https://docs.google.com/document/d/1FWDANkBujW1_HwTItQXuOmR4jeDAuD2yuQSZLNq0WBI/edit',
                'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
                'assignments_dictionary': {},
                'fy': True
@@ -64,21 +61,6 @@ it3_2023_fy = {'document_id': '1max2o3l138v-wuu2X78oxkN1Pc3lmBZQ_hvyffh451s',
                'assignments_dictionary': {},
                'fy': True
                }
-
-
-cs2_2023_fy = {'document_id': '1STKDLmpKgSdgNhPdZrsjVr2CnkUMyJGRlMG6DBTVJQE',
-               'classroom_id': 'NTQ1NTMwOTI0MDAw',
-               'spreadsheet_id': '1lBLPUmEkaFIa3j3dItuOVnS_iQ9K2e2m0pGEWWDUEP0',
-               'sheet_id': 'CS2',
-               'header_text': 'Computer Science 2\n',
-               'course_id': 545530924000,
-               'course_contract': 'https://docs.google.com/document/d/'
-                                  '1zJArrh4Xq0YlF-vFZu3SCYznJhjMpM9pBs2GOLSsJV0/edit',
-               'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
-               'assignments_dictionary': {},
-               'fy': True
-               }
-
 
 cs3_2023_fy = {'document_id': '1H8qyFWDIEDP-CTc1GE4xX9BZkIscRcFGwBL8_-mdtS4',
                'classroom_id': 'NTI3MTE1NzE1MjA3',
@@ -141,17 +123,6 @@ apcsp_2023_s2_p4 = {'document_id': '1hYXqBUZzI17nwt1PiMSRKJLxBcvZH1wqts7ZPOIlDK0
 #                   'assignments_dictionary': {},
 #                   'fy': False,
 #                   'calendar_name': 'Murphy S1 P1 Intro to CS',
-#                   }
-# it2_2022_fy_p3 = {'document_id': '1cljYfbuUmA9iSP3owt3Br2fBn8GSZm35P-1A9Rfl8ZM',
-#                   'classroom_id': 'Mzg5MTY5MjY5NjU5',
-#                   'spreadsheet_id': '1A02osrwMJ2zdf9W8bE8bdd67IfMjDoO0h0N1Pk2GKeg',
-#                   'sheet_id': 'IT2',
-#                   'header_text': 'Cybersecurity/Info Tech 2\n',
-#                   'course_id': 389169269659,
-#                   'course_contract': 'https://docs.google.com/document/d/1_6njCTlL9QU9y7RGognxUF98jsHsGT9RjTgA7W6WFPU/edit',
-#                   'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
-#                   'assignments_dictionary': {},
-#                   'fy': True
 #                   }
 # it3_2022_fy_p3 = {'document_id': '1YYfSOPQLnX-szWafXFFuXu6SRkk3JYAuNhJl4G-lqbc',
 #                   'classroom_id': 'Mzg5MTgxMzM5Mjg1',
@@ -325,4 +296,4 @@ apcsp_2023_s2_p4 = {'document_id': '1hYXqBUZzI17nwt1PiMSRKJLxBcvZH1wqts7ZPOIlDK0
 
 # cs2_2023_fy, cs3_2023_fy, it3_2023_fy, it2_2023_fy,it1cs1_2023_fy_p1,
 #classes = [ it1_2022_fy_p1, exploratory_2023_s1, ]
-classes = [ics_2023_s2, apcsp_2023_s2_p1, apcsp_2023_s2_p4, it1cs1_2023_fy_p1, web_2023_s2  ]
+classes = [apcsp_2024_s1, l1_2024_s1, cs2_2024_fy, it2_2024_fy]

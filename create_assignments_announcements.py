@@ -38,6 +38,11 @@ def create_assignments_announcements(spreadsheet_id):
         # Get course ID
         course_id = read_course_id(spreadsheet_id, sheet, service_sheets)
         print("In create assignments/announcements, currently doing course with this ID: {}".format(course_id))
+        if course_id == '999':
+            print(f"Skipping this course: {sheet}")
+            continue
+        else:
+            print(f"Course id is this {course_id}")
 
         course_results = service_classroom.courses().get(id=course_id).execute()
         course_section = course_results['section']

@@ -6,7 +6,7 @@ from generate_classroom_credential import generate_classroom_credential
 SHEET_NAME = 'Courses'
 print("Running create_courses.py")
 config = configparser.ConfigParser()
-config_filename = "google_classroom_tools.ini"
+config_filename = "crls_teacher_tools.ini"
 config.read(config_filename)
 spreadsheet_id = config.get("CREATE_COURSES", "spreadsheet_id", fallback='')
 print("Trying to read Google sheet with this spreadsheet ID: " + str(spreadsheet_id))
