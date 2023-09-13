@@ -6,10 +6,17 @@ def generate_driver():
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
     from webdriver_manager.chrome import ChromeDriverManager
+    from selenium.webdriver.chrome.service import Service
 
-    chrome_options = Options()
-    chrome_options.add_argument("Window-size=6500,12000")
-    p_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+    #    chrome_options = Options()
+
+#    chrome_options.add_argument("Window-size=6500,12000")
+#    p_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+#    p_driver = webdriver.Chrome(ChromeDriverManager().install())
+    service = Service()
+    options = webdriver.ChromeOptions()
+    #options.add_argument('--headless')
+    p_driver = webdriver.Chrome(service=service, options=options)
     p_driver.get('https://aspen.cpsd.us')
     return p_driver
 
@@ -348,7 +355,7 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
         element = p_driver.find_element_by_name(key)
         action.move_to_element(element).perform()
         element.click()
-        for i in range(17):
+        for i in range(35):
             element.send_keys(Keys.BACKSPACE)
         element.send_keys(field_value[key])
     wait_for_element(p_driver, p_name='saveButton')
@@ -363,9 +370,11 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
         year = p_coursework['dueDate']['year']
         month = p_coursework['dueDate']['month']
         day = p_coursework['dueDate']['day']
-        sql = 'INSERT INTO aspen_assignments VALUES ("' + gb_column_name + ', "' + \
+        sql = 'INSERT INTO aspen_assignments VALUES ("' + gb_column_name + '", "' + \
               str(year) + '-' + str(month) + '-' + str(day) + '");'
-        print(sql)
+        print(f"This is the SQL! {sql}")
+    # sql = 'INSERT INTO aspen_assignments VALUES ("' + gb_column_name + '");'
+
     execute_sql(p_db_conn, sql)
 
 
@@ -375,7 +384,11 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
 
 def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_db_conn, p_default_category,
                     p_style):
+    import time
 
+    print("tt att add assignments")
+    # time.sleep(6000)
+    #
     # get the name of the first category
     if p_default_category:  # category is set
         for coursework in p_courseworks:
@@ -388,11 +401,14 @@ def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_d
         category_element = p_driver.find_element_by_xpath(full_xpath)
         category = category_element.get_attribute('text')
         wait_for_element(p_driver, p_link_text='Assignments')
+        print("ttt found assignments")
+
         p_driver.find_element_by_link_text("Assignments").click()
         wait_for_element(p_driver, p_link_text='Assignments')
         for coursework in p_courseworks:
             coursework['aspen_category'] = category
 
+    print("ttt found scores")
     p_driver.find_element_by_link_text("Scores").click()
     wait_for_element(p_driver, p_link_text='Scores')
     for coursework in p_courseworks:
@@ -808,6 +824,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                             sql = 'INSERT INTO recorded_scores VALUES ("' + \
                                   cell_id + '", "' + gc_assignment_name + '", "' + gc_student + '", ' + \
                                   str(gc_score) + ' )'
+                            print(f"ttt this is sqL! {sql}")
                             execute_sql(p_db_conn, sql)
                             print(f"adding  this record.  Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
                             gc_score = old_score

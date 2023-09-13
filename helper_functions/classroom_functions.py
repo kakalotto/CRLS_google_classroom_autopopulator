@@ -399,6 +399,8 @@ def scrub_courseworks(p_courseworks, list_name, p_list, p_content_knowledge):
             style = 'due_dates'
     else:
         style = 'due_dates'
+    print("setting style to no_due_dates")
+    style = 'no_due_dates'
     print(f"classroom_functions/scrub_courseworks Style is this {style}")
     new_courseworks = []
     for coursework in p_courseworks:
@@ -408,13 +410,16 @@ def scrub_courseworks(p_courseworks, list_name, p_list, p_content_knowledge):
             continue
 
         new_proposed_name = convert_assignment_name(coursework['title'], p_content_knowledge)
+        # print(f"asdf plist {p_list}")
         if style == 'no_due_dates':
-            if new_proposed_name in p_list or new_proposed_name + '-C' in p_list or \
-                    new_proposed_name + '-K' in p_list:
+            for item in p_list:
+                if new_proposed_name in item or new_proposed_name + '-C' in item or \
+                    new_proposed_name + '-K' in item:
                     found = True
                     print("Skipping this assignment, is in " + str(list_name) + " already:" + str(coursework['title']))
         else:
             for item in p_list:
+                print(f"Testing now! new_name {new_proposed_name} date due {coursework['dueDate']}")
                 if new_proposed_name == item[0] and coursework['dueDate'] == item[1]:
                     found = True
         if not found:

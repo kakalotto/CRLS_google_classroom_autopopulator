@@ -24,10 +24,10 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content
         return
 
     # Print out for testing purposes1
-    print("initial courses")
-    for coursework in courseworks:
-        print(coursework)
-    print()
+    # print("initial courses")
+    # for coursework in courseworks:
+    #     print(coursework)
+    # print()
 
     # Crash out if there are conflict of names that would go into Aspen
     print("Checking for name conflict in Aspen")
@@ -64,6 +64,8 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content
     db_conn = create_connection(db_filename)
     print("connection created")
     sql = 'CREATE TABLE IF NOT EXISTS aspen_assignments (id varchar(60) PRIMARY KEY, date varchar(60));'
+    # sql = 'CREATE TABLE IF NOT EXISTS aspen_assignments (id varchar(60) PRIMARY KEY);'
+
     execute_sql(db_conn, sql)
     sql = 'SELECT * FROM aspen_assignments;'
     style = ''
@@ -77,8 +79,8 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content
         previous_assignments = []
         for row in rows:
             previous_assignments.append([row[0], row[1]])
-        style =  'due_dates'
-    print(previous_assignments)
+        style = 'due_dates'
+    print(f"fff previous_assignments are here, extracted from the DB!! {previous_assignments}")
 
 #    raise Exception("testing")
     courseworks = scrub_courseworks(courseworks, 'The assignment database', previous_assignments,
