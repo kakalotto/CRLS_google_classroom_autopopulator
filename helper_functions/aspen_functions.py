@@ -8,14 +8,14 @@ def generate_driver():
     from webdriver_manager.chrome import ChromeDriverManager
     from selenium.webdriver.chrome.service import Service
 
-    #    chrome_options = Options()
+    chrome_options = Options()
 
 #    chrome_options.add_argument("Window-size=6500,12000")
 #    p_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 #    p_driver = webdriver.Chrome(ChromeDriverManager().install())
     service = Service()
     options = webdriver.ChromeOptions()
-    #options.add_argument('--headless')
+    options.add_argument('--headless')
     p_driver = webdriver.Chrome(service=service, options=options)
     p_driver.get('https://aspen.cpsd.us')
     return p_driver
@@ -69,6 +69,8 @@ def goto_gradebook(p_driver, p_aspen_class):
     :param p_aspen_class: Name of the class in Aspen.
     :return:
     """
+    import time
+
     # print("Trying to go to gradebook")
     wait_for_element(p_driver, message='Trying to find gradebook but failed?', p_link_text='Gradebook')
     p_driver.find_element_by_link_text("Gradebook").click()
@@ -79,6 +81,8 @@ def goto_gradebook(p_driver, p_aspen_class):
                      message="Be sure this EXACT class really exists in Aspen!\n" + str(p_aspen_class))
     p_driver.find_element_by_link_text(p_aspen_class).click()
     wait_for_element(p_driver, p_link_text='Scores')
+    print("bbb clicking scores")
+    time.sleep(1)
     p_driver.find_element_by_link_text("Scores").click()
 
 
@@ -754,7 +758,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                 print("Rounding up assignment score to nearest 1")
                 gc_score = round(gc_score)
             if gc_score == -9999:
-                gc_score = 'M'
+                gc_score = 'MISS'
             print(f"test assignment {gc_assignment_name} test_name {gc_student} test_score {gc_score}")
 
             assignment_col_names = []
@@ -873,7 +877,8 @@ def wait_for_element(p_driver, *, message='', timeout=10, p_link_text='', p_xpat
             if message:
                 print(message)
             p_driver.quit()
-            raise ValueError(f"Could not find this exact link text in the page:{p_link_text}")
+            raise ValueError(f"Could not find this exact link text in the page:{p_link_text},\n"
+                             f"Potential issues: You have no categories. ")
     elif p_id:
         try:
             WebDriverWait(p_driver, timeout).until(ec.presence_of_element_located((By.ID, p_id)))
