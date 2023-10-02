@@ -494,6 +494,8 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'Project', 'P w', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Block model - ', '', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'shorthand', 'sh', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Font size', 'FS', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Challenge', 'Ch', new_title, re.X | re.S | re.M)
 
     new_title = re.sub(r'\s+$', '', new_title)
 
