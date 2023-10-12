@@ -98,6 +98,7 @@ start_time_hour = start_time_list[0]
 start_time_minute = start_time_list[1]
 start_time_obj = datetime.datetime(year=int(year), month=int(month), day=int(dom),
                                    hour=int(start_time_hour), minute=int(start_time_minute))
+start_time_obj = start_time_obj - datetime.timedelta(minutes=60)
 # print(period_dict)
 # print(start_time_obj)
 
