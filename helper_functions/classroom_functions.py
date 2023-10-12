@@ -207,19 +207,26 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
     for coursework in p_courseworks:
         coursework_id = coursework['id']
         coursework_title = coursework['title']
+
         if 'dueDate' in coursework:
+
             due_date = coursework['dueDate']
+
             due_date_obj = datetime.datetime(int(due_date['year']), int(due_date['month']), int(due_date['day']))
             if due_date_obj > p_quarter_start_obj:
+                # print(f"fff checking this assignment that has duedate after quarter {coursework_title}")
+
                 student_works = p_service_classroom.courses(). \
                     courseWork().studentSubmissions().list(courseId=p_course_id, courseWorkId=coursework_id).execute()
-                print(f"classroom_functions/get_assignment_scores_from_classroom student_works: {student_works}")
+                # print(f"fff classroom_functions/get_assignment_scores_from_classroom student_works: {student_works}")
                 if 'studentSubmissions' not in student_works:
                     continue
                 else:
                     student_works = student_works['studentSubmissions']
                     for student_work in student_works:
                         today_obj = datetime.datetime.today()
+                        # print(f"fff Checking if thi s work done?: {student_work[]}")
+
                         if 'assignedGrade' in student_work.keys():
                             if student_work['state'] == 'RETURNED':
                                 coursework_title = re.sub(r'\s:-\)', '', coursework_title)  # remove the smiley from title
@@ -234,6 +241,7 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
                             coursework_title = re.sub(r'\s:-\)', '', coursework_title)  # remove the smiley from title
                             p_student_id = student_work['userId']
                             student_name = p_student_profiles[p_student_id]
+                            # print(f"fff checking missing created but due {coursework_title}" )
                             if coursework_title in assignments_scores_to_aspen.keys():
                                 assignments_scores_to_aspen[coursework_title].append([student_name, -9999])
                             else:
@@ -399,6 +407,8 @@ def scrub_courseworks(p_courseworks, list_name, p_list, p_content_knowledge):
             style = 'due_dates'
     else:
         style = 'due_dates'
+    print("setting style to no_due_dates")
+    style = 'no_due_dates'
     print(f"classroom_functions/scrub_courseworks Style is this {style}")
     new_courseworks = []
     for coursework in p_courseworks:
@@ -408,13 +418,16 @@ def scrub_courseworks(p_courseworks, list_name, p_list, p_content_knowledge):
             continue
 
         new_proposed_name = convert_assignment_name(coursework['title'], p_content_knowledge)
+        # print(f"asdf plist {p_list}")
         if style == 'no_due_dates':
-            if new_proposed_name in p_list or new_proposed_name + '-C' in p_list or \
-                    new_proposed_name + '-K' in p_list:
+            for item in p_list:
+                if new_proposed_name in item or new_proposed_name + '-C' in item or \
+                    new_proposed_name + '-K' in item:
                     found = True
-                    print("Skipping this assignment, is in " + str(list_name) + " already:" + str(coursework['title']))
+                    # print("Skipping this assignment, is in " + str(list_name) + " already:" + str(coursework['title']))
         else:
             for item in p_list:
+                # print(f"Testing now! new_name {new_proposed_name} date due {coursework['dueDate']}")
                 if new_proposed_name == item[0] and coursework['dueDate'] == item[1]:
                     found = True
         if not found:

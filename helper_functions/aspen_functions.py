@@ -6,10 +6,17 @@ def generate_driver():
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
     from webdriver_manager.chrome import ChromeDriverManager
+    from selenium.webdriver.chrome.service import Service
 
     chrome_options = Options()
-    chrome_options.add_argument("Window-size=6500,12000")
-    p_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+
+#    chrome_options.add_argument("Window-size=6500,12000")
+#    p_driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+#    p_driver = webdriver.Chrome(ChromeDriverManager().install())
+    service = Service()
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    p_driver = webdriver.Chrome(service=service, options=options)
     p_driver.get('https://aspen.cpsd.us')
     return p_driver
 
@@ -62,6 +69,8 @@ def goto_gradebook(p_driver, p_aspen_class):
     :param p_aspen_class: Name of the class in Aspen.
     :return:
     """
+    import time
+
     # print("Trying to go to gradebook")
     wait_for_element(p_driver, message='Trying to find gradebook but failed?', p_link_text='Gradebook')
     p_driver.find_element_by_link_text("Gradebook").click()
@@ -72,6 +81,8 @@ def goto_gradebook(p_driver, p_aspen_class):
                      message="Be sure this EXACT class really exists in Aspen!\n" + str(p_aspen_class))
     p_driver.find_element_by_link_text(p_aspen_class).click()
     wait_for_element(p_driver, p_link_text='Scores')
+    print("bbb clicking scores")
+    time.sleep(1)
     p_driver.find_element_by_link_text("Scores").click()
 
 
@@ -348,7 +359,7 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
         element = p_driver.find_element_by_name(key)
         action.move_to_element(element).perform()
         element.click()
-        for i in range(17):
+        for i in range(35):
             element.send_keys(Keys.BACKSPACE)
         element.send_keys(field_value[key])
     wait_for_element(p_driver, p_name='saveButton')
@@ -363,9 +374,11 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
         year = p_coursework['dueDate']['year']
         month = p_coursework['dueDate']['month']
         day = p_coursework['dueDate']['day']
-        sql = 'INSERT INTO aspen_assignments VALUES ("' + gb_column_name + ', "' + \
+        sql = 'INSERT INTO aspen_assignments VALUES ("' + gb_column_name + '", "' + \
               str(year) + '-' + str(month) + '-' + str(day) + '");'
-        print(sql)
+        print(f"This is the SQL! {sql}")
+    # sql = 'INSERT INTO aspen_assignments VALUES ("' + gb_column_name + '");'
+
     execute_sql(p_db_conn, sql)
 
 
@@ -375,7 +388,11 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
 
 def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_db_conn, p_default_category,
                     p_style):
+    import time
 
+    print("tt att add assignments")
+    # time.sleep(6000)
+    #
     # get the name of the first category
     if p_default_category:  # category is set
         for coursework in p_courseworks:
@@ -388,11 +405,14 @@ def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_d
         category_element = p_driver.find_element_by_xpath(full_xpath)
         category = category_element.get_attribute('text')
         wait_for_element(p_driver, p_link_text='Assignments')
+        print("ttt found assignments")
+
         p_driver.find_element_by_link_text("Assignments").click()
         wait_for_element(p_driver, p_link_text='Assignments')
         for coursework in p_courseworks:
             coursework['aspen_category'] = category
 
+    print("ttt found scores")
     p_driver.find_element_by_link_text("Scores").click()
     wait_for_element(p_driver, p_link_text='Scores')
     for coursework in p_courseworks:
@@ -472,6 +492,10 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'Warmup', 'wup', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Create Task Practice', 'CrTaPr', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Project', 'P w', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Block model - ', '', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'shorthand', 'sh', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Font size', 'FS', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Challenge', 'Ch', new_title, re.X | re.S | re.M)
 
     new_title = re.sub(r'\s+$', '', new_title)
 
@@ -738,7 +762,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                 print("Rounding up assignment score to nearest 1")
                 gc_score = round(gc_score)
             if gc_score == -9999:
-                gc_score = 'M'
+                gc_score = 'MISS'
             print(f"test assignment {gc_assignment_name} test_name {gc_student} test_score {gc_score}")
 
             assignment_col_names = []
@@ -808,6 +832,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                             sql = 'INSERT INTO recorded_scores VALUES ("' + \
                                   cell_id + '", "' + gc_assignment_name + '", "' + gc_student + '", ' + \
                                   str(gc_score) + ' )'
+                            print(f"ttt this is sqL! {sql}")
                             execute_sql(p_db_conn, sql)
                             print(f"adding  this record.  Assignment: {gc_assignment_name} scholar: {gc_student} score: {gc_score}")
                             gc_score = old_score
@@ -856,7 +881,8 @@ def wait_for_element(p_driver, *, message='', timeout=10, p_link_text='', p_xpat
             if message:
                 print(message)
             p_driver.quit()
-            raise ValueError(f"Could not find this exact link text in the page:{p_link_text}")
+            raise ValueError(f"Could not find this exact link text in the page:{p_link_text},\n"
+                             f"Potential issues: You have no categories. ")
     elif p_id:
         try:
             WebDriverWait(p_driver, timeout).until(ec.presence_of_element_located((By.ID, p_id)))
