@@ -27,4 +27,4 @@ for key in all_classes.keys():
                                    username=username, password=password, default_category=default_category,
                                    ignore_noduedate=ignore_noduedate_value)
 
-input("Press enter 2x to end")
+# input("Press enter 2x to end")
