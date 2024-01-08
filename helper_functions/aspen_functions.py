@@ -288,7 +288,7 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
     if python_due_date.hour == 0 and python_due_date.minute == 0:
         python_due_date -= one_minute
     print("xxx  " + str(python_due_date.hour) + " " + str(python_due_date.minute))
-    print("python due date "+ str(python_due_date))
+    print("python due date " + str(python_due_date))
     grade_term = which_quarter_today_string(datetime_obj=python_due_date)
 #    print(constants.Q1, constants.Q2, constants.Q3)
 #    if constants.Q1 <= python_due_date < constants.Q2:
@@ -354,6 +354,7 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
                    'propertyValue(gcdTotalPoints)': total_points, 'propertyValue(gcdExtraCredPt)': extra_credit,
                    '#propertyValue(gcdGctOID)': category, 'propertyValue(gcdDateDue)': aspen_date_due,
                    'propertyValue(gcdDateAsgn)': date_assigned,}
+    print(f"MMMMM {grade_term} MMM DATE {aspen_date_due}")
     for key in field_value.keys():
         wait_for_element(p_driver, p_name=key)
         element = p_driver.find_element_by_name(key)
@@ -496,6 +497,8 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'shorthand', 'sh', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Font size', 'FS', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Challenge', 'Ch', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Offline\spassword\scrack', 'Oline', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'MIT\s600', 'M', new_title, re.X | re.S | re.M)
 
     new_title = re.sub(r'\s+$', '', new_title)
 

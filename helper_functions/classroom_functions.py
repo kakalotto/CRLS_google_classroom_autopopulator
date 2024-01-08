@@ -214,6 +214,10 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
 
             due_date_obj = datetime.datetime(int(due_date['year']), int(due_date['month']), int(due_date['day']))
             if due_date_obj > p_quarter_start_obj:
+                one_day = datetime.timedelta(days=1)
+
+                due_date_obj = due_date_obj + one_day
+
                 # print(f"fff checking this assignment that has duedate after quarter {coursework_title}")
 
                 student_works = p_service_classroom.courses(). \
