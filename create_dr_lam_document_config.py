@@ -49,6 +49,7 @@ it2_2024_fy = {'document_id': '1JOwjzWEEhH5jdbvEkIrtV_FBb2fNr5cNxS3h_hxdEEU',
                }
 
 
+
 it3_2023_fy = {'document_id': '1max2o3l138v-wuu2X78oxkN1Pc3lmBZQ_hvyffh451s',
                'classroom_id': 'NTQ1NTI0MjIyNDQ1',
                'spreadsheet_id': '1KUkVIDPOl8WdQs7EPp3pFEROflMzZ-JiNm3p04vTAVk',
@@ -62,12 +63,12 @@ it3_2023_fy = {'document_id': '1max2o3l138v-wuu2X78oxkN1Pc3lmBZQ_hvyffh451s',
                'fy': True
                }
 
-cs3_2023_fy = {'document_id': '1H8qyFWDIEDP-CTc1GE4xX9BZkIscRcFGwBL8_-mdtS4',
-               'classroom_id': 'NTI3MTE1NzE1MjA3',
-               'spreadsheet_id': '1lBLPUmEkaFIa3j3dItuOVnS_iQ9K2e2m0pGEWWDUEP0',
+cs3_2023_fy = {'document_id': '1eNVwTeA5omD0Tbs1NiqGwf9ayJt3x3_4Jv6qX9T-tac',
+               'classroom_id': 'NjIxMTY0MDI0Mjgw',
+               'spreadsheet_id': '13LpOsLPMBGf5-sSMQOjeUT4L90XaiGhjNEab4XjJXV8',
                'sheet_id': 'CS3',
                'header_text': 'Computer Science 3\n',
-               'course_id': 527115715207,
+               'course_id': 621164024280,
                'course_contract': 'https://docs.google.com/document/d/'
                                   '1zJArrh4Xq0YlF-vFZu3SCYznJhjMpM9pBs2GOLSsJV0/edit',
                'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
@@ -296,4 +297,5 @@ web_2024_s2_p2 = {'document_id': '1GXTQTxO_totCTs28d8Ncfz8E8149E0PRm18KPJAIbGY',
 
 # cs2_2023_fy, cs3_2023_fy, it3_2023_fy, it2_2023_fy,it1cs1_2023_fy_p1,
 #classes = [ it1_2022_fy_p1, exploratory_2023_s1, ]
+
 classes = [  it2_2024_fy, l1_2024_s1, cs2_2024_fy, apcsp_2024_s1, web_2024_s2_p2 ]

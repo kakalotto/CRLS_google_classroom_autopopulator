@@ -47,10 +47,10 @@ def post_materials(p_topic, p_title, p_text, p_attachments, p_date, p_offset,
     return material_id
 
 
-from generate_classroom_credential import generate_classroom_credential
-
-service_classroom = generate_classroom_credential()
-offset = 1
+# from generate_classroom_credential import generate_classroom_credential
+#
+# service_classroom = generate_classroom_credential()
+# offset = 1
 #
 #def post_materials(p_topic, p_title, p_text, p_attachments, p_date, p_offset,
 #                   p_course_id, p_service_classroom,):
