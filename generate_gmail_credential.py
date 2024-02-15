@@ -6,6 +6,7 @@ def generate_gmail_credential():
     from google.auth.transport.requests import Request
     import httplib2
 
+    print("Generating gmail token")
     scopes = ['https://www.googleapis.com/auth/gmail.send',
               'https://www.googleapis.com/auth/gmail.compose',]
 
@@ -21,7 +22,7 @@ def generate_gmail_credential():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file('credentials_gmail.json', scopes)
+            flow = InstalledAppFlow.from_client_secrets_file('credentials_gmail_2023_09_12.json', scopes)
             creds = flow.run_local_server()
             # Save the credentials for the next run
             with open('token_gmail.pickle', 'wb') as token:

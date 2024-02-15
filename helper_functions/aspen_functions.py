@@ -77,6 +77,7 @@ def goto_gradebook(p_driver, p_aspen_class):
     # Do this twice, because Aspen is flaky
     wait_for_element(p_driver, p_link_text='Gradebook')
     p_driver.find_element_by_link_text("Gradebook").click()
+    time.sleep(5)
     wait_for_element(p_driver, p_link_text=p_aspen_class,
                      message="Be sure this EXACT class really exists in Aspen!\n" + str(p_aspen_class))
     p_driver.find_element_by_link_text(p_aspen_class).click()
@@ -187,10 +188,8 @@ def goto_scores(p_driver, p_aspen_class):
     goto_gradebook(p_driver, p_aspen_class)
     wait_for_element(p_driver, p_link_text='Assignments')  # just to be sure loading is done
     p_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    # time.sleep(2)
     wait_for_element_clickable(p_driver, p_link_text='Scores')  # just to be sure loading is done
     p_driver.find_element_by_link_text("Scores").click()
-    # time.sleep(2)
     wait_for_element(p_driver, p_link_text='Scores')  # just to be sure loading is done
     #        wait.until(EC.invisibility_of_element_located((By.XPATH, '//img[contains(@src, "loading")]')))
 
@@ -210,7 +209,6 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
     import time
 
     goto_scores(p_driver, p_aspen_class)
-    # time.sleep(2)
     good_to_go = False
     while good_to_go is False:
         try:
@@ -392,7 +390,6 @@ def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_d
     import time
 
     print("tt att add assignments")
-    # time.sleep(6000)
     #
     # get the name of the first category
     if p_default_category:  # category is set
@@ -498,8 +495,12 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'Font size', 'FS', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Challenge', 'Ch', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Offline\spassword\scrack', 'Oline', new_title, re.X | re.S | re.M)
-    new_title = re.sub(r'MIT\s600', 'M', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'MIT600\sPS', 'M', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'MIT\s600\sPS', 'M', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Create\sTask', 'CT', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Responsive', 'R', new_title, re.X | re.S | re.M)
 
+    new_title = re.sub(r'box\smodel', 'BM', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'\s+$', '', new_title)
 
     if re.search(r"extra \s credit", new_title.lower(), re.X | re.M | re.S):
@@ -543,7 +544,6 @@ def get_student_ids_from_aspen(p_driver):
                 print("FAILED ONE!")
                 continue
             # print("sleeping")
-            # time.sleep(1)
             try:
                 p_driver.find_elements_by_xpath("//a")
                 a_attrib = a.get_attribute('href')
