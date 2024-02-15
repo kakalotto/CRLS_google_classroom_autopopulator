@@ -46,9 +46,9 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
 
     # Crash out if there is no due date for assignment unless p_ignore_noduedaste is True.
     courseworks = verify_due_date_exists(courseworks, p_ignore_noduedate)
-    print("\nHere are the Google classroom assignments that we will try to process")
-    for coursework in courseworks:
-        print(coursework)
+    # print("\nHere are the Google classroom assignments that we will try to process")
+    # for coursework in courseworks:
+    #     print(coursework)
 #         print(coursework['title'])
 
     # Get the DB stuff and clean the data
@@ -68,8 +68,8 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
     gc_student_profiles = {}
     if p_use_stored_gc_students is False:
         gc_student_profiles = get_student_profiles(service_classroom, course_id)
-        print("Here are Google classroom student profiles")
-        print(gc_student_profiles)
+        # print("Here are Google classroom student profiles")
+        # print(gc_student_profiles)
 
         sql = 'DELETE FROM "gc_students"'
         execute_sql(db_conn, sql)
