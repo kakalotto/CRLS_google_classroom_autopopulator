@@ -157,7 +157,6 @@ def read_sheets_info(p_filename):
     import configparser
     config = configparser.ConfigParser()
     config.read(p_filename)
-
     p_spreadsheet_ids = []
 
     if 'CREATE_ASSIGNMENTS_ANNOUNCEMENTS' in config:
@@ -184,7 +183,7 @@ def read_sheets_info(p_filename):
         p_spreadsheet_ids.append(spreadsheet_5)
     if spreadsheet_6:
         p_spreadsheet_ids.append(spreadsheet_6)
-    print(p_spreadsheet_ids)
+    print(f"Here are all the spreadsheet IDs {p_spreadsheet_ids}")
     return p_spreadsheet_ids
 
 
