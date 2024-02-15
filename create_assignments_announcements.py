@@ -1,12 +1,9 @@
 def create_assignments_announcements(spreadsheet_id):
 
     import re
-
     import googleapiclient
-
     from generate_sheets_credential import generate_sheets_credential
     from generate_classroom_credential import generate_classroom_credential
-
     from helper_functions.get_google_drive_id import get_google_drive_id
     from helper_functions.read_course_id import read_course_id
     from helper_functions.sheets_functions import read_course_daily_data_all, get_all_sheets
