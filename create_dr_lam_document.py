@@ -27,7 +27,7 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
     # from copy import deepcopy
     from generate_docs_credential import generate_docs_credential
     from generate_sheets_credential import generate_sheets_credential
-    from generate_ro_classroom_credential import generate_ro_classroom_credential
+    from generate_classroom_credential import generate_classroom_credential
     from helper_functions.dr_lam_functions import add_table, delete_entire_document, get_text, \
         add_regular_text, add_bold_normal, add_italic_normal, add_link, get_assignment_link, iter4obj_2_list, \
         insert_page_break
@@ -43,7 +43,7 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
 
     service_doc = generate_docs_credential()
     service_sheets = generate_sheets_credential()
-    service_classroom = generate_ro_classroom_credential()
+    service_classroom = generate_classroom_credential()
 
     calendar_obj = calendar.Calendar()
 
