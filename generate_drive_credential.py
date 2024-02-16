@@ -16,34 +16,33 @@ def generate_drive_credential():
     scopes = ['https://www.googleapis.com/auth/documents.readonly',
              'https://www.googleapis.com/auth/drive']
 
-    def main():
-        """Shows basic usage of the Drive v3 API.
-        Prints the names an d ids of the first 10 files the user has access to.
-        """
-        creds = None
-        # The file token_drive.json stores the user's access and refresh tokens, and is
-        # created automatically when the authorization flow completes for the first
-        # time.
-        if os.path.exists("token_drive.json"):
-            creds = Credentials.from_authorized_user_file("token_drive.json", scopes)
-        # If there are no (valid) credentials available, let the user log in.
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    "credentials_drive.json", scopes
-                )
-                creds = flow.run_local_server(port=0)
-            # Save the credentials for the next run
-            with open("token_drive.json", "w") as token:
-                token.write(creds.to_json())
+    """Shows basic usage of the Drive v3 API.
+    Prints the names an d ids of the first 10 files the user has access to.
+    """
+    creds = None
+    # The file token_drive.json stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists("token_drive.json"):
+        creds = Credentials.from_authorized_user_file("token_drive.json", scopes)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                "credentials_drive.json", scopes
+            )
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open("token_drive.json", "w") as token:
+            token.write(creds.to_json())
 
-        try:
-            service = build("drive", "v3", credentials=creds)
-            return service
-        except HttpError as error:
-            print(f"An error occurred: {error}")  # and crash out
+    try:
+        service = build("drive", "v3", credentials=creds)
+        return service
+    except HttpError as error:
+        print(f"An error occurred: {error}")  # and crash out
 
     # import pickle
     # import os.path
