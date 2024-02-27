@@ -15,7 +15,7 @@ def generate_driver():
 #    p_driver = webdriver.Chrome(ChromeDriverManager().install())
     service = Service()
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
+   # options.add_argument('--headless')
     p_driver = webdriver.Chrome(service=service, options=options)
     p_driver.get('https://aspen.cpsd.us')
     return p_driver
@@ -83,7 +83,7 @@ def goto_gradebook(p_driver, p_aspen_class):
     p_driver.find_element_by_link_text(p_aspen_class).click()
     wait_for_element(p_driver, p_link_text='Scores')
     print("bbb clicking scores")
-    time.sleep(1)
+    time.sleep(2)
     p_driver.find_element_by_link_text("Scores").click()
 
 
@@ -225,7 +225,7 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
 
   # xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select'
     xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[2]/table/tbody/tr/td[1]/select/option[1]'
-    time.sleep(3) #can't figure this out, something.
+    time.sleep(4) #can't figure this out, something.
     wait_for_element(p_driver, p_xpath_el=xpath)
 # /html/body/form/table/tbody/tr[2]/td/div/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[4]/select/option[4]
 # /html/body/form/table/tbody/tr[2]/td/div/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[2]/table/tbody/tr/td[1]/select/option[1]
@@ -807,9 +807,15 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                         continue
                     # need a try and except here to see otherwise need to reload page
                     edit_cell_id = 'e' + cell_id
+                    # if gc_score != 'M' and gc_score != 'MISS':
 
-                    sql = 'select * from recorded_scores WHERE id ="' + cell_id + '" AND score =' + str(gc_score)
+                    if gc_score == 'MISS':
+                        sql = 'select * from recorded_scores WHERE id ="' + cell_id + '" AND score ="' + str(gc_score)\
+                              + '"'
 
+                    else:
+                        sql = 'select * from recorded_scores WHERE id ="' + cell_id + '" AND score =' + str(gc_score)
+                    print(f"www this is sql {sql}")
                     rows = query_db(p_db_conn, sql)
 
                     action = ActionChains(p_driver)
@@ -831,7 +837,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                         grade_element2 = p_driver.find_element_by_id(edit_cell_id)
                         grade_element2.send_keys(gc_score)
                         grade_element2.send_keys(Keys.RETURN)
-                        if gc_score != 'M':
+                        if gc_score != 'M' and gc_score != 'MISS':
                             sql = 'INSERT INTO recorded_scores VALUES ("' + \
                                   cell_id + '", "' + gc_assignment_name + '", "' + gc_student + '", ' + \
                                   str(gc_score) + ' )'
