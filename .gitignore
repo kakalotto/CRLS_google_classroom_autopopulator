@@ -1,0 +1,5 @@
+database*
+token*
+*__pycache__*
+credentials*
+.idea/

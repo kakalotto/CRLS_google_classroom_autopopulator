@@ -64,9 +64,10 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
     execute_sql(db_conn, sql)
 
     # Get student profiles
-    print("Getting student profiles")
     gc_student_profiles = {}
     if p_use_stored_gc_students is False:
+        print("Getting student profiles from Google classroom")
+
         gc_student_profiles = get_student_profiles(service_classroom, course_id)
         # print("Here are Google classroom student profiles")
         # print(gc_student_profiles)
@@ -77,7 +78,7 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
             sql = 'INSERT INTO "gc_students" VALUES ( "' + id + '", "' + gc_student_profiles[id] + '" );'
             execute_sql(db_conn, sql)
     else:
-        print("Using stored student profiles")
+        print("Using stored student profiles from GC stored in DB")
         sql = 'SELECT * FROM "gc_students";'
         rows = query_db(db_conn, sql)
         for row in rows:
@@ -87,10 +88,10 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
                                               "with the use_stored_gc_students=0 first")
     num_gc_students = len(gc_student_profiles)
     # Use gc assignments and student profiles to figure out which scores I potentially want to record.
-    print("Using student profiles to find potential grades to put into Aspen")
+    print("Using student profiles to find potential grades to put into Aspen from GC")
     gc_assignment_scores_student_id = get_assignment_scores_from_classroom(service_classroom, gc_student_profiles,
                                                                            courseworks, course_id)
-    print("Here are the original Google classroom assignments, students, and IDs")
+    print("Here are the original Google classroomfg assignments, students, and IDs")
     for key in gc_assignment_scores_student_id:
         print(f"{key}         {gc_assignment_scores_student_id[key]}")
 
