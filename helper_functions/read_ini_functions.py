@@ -272,3 +272,46 @@ def read_mailer_info(p_filename):
                     p_student15: p_guardian15, p_student16: p_guardian16, p_student17: p_guardian17}
     print(f"Here is the studentCC's {p_student_cc}")
     return [p_mailclasses, p_teachercc, p_messages, p_student_cc, p_send_email, ]
+
+
+def config_string_to_dict(p_string):
+    p_list = p_string.split(',')
+    return p_list
+
+
+def read_return_perfect_info(p_filename):
+    import configparser
+    config = configparser.ConfigParser()
+    config.read(p_filename)
+    classes_dict = {}
+
+    if 'RETURN_PERFECT' in config:
+        gc_1 = config.get('RETURN_PERFECT', 'gc_class1', fallback='')
+        assignments_1 = config.get('RETURN_PERFECT', 'assignments1', fallback='')
+        gc_2 = config.get('RETURN_PERFECT', 'gc_class2', fallback='')
+        assignments_2 = config.get('RETURN_PERFECT', 'assignments2', fallback='')
+        gc_3 = config.get('RETURN_PERFECT', 'gc_class3', fallback='')
+        assignments_3 = config.get('RETURN_PERFECT', 'assignments3', fallback='')
+        gc_4 = config.get('RETURN_PERFECT', 'gc_class4', fallback='')
+        assignments_4 = config.get('RETURN_PERFECT', 'assignments4', fallback='')
+
+
+    else:
+        raise ValueError("Need to have a file called: " +
+                         str(p_filename) +
+                         "\nThis file needs to have a RETURN_PERFECT section "
+                         "with variables gc_1 assignments_1, and so on")
+    if gc_1:
+        classes = config_string_to_dict(assignments_1)
+        classes_dict[gc_1] = classes
+    if gc_2:
+        classes = config_string_to_dict(assignments_2)
+        classes_dict[gc_2] = classes
+    if gc_3:
+        classes = config_string_to_dict(assignments_3)
+        classes_dict[gc_3] = classes
+    if gc_4:
+        classes = config_string_to_dict(assignments_4)
+        classes_dict[gc_4] = classes
+
+    return classes_dict

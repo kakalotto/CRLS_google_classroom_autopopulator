@@ -25,7 +25,7 @@ course_results = service_classroom.courses().get(id=course_id).execute()
 #print(course_results)
 course_description = course_results['section']
 #course_description='23/24 S1, P1'
-points = 28
+points = 23
 quiz_length = quiz_info_dict['quiz_length']
 quiz1_id = quiz_info_dict['quiz1_id']
 quiz2_id = quiz_info_dict['quiz2_id']
@@ -100,8 +100,7 @@ start_time_hour = start_time_list[0]
 start_time_minute = start_time_list[1]
 start_time_obj = datetime.datetime(year=int(year), month=int(month), day=int(dom),
                                    hour=int(start_time_hour), minute=int(start_time_minute))
-start_time_obj = start_time_obj
-                 #- datetime.timedelta(minutes=60)
+start_time_obj = start_time_obj + datetime.timedelta(minutes=60)
 # print(period_dict)
 # print(start_time_obj)
 
