@@ -1,5 +1,6 @@
 def return_perfect_scores(classname:str, classes_to_return:list):
     import time
+    import re
     from generate_classroom_credential import generate_classroom_credential
     from helper_functions.classroom_functions import class_name_2_id
 
@@ -23,10 +24,12 @@ def return_perfect_scores(classname:str, classes_to_return:list):
     # loop over all assignments, skip if not in the classes_to_return list
     # Get all student works for that assignment.
     # if assignment is in the classes_to_return list, return everything perfect
+    print("looping over assignments to find a match")
     for key in assignments_id_dict.keys():
         # print(f"Trying this one now {key}, {assignments_id_dict[key]}")
         if assignments_id_dict[key]['title'] not in classes_to_return:
             continue
+        print(f"Trying this one now {key}, {assignments_id_dict[key]}")
 
         student_work = service_classroom.courses(). \
             courseWork().studentSubmissions(). \
@@ -34,21 +37,32 @@ def return_perfect_scores(classname:str, classes_to_return:list):
         if 'studentSubmissions' in student_work.keys():
             student_works = student_work['studentSubmissions']
             for work in student_works:
-                if work.get('draftGrade') == assignments_id_dict[key]['maxPoints'] and\
-                        work.get('state') == 'TURNED_IN':
-                    print(f"The work to return  {assignments_id_dict[key]} {work}")
-                    studentSubmission = {
-                        'assignedGrade': work.get('draftGrade'),
-                        'draftGrade': work.get('draftGrade'),
-                    }
-                    service_classroom.courses().courseWork().studentSubmissions().patch(
-                        courseId=course_id, courseWorkId=key,id=work.get('id'),
-                        updateMask='assignedGrade,draftGrade',
-                        body = studentSubmission).execute()
-                    time.sleep(2)
-                    service_classroom.courses().courseWork().studentSubmissions().return_(courseId=course_id,
-                                                                                          courseWorkId=key,
-                                                                                           id=work.get('id')).execute()
+                print(work)
+                if work.get('state') == 'TURNED_IN':
+                    if 'assignmentSubmission' in work.keys():
+                        attachments = work['assignmentSubmission']['attachments']
+                        for attachment in attachments:
+                            print(attachment)
+                            drivefile_title = attachment['driveFile']['title']
+                            if re.search('[Jj][Pp][Ee][Gg]$', drivefile_title, re.X | re.M | re.S) or \
+                               re.search('[Jj][Pp][Gg]$', drivefile_title, re.X | re.M | re.S) or \
+                               re.search('[Pp][Nn][Gg]$', drivefile_title, re.X | re.M | re.S) :
+                                print("READY!")
+                                studentSubmission = {
+                                    'assignedGrade': assignments_id_dict[key]['maxPoints'],
+                                    'draftGrade': assignments_id_dict[key]['maxPoints'],
+                                }
+                                service_classroom.courses().courseWork().studentSubmissions().patch(
+                                    courseId=course_id, courseWorkId=key,id=work.get('id'),
+                                    updateMask='assignedGrade,draftGrade',
+                                    body = studentSubmission).execute()
+                                time.sleep(2)
+                                service_classroom.courses().courseWork().studentSubmissions().return_(courseId=course_id,
+                                                                                                      courseWorkId=key,
+                                                                                                      id=work.get('id')).execute()
+                                break
+
+
         #
         #             if work.get('draftGrade') and work.get('state') == 'TURNED_IN':
         #             if work.get('draftGrade') and work.get('id') == 'Cg0IjZSL6icQ8rb5zo4T':

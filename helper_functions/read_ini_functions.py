@@ -315,3 +315,41 @@ def read_return_perfect_info(p_filename):
         classes_dict[gc_4] = classes
 
     return classes_dict
+
+
+def read_return_screenshot_assignments(p_filename):
+    import configparser
+    config = configparser.ConfigParser()
+    config.read(p_filename)
+    classes_dict = {}
+
+    if 'RETURN_SCREENSHOT_ASSIGNMENTS' in config:
+        gc_1 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'gc_class1', fallback='')
+        assignments_1 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments1', fallback='')
+        gc_2 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'gc_class2', fallback='')
+        assignments_2 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments2', fallback='')
+        gc_3 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'gc_class3', fallback='')
+        assignments_3 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments3', fallback='')
+        gc_4 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'gc_class4', fallback='')
+        assignments_4 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments4', fallback='')
+
+
+    else:
+        raise ValueError("Need to have a file called: " +
+                         str(p_filename) +
+                         "\nThis file needs to have a RETURN_SCREENSHOT_ASSIGNMENTS section "
+                         "with variables gc_1 assignments_1, and so on")
+    if gc_1:
+        classes = config_string_to_dict(assignments_1)
+        classes_dict[gc_1] = classes
+    if gc_2:
+        classes = config_string_to_dict(assignments_2)
+        classes_dict[gc_2] = classes
+    if gc_3:
+        classes = config_string_to_dict(assignments_3)
+        classes_dict[gc_3] = classes
+    if gc_4:
+        classes = config_string_to_dict(assignments_4)
+        classes_dict[gc_4] = classes
+
+    return classes_dict
