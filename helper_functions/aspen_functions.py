@@ -15,7 +15,7 @@ def generate_driver():
 #    p_driver = webdriver.Chrome(ChromeDriverManager().install())
     service = Service()
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
     p_driver = webdriver.Chrome(service=service, options=options)
     p_driver.get('https://aspen.cpsd.us')
     return p_driver
@@ -85,6 +85,7 @@ def goto_gradebook(p_driver, p_aspen_class):
     print("bbb clicking scores")
     time.sleep(2)
     p_driver.find_element_by_link_text("Scores").click()
+    time.sleep(2)
 
 
 def goto_students(p_driver):
@@ -591,6 +592,7 @@ def get_assignments_from_aspen(p_driver):
     wait_for_element(p_driver, p_xpath_el="//div[@id='dataGrid']", message='Did not find assignments')
 
     # Extract assignments
+    print("Navigated, now extracting assignments")
     done = False
     aspen_column_names = []
     while done is False:
@@ -618,14 +620,18 @@ def get_assignments_and_assignment_ids_from_aspen(p_driver):
     :param p_driver:   Selenium driver object
     :return: list of Aspen assignment column names (string)
     """
+    import time
     from selenium.common.exceptions import NoSuchElementException
     print("Getting assignments and IDs from Aspen")
 
     # Navigate to assignments page
+    print("lll navigating to assignments page")
+    time.sleep(2)
     wait_for_element(p_driver, p_link_text='Assignments')
     p_driver.find_element_by_link_text("Assignments").click()
     wait_for_element(p_driver, p_xpath_el="//div[@id='dataGrid']", message='Did not find assignments')
 
+    print("ooo")
     p_aspen_assignment_ids = {}
     done = False
     while done is False:
