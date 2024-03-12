@@ -19,7 +19,12 @@ def return_perfect_scores(classname:str, classes_to_return:list):
         # print(f"This is assignment {assignment}")
         assignments_id_dict[assignment['id']] = assignment['title']
         assignments_id_dict[assignment['id']] = {'title': assignment['title']}
-        assignments_id_dict[assignment['id']]['maxPoints'] = assignment['maxPoints']
+        if 'maxPoints' in assignment['id'].keys():
+            assignments_id_dict[assignment['id']]['maxPoints'] = assignment['maxPoints']
+        else:
+            print(f"This assignment does not have maxpoints!"
+                  "{assignment}")
+            assignments_id_dict[assignment['id']]['maxPoints'] = 500
 
     # loop over all assignments, skip if not in the classes_to_return list
     # Get all student works for that assignment.

@@ -15,10 +15,10 @@ def return_perfect_scores(classname:str, classes_to_return:list):
 
     # loop over all assignments to get titles (assignment names) and perfect scores (maxPoints)
     for assignment in all_assignments:
-        print(f"This is assignment {assignment}")
+        # print(f"This is assignment {assignment}")
         assignments_id_dict[assignment['id']] = assignment['title']
         assignments_id_dict[assignment['id']] = {'title': assignment['title']}
-        if 'maxPoints' in  assignment.keys():
+        if 'maxPoints' in assignment['id'].keys():
             assignments_id_dict[assignment['id']]['maxPoints'] = assignment['maxPoints']
         else:
             print(f"This assignment does not have maxpoints!"
