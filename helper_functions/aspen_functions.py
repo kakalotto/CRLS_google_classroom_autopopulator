@@ -15,7 +15,7 @@ def generate_driver():
 #    p_driver = webdriver.Chrome(ChromeDriverManager().install())
     service = Service()
     options = webdriver.ChromeOptions()
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
     p_driver = webdriver.Chrome(service=service, options=options)
     p_driver.get('https://aspen.cpsd.us')
     return p_driver
@@ -839,6 +839,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                         action.move_to_element(grade_element).perform()
                         # print("jjj this cell ID " + str(cell_id))
                         grade_element.click()
+                        time.sleep(2)
                         # wait_for_element(p_driver, p_id=edit_cell_id)
                         grade_element2 = p_driver.find_element_by_id(edit_cell_id)
                         grade_element2.send_keys(gc_score)

@@ -294,6 +294,8 @@ def read_return_perfect_info(p_filename):
         assignments_3 = config.get('RETURN_PERFECT', 'assignments3', fallback='')
         gc_4 = config.get('RETURN_PERFECT', 'gc_class4', fallback='')
         assignments_4 = config.get('RETURN_PERFECT', 'assignments4', fallback='')
+        gc_5 = config.get('RETURN_PERFECT', 'gc_class5', fallback='')
+        assignments_5 = config.get('RETURN_PERFECT', 'assignments5', fallback='')
 
 
     else:
@@ -313,6 +315,9 @@ def read_return_perfect_info(p_filename):
     if gc_4:
         classes = config_string_to_dict(assignments_4)
         classes_dict[gc_4] = classes
+    if gc_5:
+        classes = config_string_to_dict(assignments_5)
+        classes_dict[gc_5] = classes
 
     return classes_dict
 
@@ -332,6 +337,8 @@ def read_return_screenshot_assignments(p_filename):
         assignments_3 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments3', fallback='')
         gc_4 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'gc_class4', fallback='')
         assignments_4 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments4', fallback='')
+        gc_5 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'gc_class5', fallback='')
+        assignments_5 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments5', fallback='')
 
 
     else:
@@ -351,5 +358,7 @@ def read_return_screenshot_assignments(p_filename):
     if gc_4:
         classes = config_string_to_dict(assignments_4)
         classes_dict[gc_4] = classes
-
+    if gc_5:
+        classes = config_string_to_dict(assignments_5)
+        classes_dict[gc_5] = classes
     return classes_dict
