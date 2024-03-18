@@ -22,7 +22,7 @@ def return_perfect_scores(classname:str, classes_to_return:list):
             assignments_id_dict[assignment['id']]['maxPoints'] = assignment['maxPoints']
         else:
             print(f"This assignment does not have maxpoints!"
-                  "{assignment}")
+                  f"{assignment}")
             assignments_id_dict[assignment['id']]['maxPoints'] = 500
 
 

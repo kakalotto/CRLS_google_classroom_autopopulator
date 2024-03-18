@@ -79,6 +79,7 @@ def which_quarter_today(*, p_filename=''):
     q4 = datetime.datetime(int(q4_list[0]), int(q4_list[1]), int(q4_list[2]))
 
     today = datetime.datetime.now()
+    print(f"in which quarter today, today {today}, q1 {q1}, q2 {q2}, q3 {q3}, q4 {q4}")
     if q2 > today > q1:
         return q1
     elif q3 > today > q2:

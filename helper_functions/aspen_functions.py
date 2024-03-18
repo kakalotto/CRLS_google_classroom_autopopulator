@@ -286,8 +286,8 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
     one_minute = datetime.timedelta(minutes=1)
     if python_due_date.hour == 0 and python_due_date.minute == 0:
         python_due_date -= one_minute
-    print("xxx  " + str(python_due_date.hour) + " " + str(python_due_date.minute))
-    print("python due date " + str(python_due_date))
+    print("in add assignemtns, due hour, due minute  " + str(python_due_date.hour) + " " + str(python_due_date.minute))
+    print("in add assignments python due date " + str(python_due_date))
     grade_term = which_quarter_today_string(datetime_obj=python_due_date)
 #    print(constants.Q1, constants.Q2, constants.Q3)
 #    if constants.Q1 <= python_due_date < constants.Q2:
@@ -355,10 +355,14 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
                    'propertyValue(gcdDateAsgn)': date_assigned,}
     print(f"MMMMM {grade_term} MMM DATE {aspen_date_due}")
     for key in field_value.keys():
+        # time.sleep(1)
         wait_for_element(p_driver, p_name=key)
+        print(f"finding the element {key}")
         element = p_driver.find_element_by_name(key)
         action.move_to_element(element).perform()
+        # time.sleep(1)
         element.click()
+        print("backspacing")
         for i in range(35):
             element.send_keys(Keys.BACKSPACE)
         element.send_keys(field_value[key])
