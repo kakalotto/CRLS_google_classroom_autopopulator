@@ -346,6 +346,8 @@ def read_return_screenshot_assignments(p_filename):
         assignments_5 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments5', fallback='')
         gc_6 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'gc_class6', fallback='')
         assignments_6 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments6', fallback='')
+        gc_7 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'gc_class7', fallback='')
+        assignments_7 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments7', fallback='')
 
     else:
         raise ValueError("Need to have a file called: " +
@@ -370,4 +372,7 @@ def read_return_screenshot_assignments(p_filename):
     if gc_6:
         classes = config_string_to_dict(assignments_6)
         classes_dict[gc_6] = classes
+    if gc_7:
+        classes = config_string_to_dict(assignments_7)
+        classes_dict[gc_7] = classes
     return classes_dict

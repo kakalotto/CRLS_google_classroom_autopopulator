@@ -30,9 +30,11 @@ def return_perfect_scores(classname:str, classes_to_return:list):
     # Get all student works for that assignment.
     # if assignment is in the classes_to_return list, return everything perfect
     print("looping over assignments to find a match")
+    print(f"Here is the dictionary to try {assignments_id_dict}")
     for key in assignments_id_dict.keys():
         # print(f"Trying this one now {key}, {assignments_id_dict[key]}")
         if assignments_id_dict[key]['title'] not in classes_to_return:
+            # print(f" {assignments_id_dict[key]['title']} is not in {classes_to_returns not} ")
             continue
         #print(f"Trying this one now {key}, {assignments_id_dict[key]}")
 
