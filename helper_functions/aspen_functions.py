@@ -504,7 +504,13 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'MIT\s600\sPS', 'M', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Create\sTask', 'CT', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Responsive', 'R', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Typescript', 'TS', new_title, re.X | re.S | re.M)
 
+#
+    new_title = re.sub(r'Set up Dev Env Part', 'Devenv', new_title, re.X | re.S | re.M)
+
+    new_title = re.sub(r'Javascript', 'JS', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Portfolio', 'Pfolio', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'box\smodel', 'BM', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'\s+$', '', new_title)
 
