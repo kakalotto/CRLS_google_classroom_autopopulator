@@ -6,6 +6,7 @@ def thirty_days_fifty(classname:str):
     import time
     import datetime
     import math
+    from googleapiclient.errors import HttpError
     # Get the course ID
     service_classroom = generate_classroom_credential()
     course_id = class_name_2_id(service_classroom, classname)
@@ -19,6 +20,9 @@ def thirty_days_fifty(classname:str):
     # loop over all assignments to get titles (assignment names) and perfect scores (maxPoints)
     for assignment in all_assignments:
         # print(f"This is assignment {assignment} and due_date {assignment['dueDate']}")
+        if 'dueDate' not in assignment.keys():
+            print(f"ERROR: This is assignment has not due date, skipping: bf{assignment} ")
+            continue
         python_due_date = datetime.datetime(int(assignment['dueDate']['year']), int(assignment['dueDate']['month']),
                                             int(assignment['dueDate']['day']))
         thirtyfive_days = datetime.timedelta(days=35)
@@ -45,7 +49,7 @@ def thirty_days_fifty(classname:str):
             continue
         # assignment = assignments_id_dict[key]['title']
 
-        print(f"Trying this one now {key}, {assignments_id_dict[key]}")
+        print(f"Trying this one now {key}, {assignments_id_dict[key]} in this class: {classname}")
         # time.sleep(60)
         student_work = service_classroom.courses(). \
             courseWork().studentSubmissions(). \
@@ -58,18 +62,24 @@ def thirty_days_fifty(classname:str):
                     continue
                 if 'draftGrade' in work.keys():
                     continue
-                print(work)
+                print(f"Giving this one a 50% f{work}")
                 grade = math.ceil(assignments_id_dict[key]['maxPoints']/2.0)
                 studentSubmission = {
                     'assignedGrade': grade,
                     'draftGrade': grade,
                 }
-                print(grade)
+                # print(grade)
 
-                service_classroom.courses().courseWork().studentSubmissions().patch(
-                    courseId=course_id, courseWorkId=key, id=work.get('id'),
-                    updateMask='assignedGrade,draftGrade',
-                    body=studentSubmission).execute()
+                try:
+                    service_classroom.courses().courseWork().studentSubmissions().patch(
+                        courseId=course_id, courseWorkId=key, id=work.get('id'),
+                        updateMask='assignedGrade,draftGrade',
+                        body=studentSubmission).execute()
+                except HttpError as e:
+                    error_reason = e.reason
+                    error_details = e.error_details
+                    print(f"Error! Reason is this: {error_reason} and details are these: {error_details}")
+
                 # service_classroom.courses().courseWork().studentSubmissions().return_(courseId=course_id,
                 #                                                                       courseWorkId=key,
                 #                                                                       id=work.get('id')).execute()
