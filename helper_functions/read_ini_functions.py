@@ -33,9 +33,7 @@ def read_classes_info(p_filename):
     import configparser
     config = configparser.ConfigParser()
     config.read(p_filename)
-
     p_all_classes = {}
-
     if 'DEFAULT' in config:
         gc1 = config.get('DEFAULT', 'gc_class1', fallback='')
         gc2 = config.get('DEFAULT', 'gc_class2', fallback='')
@@ -82,6 +80,7 @@ def read_classes_info(p_filename):
         p_all_classes[gc8] = aspen8
 
     return p_all_classes
+
 
 
 def read_quizzes_info(p_filename):
@@ -296,6 +295,8 @@ def read_return_perfect_info(p_filename):
         assignments_4 = config.get('RETURN_PERFECT', 'assignments4', fallback='')
         gc_5 = config.get('RETURN_PERFECT', 'gc_class5', fallback='')
         assignments_5 = config.get('RETURN_PERFECT', 'assignments5', fallback='')
+        gc_6 = config.get('RETURN_PERFECT', 'gc_class6', fallback='')
+        assignments_6 = config.get('RETURN_PERFECT', 'assignments6', fallback='')
 
 
     else:
@@ -318,9 +319,47 @@ def read_return_perfect_info(p_filename):
     if gc_5:
         classes = config_string_to_dict(assignments_5)
         classes_dict[gc_5] = classes
+    if gc_6:
+        classes = config_string_to_dict(assignments_6)
+        classes_dict[gc_6] = classes
 
     return classes_dict
 
+
+def read_thirty_days(p_filename):
+    import configparser
+    config = configparser.ConfigParser()
+    config.read(p_filename)
+    classes = []
+
+    if 'THIRTY_DAYS' in config:
+        gc_1 = config.get('THIRTY_DAYS', 'gc_class1', fallback='')
+        gc_2 = config.get('THIRTY_DAYS', 'gc_class2', fallback='')
+        gc_3 = config.get('THIRTY_DAYS', 'gc_class3', fallback='')
+        gc_4 = config.get('THIRTY_DAYS', 'gc_class4', fallback='')
+        gc_5 = config.get('THIRTY_DAYS', 'gc_class5', fallback='')
+        gc_6 = config.get('THIRTY_DAYS', 'gc_class6', fallback='')
+        gc_7 = config.get('THIRTY_DAYS', 'gc_class7', fallback='')
+    else:
+        raise ValueError("Need to have a file called: " +
+                         str(p_filename) +
+                         "\nThis file needs to have a THIRTY_DAYS section "
+                         "with variables gc_1 assignments_1, and so on")
+    if gc_1:
+        classes.append(gc_1)
+    if gc_2:
+        classes.append(gc_2)
+    if gc_3:
+        classes.append(gc_3)
+    if gc_4:
+        classes.append(gc_4)
+    if gc_5:
+        classes.append(gc_5)
+    if gc_6:
+        classes.append(gc_6)
+    if gc_7:
+        classes.append(gc_7)
+    return classes
 
 def read_return_screenshot_assignments(p_filename):
     import configparser
@@ -339,7 +378,10 @@ def read_return_screenshot_assignments(p_filename):
         assignments_4 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments4', fallback='')
         gc_5 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'gc_class5', fallback='')
         assignments_5 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments5', fallback='')
-
+        gc_6 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'gc_class6', fallback='')
+        assignments_6 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments6', fallback='')
+        gc_7 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'gc_class7', fallback='')
+        assignments_7 = config.get('RETURN_SCREENSHOT_ASSIGNMENTS', 'assignments7', fallback='')
 
     else:
         raise ValueError("Need to have a file called: " +
@@ -361,4 +403,10 @@ def read_return_screenshot_assignments(p_filename):
     if gc_5:
         classes = config_string_to_dict(assignments_5)
         classes_dict[gc_5] = classes
+    if gc_6:
+        classes = config_string_to_dict(assignments_6)
+        classes_dict[gc_6] = classes
+    if gc_7:
+        classes = config_string_to_dict(assignments_7)
+        classes_dict[gc_7] = classes
     return classes_dict

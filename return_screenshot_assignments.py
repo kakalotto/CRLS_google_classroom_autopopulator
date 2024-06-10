@@ -30,11 +30,13 @@ def return_perfect_scores(classname:str, classes_to_return:list):
     # Get all student works for that assignment.
     # if assignment is in the classes_to_return list, return everything perfect
     print("looping over assignments to find a match")
+    print(f"Here is the dictionary to try {assignments_id_dict}")
     for key in assignments_id_dict.keys():
         # print(f"Trying this one now {key}, {assignments_id_dict[key]}")
         if assignments_id_dict[key]['title'] not in classes_to_return:
+            # print(f" {assignments_id_dict[key]['title']} is not in {classes_to_returns not} ")
             continue
-        print(f"Trying this one now {key}, {assignments_id_dict[key]}")
+        #print(f"Trying this one now {key}, {assignments_id_dict[key]}")
 
         student_work = service_classroom.courses(). \
             courseWork().studentSubmissions(). \
@@ -42,7 +44,7 @@ def return_perfect_scores(classname:str, classes_to_return:list):
         if 'studentSubmissions' in student_work.keys():
             student_works = student_work['studentSubmissions']
             for work in student_works:
-                print(work)
+                # print(work)
                 if work.get('state') == 'TURNED_IN':
                     if 'assignmentSubmission' in work.keys():
                         attachments = work['assignmentSubmission']['attachments']
@@ -52,7 +54,7 @@ def return_perfect_scores(classname:str, classes_to_return:list):
                             if re.search('[Jj][Pp][Ee][Gg]$', drivefile_title, re.X | re.M | re.S) or \
                                re.search('[Jj][Pp][Gg]$', drivefile_title, re.X | re.M | re.S) or \
                                re.search('[Pp][Nn][Gg]$', drivefile_title, re.X | re.M | re.S) :
-                                print("READY!")
+                                # print("READY!")
                                 studentSubmission = {
                                     'assignedGrade': assignments_id_dict[key]['maxPoints'],
                                     'draftGrade': assignments_id_dict[key]['maxPoints'],
