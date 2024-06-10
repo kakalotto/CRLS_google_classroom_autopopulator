@@ -72,6 +72,23 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
                             coursework_id = work['courseWorkId']
                             message_dict[student_id] += "assignment:  {} \nlink to assignment {}\n\n".format(
                                 assignments_id_dict[coursework_id], link)
+                elif 'state' in work.keys():
+                    print(f"potentially returned {work}")
+                    if work['state'] == 'RETURNED' and 'assignedGrade' not in work.keys():
+                        work_id = work['courseWorkId']
+                        due_date = {}
+                        for assignment in all_assignments:
+                            if work_id == assignment['id']:
+                                due_date = assignment['dueDate']
+                        if due_date:
+                            due_date = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
+                            if today >= due_date > quarter_start:
+                                link = work['alternateLink']
+                                coursework_id = work['courseWorkId']
+                                message_dict[
+                                    student_id] += "Returned assignment that needs attention:  {} \nlink to assignment {}\n\n".format(
+                                    assignments_id_dict[coursework_id], link)
+                                message_dict[student_id] += "\n" + str(work) + "\n"
         messages.append(message_dict)
 
     if p_send_email:
@@ -123,3 +140,19 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
             else:
                 print("send_message was sent to 0.  Emails were not sent.\n"
                       "To send emails, switch send_email to 1 in this file: " + str(p_config_filename) + "\n\n")
+
+
+
+
+# "https://www.googleapis.com/auth/classroom.profile.emails
+# https://www.googleapis.com/auth/classroom.student-submissions.students.readonly
+# https://www.googleapis.com/auth/gmail.send
+# https://www.googleapis.com/auth/classroom.coursework.students.readonly
+# https://www.googleapis.com/auth/classroom.courses.readonly
+# https://www.googleapis.com/auth/classroom.rosters.readonly"
+#
+# "https://www.googleapis.com/auth/classroom.profile.emails
+# https://www.googleapis.com/auth/classroom.student-submissions.students.readonly
+# https://www.googleapis.com/auth/gmail.send
+# https://www.googleapis.com/auth/classroom.courses.readonly
+# https://www.googleapis.com/auth/classroom.rosters.readonly".
