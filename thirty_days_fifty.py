@@ -23,6 +23,9 @@ def thirty_days_fifty(classname:str):
         if 'dueDate' not in assignment.keys():
             print(f"ERROR: This is assignment has not due date, skipping: bf{assignment} ")
             continue
+        if re.search(r':-\)', assignment['title'], re.X | re.S | re.M):
+            print("This is a quiz, skipping")
+            continue
         python_due_date = datetime.datetime(int(assignment['dueDate']['year']), int(assignment['dueDate']['month']),
                                             int(assignment['dueDate']['day']))
         thirtyfive_days = datetime.timedelta(days=35)
