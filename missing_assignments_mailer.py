@@ -15,14 +15,20 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
     from email.mime.text import MIMEText
     import base64
 
-    from generate_classroom_credential import generate_classroom_credential
-    from generate_gmail_credential import generate_gmail_credential
+    from generate_missing_mailer_credential import generate_missing_mailer_credential
+    # from generate_classroom_credential import generate_classroom_credential
+    # from generate_gmail_credential import generate_gmail_credential
     from helper_functions.classroom_functions import class_name_2_id
     from helper_functions.quarters import which_quarter_today
 
     # Get the course ID
-    service_classroom = generate_classroom_credential()
+    [service_classroom, service_gmail] = generate_missing_mailer_credential()
+
+    # print(f"service_gmail {service_gmail}")
+    # print(f"service_classroom {service_classroom}")
+
     course_id = class_name_2_id(service_classroom, p_gc_name)
+
 
     # Get students and student profiles from google classroom
     email_dict = {}
@@ -64,7 +70,6 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
                     for assignment in all_assignments:
                         if work_id == assignment['id']:
                             due_date = assignment['dueDate']
-
                     if work['state'] != 'TURNED_IN' and work['late'] is True and due_date:
                         due_date = datetime.datetime(due_date['year'], due_date['month'], due_date['day'])
                         if today >= due_date > quarter_start:
@@ -73,7 +78,7 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
                             message_dict[student_id] += "assignment:  {} \nlink to assignment {}\n\n".format(
                                 assignments_id_dict[coursework_id], link)
                 elif 'state' in work.keys():
-                    print(f"potentially returned {work}")
+                    # print(f"potentially returned {work}")
                     if work['state'] == 'RETURNED' and 'assignedGrade' not in work.keys():
                         work_id = work['courseWorkId']
                         due_date = {}
@@ -91,9 +96,6 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
                                 message_dict[student_id] += "\n" + str(work) + "\n"
         messages.append(message_dict)
 
-    if p_send_email:
-        service_gmail = generate_gmail_credential()
-
     print("SEND EMAIL IS THIS" + str(p_send_email))
     for message in messages:
         for key in message:
@@ -105,9 +107,7 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
                 message[key] = "Hello! Here are assignments that are past due that are not turned in yet:\n\n" + \
                                message[key]
             message[key] = email_address + '\n' + message[key]
-
             message[key] += "\n\n" + p_message
-
             message[key] += '\n\nThis is an automated email\n\n'
 
             # Debug info here
@@ -141,18 +141,3 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
                 print("send_message was sent to 0.  Emails were not sent.\n"
                       "To send emails, switch send_email to 1 in this file: " + str(p_config_filename) + "\n\n")
 
-
-
-
-# "https://www.googleapis.com/auth/classroom.profile.emails
-# https://www.googleapis.com/auth/classroom.student-submissions.students.readonly
-# https://www.googleapis.com/auth/gmail.send
-# https://www.googleapis.com/auth/classroom.coursework.students.readonly
-# https://www.googleapis.com/auth/classroom.courses.readonly
-# https://www.googleapis.com/auth/classroom.rosters.readonly"
-#
-# "https://www.googleapis.com/auth/classroom.profile.emails
-# https://www.googleapis.com/auth/classroom.student-submissions.students.readonly
-# https://www.googleapis.com/auth/gmail.send
-# https://www.googleapis.com/auth/classroom.courses.readonly
-# https://www.googleapis.com/auth/classroom.rosters.readonly".
