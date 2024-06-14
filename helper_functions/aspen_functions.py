@@ -1,6 +1,6 @@
 def generate_driver():
     """
-    Creates a selenium driver object and returns it
+        Creates a selenium driver object and returns it
     :return: Selenium driver object
     """
     from selenium import webdriver
@@ -454,11 +454,11 @@ def check_new_aspen_names(p_dict, p_content_knowledge_completion):
         proposed_names.append(aspen_name)
     for name in proposed_names:
         if proposed_names.count(name) > 1:
-            print(f"This name will conflict (two assignments that are the same after you shrink them)"
+            print(f"ERROR: This name will conflict (two assignments that are the same after you shrink them)"
                   f" Rename your Google classroom assignments.  Here is the shrunk name:\n{name}"
                   f"\nand it appears this many times: {proposed_names.count(name)}")
             input("Press enter to continue")
-            raise ValueError(f"This name will conflict (two assignments that are the same after you shrink them)"
+            raise ValueError(f"ERROR: This name will conflict (two assignments that are the same after you shrink them)"
                              f" Rename your Google classroom assignments.  You can edit  convert_assignment_name"
                              f"in aspen functions.  Here is the shrunk name:\n{name}"
                              f"\nand it appears this many times: {proposed_names.count(name)}")
@@ -505,6 +505,8 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'Create\sTask', 'CT', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Responsive', 'R', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Typescript', 'TS', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Node', 'N', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Install', 'I', new_title, re.X | re.S | re.M)
 
 #
     new_title = re.sub(r'Set up Dev Env Part', 'Devenv', new_title, re.X | re.S | re.M)
@@ -964,8 +966,10 @@ def wait_for_element_clickable(p_driver, *, message='', timeout=10, p_link_text=
             p_driver.quit()
             raise ValueError("Could not find this Xpath element in the page:" + str(p_xpath_el))
     elif p_link_text:
+
         try:
-            WebDriverWait(p_driver, timeout).until(ec.element_to_be_clickable((By.LINK_TEXT, p_link_text)))
+                WebDriverWait(p_driver, timeout).until(ec.element_to_be_clickable((By.LINK_TEXT, p_link_text)))
+
         except TimeoutException:
             if message:
                 print(message)

@@ -356,10 +356,10 @@ def verify_due_date_exists(p_courseworks, ignore_noduedate):
         elif 'dueDate' in coursework and ignore_noduedate:
             new_courseworks.append(coursework)
     if bad_courseworks:
-        print((f"Every assignment should have a due date.  Here are the assignments without a due date:"
+        print((f"ERROR: Every assignment should have a due date.  Here are the assignments without a due date:"
                f" {bad_courseworks} \nProgram will exit now."))
         input("Press enter to continue.")
-        raise ValueError(f"Every assignment should have a due date.  Here are the assignments without a due date:"
+        raise ValueError(f"ERROR: Every assignment should have a due date.  Here are the assignments without a due date:"
                          f" {bad_courseworks}  \nProgram will exit now.")
 
 
