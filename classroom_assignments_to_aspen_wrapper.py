@@ -26,5 +26,5 @@ for key in all_classes.keys():
                                    ignore_ungraded=ignore_ungraded_value,
                                    username=username, password=password, default_category=default_category,
                                    ignore_noduedate=ignore_noduedate_value)
-
+print("All done with adding assignments into Aspen!")
 # input("Press enter 2x to end")
