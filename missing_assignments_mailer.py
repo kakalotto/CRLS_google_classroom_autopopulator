@@ -93,7 +93,6 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
                                 message_dict[
                                     student_id] += "Returned assignment that needs attention:  {} \nlink to assignment {}\n\n".format(
                                     assignments_id_dict[coursework_id], link)
-                                message_dict[student_id] += "\n" + str(work) + "\n"
         messages.append(message_dict)
 
     print("SEND EMAIL IS THIS" + str(p_send_email))

@@ -84,12 +84,14 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
         assignment = p_service_classroom.courses().courseWork().create(courseId=p_course_id, body=assignment).execute()
         assignment_id = assignment.get('id')
         print("posting this assignment" + str(assignment))
-    except googleapiclient.errors.HttpError:
+    except googleapiclient.errors.HttpError as e:
+        error_details = e.error_details
         raise Exception("'Request contains an invalid argument' - is the topic you want for this assignment one that "
                         "exists in this class within Google classroom?\n"
                         "Alternatively, if there is a message 'materials: Duplicate materials are not allowed', you"
                         "probably have two of the same link on your lesson plan.\n"
-                        "Alternatively, did you update your b1 cell, classroom ID?")
+                        "Alternatively, did you update your b1 cell, classroom ID?\n"
+                        f"Here is the error details: {error_details}")
     return assignment_id
 
 #
