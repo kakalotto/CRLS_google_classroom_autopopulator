@@ -232,7 +232,7 @@ def get_assignment_scores_from_classroom(p_service_classroom, p_student_profiles
                         # print(f"fff Checking if thi s work done?: {student_work[]}")
 
                         if 'assignedGrade' in student_work.keys():
-                            if student_work['state'] == 'RETURNED':
+                            if student_work['state'] == 'RETURNED' or (student_work['state'] == 'CREATED' and 'assignedGrade' in student_work.keys()) :
                                 coursework_title = re.sub(r'\s:-\)', '', coursework_title)  # remove the smiley from title
                                 p_student_id = student_work['userId']
                                 student_name = p_student_profiles[p_student_id]
