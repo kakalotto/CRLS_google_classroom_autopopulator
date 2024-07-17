@@ -42,7 +42,7 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
         due_hour = due_time_obj.hour
         due_minute = due_time_obj.minute
     due_date_obj = due_date_obj.replace(hour=int(due_hour), minute=int(due_minute))
-    print(f"due date obj! in post {due_date_obj}")
+    # print(f"due date obj! in post {due_date_obj}")
     # get scheduled time.  Stagger entries so not all at once.
     new_scheduled_time = date_to_iso8601(month, dom, year, p_offset)
     # print(new_scheduled_time)
@@ -57,11 +57,12 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
             post_time_minute = '0' + post_time_minute
         new_scheduled_time = new_scheduled_time + 'T' + post_time_hour + ':' + post_time_minute + ':00Z'
     if p_topic not in topic_dict.keys():
-        raise Exception("The topic you want to post this under: {}, is not in the list of topics for the class.\n"
-                        "Please add this topic into the class, or else change the topic of the assignment.\n"
-                        "If you think the topic is actually there, maybe you put a space in front of it.\n"
-                        "In the courses tab, the topics are separated by commas, no spaces in between."
-                        .format(p_topic,))
+        raise Exception(f"For assignments {p_title}, the topic you want to post this under: {p_topic}, "
+                        f"is not in the list of topics for the class.\n"
+                        f"Please add this topic into the class, or else change the topic of the assignment.\n\n"
+                        f"If you think the topic is actually there, maybe you put a space in front of it.\n"
+                        f"In the courses tab, the topics are separated by commas, no spaces in between."
+                        )
     assignment = {
         'title': p_title,
         'description': p_text,
@@ -79,19 +80,20 @@ def post_assignment(p_topic, p_title, p_days_to_complete, p_text, p_attachments,
         'state': 'DRAFT',
         'maxPoints': p_points,
     }
+    print(f"In post_assignment, posting this: {assignment['title']}")
     try:
-        print("In post_assignment, posting this " + str(assignment))
         assignment = p_service_classroom.courses().courseWork().create(courseId=p_course_id, body=assignment).execute()
         assignment_id = assignment.get('id')
-        print("posting this assignment" + str(assignment))
-    except googleapiclient.errors.HttpError as e:
-        error_details = e.error_details
-        raise Exception("'Request contains an invalid argument' - is the topic you want for this assignment one that "
-                        "exists in this class within Google classroom?\n"
-                        "Alternatively, if there is a message 'materials: Duplicate materials are not allowed', you"
-                        "probably have two of the same link on your lesson plan.\n"
-                        "Alternatively, did you update your b1 cell, classroom ID?\n"
-                        f"Here is the error details: {error_details}")
+        # print("posting this assignment" + str(assignment))
+    except googleapiclient.errors.HttpError as error:
+        raise Exception(f"Error: {error}\n"
+                        f"'The caller does not have permission'\n"
+                        f"  Check to see token owner has share permissions (doc, form)\n"
+                        f"Request contains an invalid argument' - is the topic you want for this assignment one that "
+                        f"exists in this class within Google classroom?\n"
+                        f"Alternatively, if there is a message 'materials: Duplicate materials are not allowed', you"
+                        f"probably have two of the same link on your lesson plan.\n"
+                        f"Alternatively, did you update your b1 cell, classroom ID?\n")
     return assignment_id
 
 #

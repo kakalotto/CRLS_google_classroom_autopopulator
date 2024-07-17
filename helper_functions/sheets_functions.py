@@ -1,4 +1,5 @@
 def get_all_sheets(spreadsheet_id, p_service):
+    import googleapiclient.errors
     """
     Gets the names of all of the sheets in the spreadsheet
     Args:
@@ -8,7 +9,14 @@ def get_all_sheets(spreadsheet_id, p_service):
     Returns:
 
     """
-    sheet_metadata = p_service.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
+    try:
+        sheet_metadata = p_service.spreadsheets().get(spreadsheetId=spreadsheet_id).execute()
+    except googleapiclient.errors.HttpError as error:
+        raise Exception(f"Crashed. trying to read Google sheet.\n"
+                        f"Error is this: {error}\n"
+                        f"Requested entity was not found:\n"
+                        f"   Check that you have the correct spreadsheet_id in ini file")
+
     sheets = sheet_metadata.get('sheets', '')
     sheet_list = []
     for sheet in sheets:
@@ -32,9 +40,9 @@ def read_course_daily_data_all(spreadsheet_id, sheet, service):
 
     try:
         result = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_name, ).execute()
-    except googleapiclient.errors.HttpError:
-        print("Crash!   Could not find spreadsheet Do you have a spreadsheet ID of this? " + str(spreadsheet_id))
-
+    except googleapiclient.errors.HttpError as error:
+        print(f"Error: {error}\n"
+              f"Spreadsheet ID read in is this: {spreadsheet_id}\n")
     values = result.get('values', [])
 
     if not values:

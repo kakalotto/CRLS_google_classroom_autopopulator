@@ -21,11 +21,12 @@ def post_materials(p_topic, p_title, p_text, p_attachments, p_date, p_offset,
     new_scheduled_time = date_to_iso8601(month, dom, year, p_offset)
 
     if p_topic not in topic_dict.keys():
-        raise Exception("The topic you want to post this under: {}, is not in the list of topics for the class.\n"
-                        "Please add this topic into the class, or else change the topic of the assignment.\n"
-                        "If you think the topic is actually there, maybe you put a space in front of it.\n"
-                        "In the courses tab, the topics are separated by commas, no spaces in between."
-                        .format(p_topic,))
+        raise Exception(f"For assignments {p_title}, the topic you want to post this under: {p_topic}, "
+                        f"is not in the list of topics for the class.\n"
+                        f"Please add this topic into the class, or else change the topic of the assignment.\n\n"
+                        f"If you think the topic is actually there, maybe you put a space in front of it.\n"
+                        f"In the courses tab, the topics are separated by commas, no spaces in between."
+                        )
     p_material = {
         'title': p_title,
         'description': p_text,
@@ -34,16 +35,21 @@ def post_materials(p_topic, p_title, p_text, p_attachments, p_date, p_offset,
         'scheduledTime': new_scheduled_time,
         'state': 'DRAFT',
     }
+    print(f"In post_materials, attempting to post this material: {p_material['title']}")
     try:
         material_obj = p_service_classroom.courses().courseWorkMaterials().create(courseId=p_course_id,
                                                                                   body=p_material).execute()
         material_id = material_obj.get('id')
-    except googleapiclient.errors.HttpError:
-        raise Exception("'Request contains an invalid argument' - is the topic you want for this assignment one that "
-                        "exists in this class within Google classroom?\n"
-                        "Alternatively, if there is a message 'materials: Duplicate materials are not allowed', you"
-                        "probably have two of the same link on your lesson plan.\n"
-                        "Alternatively, you posted a material with student copy")
+    except googleapiclient.errors.HttpError as error:
+        raise Exception(f"Error: {error}\n"
+                        f"File: {p_material['materials']}\n"
+                        f"@AttachmentNotVisible The item referenced by an attachment was not found or not visible to the user.\n"
+                        f"   Check share permissions on file be sure it's shared to token owner (Google slide or doc)\n"
+                        f"Request contains an invalid argument' - is the topic you want for this assignment one that "
+                        f"exists in this class within Google classroom?\n"
+                        f"Alternatively, if there is a message 'materials: Duplicate materials are not allowed', you"
+                        f"probably have two of the same link on your lesson plan.\n"
+                        f"Alternatively, you posted a material with student copy")
     return material_id
 
 

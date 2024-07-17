@@ -2,7 +2,6 @@
 #        https://docs.google.com/spreadsheets/d/1Onx-EMOHveOXSO3bR4K6rMB4ovKYzeVdvYh04EnoS58/edit#gid=0
 #
 # Example:
-# ['assignment', 'AP_testing', 'Create task', '10',
 # 'Included here:\n1. Create task  instructions (which is same as create task practice instructions)\n2.
 #    Create task rubric, which you will be scored on\n3. A checklist to help you make sure you did everything (optional
 #   etc...,
@@ -41,16 +40,16 @@ def get_attachments(p_column, p_points):
         p_share_mode = ''
         if p_counter <= len(p_column) and p_column[p_counter]:
             p_link = p_column[p_counter]
-            print(" starting.  ooo p_link is " + str(p_link) + "countter is " + str(p_counter))
-            print("column is " + str(p_column))
+            # print(" starting.  ooo p_link is " + str(p_link) + "countter is " + str(p_counter))
+            # print("column is " + str(p_column))
             if len(p_column) >= p_counter + 2:  # only assignments have share mode for links
                 p_share_mode = p_column[p_counter + 1]
             p_google_drive_match = re.search('.google', p_link)  # Check for link being a Google link
             form = re.search('forms', p_link)
-            if form:
-                print("FOUND FORM")
+            # if form:
+            #     print("FOUND FORM")
             if form and not p_share_mode:
-                print("FOUND A FORM")
+                # print("FOUND A FORM")
                 p_material = {
                     'link': {'url': p_link}
                 }

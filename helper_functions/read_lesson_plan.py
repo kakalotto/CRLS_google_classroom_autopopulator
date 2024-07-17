@@ -16,16 +16,18 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                                                        spreadsheetId=p_spreadsheet_id,
                                                        range=range_name, ).execute()
         columns = result.get('values', [])
-    except googleapiclient.errors.HttpError:
-        raise Exception("Trying to read this file {}.\n"
-                        "'Requested entity was not found'  might mean the link is wrong OR\n"
-                        "you don't have access to the file.  Check these things and try again.\n  "
-                        .format(p_spreadsheet_id))
+    except googleapiclient.errors.HttpError as error:
+        raise Exception(f"Error: {error}"
+                        f"Trying to read this spreadsheet id {p_spreadsheet_id}.\n"
+                        f"The caller does not have permission:\n"
+                        f"   Be sure the spreadsheet {p_spreadsheet_id} is shared to user of the token\n"
+                        f"Requested entity was not found:\n"
+                        f"   Check the link (probably wrong)\n  ")
     column_dicts = []
     for column in columns:
         column_dict = {}
         # print("blah {}".format(column))
-        print("COLUMN " + str(column) + " id " + p_spreadsheet_id)
+        # print("COLUMN " + str(column) + " id " + p_spreadsheet_id)
         if column[0] == 'announcement':
             if column[1] != '' or column[2] != '' or column[3] != '':
                 raise Exception("In lesson with spreadsheet ID {}, rows 3 - 5 must be empty"
@@ -67,7 +69,7 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
                 column_dict['attachments'] = get_attachments(column, column_dict['points'])
 
         elif column[0] == 'materials':
-            print("MATERIALS! " + str(column))
+            # print("MATERIALS! " + str(column))
             if column[3] != '':
                 raise Exception("In lesson with spreadsheet ID {}, row 3 (days to complete) sould be empty if it's"
                                 "a materials.\n"

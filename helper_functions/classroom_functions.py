@@ -136,6 +136,7 @@ def get_due_time(p_days_to_complete, p_section, *, p_filename='', offset=5, utc=
         raise ValueError("In your " + p_filename + " ini file, need to have a section called PERIODS")
 
     is_p1 = re.search('P1', p_section, re.X | re.M | re.S)
+
     is_p2 = re.search('P2', p_section, re.X | re.M | re.S)
     is_p3 = re.search('P3', p_section, re.X | re.M | re.S)
     is_p4 = re.search('P4', p_section, re.X | re.M | re.S)
@@ -148,7 +149,7 @@ def get_due_time(p_days_to_complete, p_section, *, p_filename='', offset=5, utc=
         p_hours = 18
         p_minutes = 29
     elif is_p1:
-        print("P1!!" + str(p1))
+        # print("P1!!" + str(p1))
         [p_hours, p_minutes] = add_time(p1, offset)
     elif is_p2:
         [p_hours, p_minutes] = add_time(p2, offset)
@@ -158,7 +159,7 @@ def get_due_time(p_days_to_complete, p_section, *, p_filename='', offset=5, utc=
         [p_hours, p_minutes] = add_time(p4, offset)
     if utc:
         p_hours -= 3
-    print(f"newtime {p_hours} {p_minutes}")
+    # print(f"newtime {p_hours} {p_minutes}")
     if p_hours < 10:
         p_hours = '0' + str(p_hours)
     if p_minutes < 10:

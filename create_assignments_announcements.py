@@ -1,9 +1,8 @@
 def create_assignments_announcements(spreadsheet_id):
-
     import re
     import googleapiclient
-    from generate_sheets_credential import generate_sheets_credential
-    from generate_classroom_credential import generate_classroom_credential
+    # from generate_sheets_credential import generate_sheets_credential
+    # from generate_classroom_credential import generate_classroom_credential
     from helper_functions.get_google_drive_id import get_google_drive_id
     from helper_functions.read_course_id import read_course_id
     from helper_functions.sheets_functions import read_course_daily_data_all, get_all_sheets
@@ -16,75 +15,74 @@ def create_assignments_announcements(spreadsheet_id):
     from helper_functions.update_sheet_with_id import update_sheet_with_id
     from helper_functions.is_work_date_current_date import is_work_date_current_date
     from helper_functions.post_assignment_reschedule import post_assignment_reschedule
-
+    from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
 
     # Get sheet service credential and service_classroom credential
-    service_sheets = generate_sheets_credential()
-    service_classroom = generate_classroom_credential()
+    [service_classroom, service_sheets] = generate_classroom_aspen_tools_credentials()
+    # service_sheets = generate_sheets_credential()
+    # service_classroom = generate_classroom_credential()
 
     # Get name of all sheets, put in sheet_list
     sheet_list = get_all_sheets(spreadsheet_id, service_sheets)
 
     # Loop over all sheets of classes
     for sheet in sheet_list:
-
         # Skip Calendar and Courses sheets,
         if sheet == 'Calendar' or sheet == 'Courses' or sheet == 'Sheet11':
             continue
 
         # Get course ID
         course_id = read_course_id(spreadsheet_id, sheet, service_sheets)
-        print("In create assignments/announcements, currently doing course with this ID: {}".format(course_id))
+        print(f"In create assignments/announcements, currently doing course with this ID: {course_id}"
+              f" and this name: {sheet}")
         if course_id == '999':
             print(f"Skipping this course: {sheet}")
             continue
         else:
             print(f"Course id is this {course_id}")
 
-        course_results = service_classroom.courses().get(id=course_id).execute()
+        try:
+            course_results = service_classroom.courses().get(id=course_id).execute()
+        except googleapiclient.errors.HttpError as error:
+            raise Exception(f"Error: {error}\n"
+                            f"Crashed while trying to read Google classroom.\n"
+                            f"Course ID tried to find is: {course_id} and name is {sheet}\n"
+                            f"'Requested entity was not found'.\n"
+                            f"  Did you update the course number in cell B2 of the sheet with assignments?\n"
+                            f"  Sometimes this error happens when you copy an old sheet but forget to update w/new "
+                            f"class ID")
         course_section = course_results['section']
-
         # Read entire sheet for this particular course (every day's assignment)
-        values = read_course_daily_data_all(spreadsheet_id, sheet, service_sheets)
-        print("In create assignments/announcements, read in all data for course {}.  Data is this: {}"
-              .format(sheet, values))
 
+        values = read_course_daily_data_all(spreadsheet_id, sheet, service_sheets)
+        # print("In create assignments/announcements, read in all data for course {}.  Data is this: {}"
+        #       .format(sheet, values))
         # Iterate over sheets rows and write/edit classroom as necessary
-        print("In create assignments/announcements.  Starting to iterating daily assignments/announcements " + sheet)
+        print(f"In create assignments/announcements.  "
+              f"Starting to iterating daily assignments/announcements for this class {sheet}")
         for i, row in enumerate(values, 1):
-            print("day is this! " + str(i))
+            print(f"day is this: {i}, course: {sheet} ")
             if i < 0:  # how many to stkip
                 continue
-            # if i < 132:  # how many to stkip
-            #     print("skipping")
-            #     continue
-            # if i > 134:  # how many to stkip
-            #     print("skipping")
-            #     continue
-
-
-
-            # if i > 134:  # how many to stkip
-            #     print("skipping")
-            #     continue
-            #read the row
             day_info = read_day_info(row)
-            print(day_info)
+            # print(day_info)
+
             # Skip days in the past, days with no data, days with no rows
             if is_in_past(day_info['date']):  # In the past
-                print("This day: {} is in the past, skipping ".format(day_info['date']))
+                print(f"day {i}, date {day_info['date']} is in the past, skipping ")
                 continue
             elif not row:  # Empty row
-                print("No row here, skipping")
+                print(f"day {i}, no row here, skipping")
                 continue
             elif len(row) == 3:  # no announcements or anything
-                # print("This day: {} has no lesson, skipping".format(day_info['date']))
+                print(f"day {i}, date {day_info['date']} has no info, skipping ")
                 continue
             elif len(row) == 8 and not row[4]:
+                print(f"day {i}, date {day_info['date']} has notes but no assignment skipping ")
                 print("stuff with some notes but no assignment, continue")
                 continue
             elif len(row) == 7 and not row[5]:
-                print("do not move day, but no assignment. continue")
+                print(f"day {i}, date {day_info['date']} Do not move day, skipping ")
                 continue
             elif len(row) == 6 and not re.search(r'(\d|)', row[5]):  # Crash out if ID's do not contain numbers
                 raise Exception("This day: {} has row length of 6, but no numbers in the ID column (F).\n "
@@ -95,7 +93,7 @@ def create_assignments_announcements(spreadsheet_id):
                     if row[5]:
                         continue
                 # Do new rows (i.e. not previously posted, no IDs) row = 8 is comment but otherwise blank
-                print("Posting a new lesson that hasn't been posted before")
+                print("Posting a new day that hasn't been posted before")
                 try:
                     link_spreadsheet_id = get_google_drive_id(day_info['link'])
                 except:
@@ -103,10 +101,16 @@ def create_assignments_announcements(spreadsheet_id):
                                     "Is there a lesson plan?  If you've marked this as 'do not move',"
                                     " program expects a link to a lesson in column E.\n"
                                     "Alternatively, is the link correct in column E?".format(row[0]))
+
+                if not link_spreadsheet_id:
+                    raise Exception(f"No valid spreadsheet ID for assignments of day {i}.\n"
+                                    f"Please check the spreadsheet  link for day {i} (column E).")
+
                 assignments_announcements = read_lesson_plan(link_spreadsheet_id, service_sheets)
                 all_ids = ''
                 single_id = ''
                 assignment_counter = 0
+
                 for assignment_announcement in assignments_announcements:
                     if assignment_announcement['assignment_or_announcement'] == 'announcement':
                         single_id = post_announcement(i, assignment_announcement['text'], day_info['date'], course_id,
@@ -118,7 +122,7 @@ def create_assignments_announcements(spreadsheet_id):
                                                     assignment_announcement['attachments'],
                                                     day_info['date'], assignment_counter, course_section,
                                                     course_id, spreadsheet_id, service_sheets, service_classroom,
-                                                    assignment_announcement['points'],)
+                                                    assignment_announcement['points'], )
                         assignment_counter += 1
                     if assignment_announcement['assignment_or_announcement'] == 'materials':
                         single_id = post_materials(assignment_announcement['topic'], assignment_announcement['title'],
@@ -157,19 +161,19 @@ def create_assignments_announcements(spreadsheet_id):
                 for posted_id in posted_ids:
                     is_assignment = False
                     is_announcement = False
-                    if posted_id == ' ' or posted_id == '':   # skip single space or blankones
+                    if posted_id == ' ' or posted_id == '':  # skip single space or blankones
                         continue
                     else:
                         announcement = {}
                         assignment = {}
                         materials = {}
-                        print("Encountered this old assignment/announcement/material {}.  "
-                              "Checking it out.".format(posted_id))
+                        # print("Encountered this old assignment/announcement/material {}.  "
+                        #       "Checking it out.".format(posted_id))
                         try:
                             announcement = service_classroom.courses().announcements().get(courseId=course_id,
                                                                                            id=posted_id).execute()
                             is_announcement = True
-                            print("Found that old entry {} is an announcement!".format(posted_id))
+                            print(f"Day {i} class {sheet} found posted announcement {posted_id}")
                         except googleapiclient.errors.HttpError:
                             pass
                         if is_announcement:
@@ -187,9 +191,9 @@ def create_assignments_announcements(spreadsheet_id):
                                 # print("Announcement with this ID {} hasn't been PUBLISHED yet.  "
                                 #      "Checking to see if it should be moved to new scheduled date.".format(posted_id))
                                 if is_work_date_current_date(announcement['scheduledTime'], day_info['date']):
-                                    print("announcement {} in Classroom is on same day it is currently listed in sheet "
-                                          "{}  "
-                                          "No change.  On to the next announcement/assignment".format(posted_id, sheet))
+                                    # print("announcement {} in Classroom is on same day it is currently listed in sheet "
+                                    #       "{}  "
+                                    #       "No change.  On to the next announcement/assignment".format(posted_id, sheet))
                                     continue
                                 else:  # posted day is on different day
                                     print("announcement {} in Classroom is on different day than is currently listed "
@@ -214,10 +218,11 @@ def create_assignments_announcements(spreadsheet_id):
                             try:
                                 assignment = service_classroom.courses().courseWork().get(courseId=course_id,
                                                                                           id=posted_id).execute()
-                                print("zzzz ASSIGNMENT")
-                                print(assignment)
+                                # print("zzzz ASSIGNMENT")
+                                print(
+                                    f"Posted assignment {posted_id} is an assignment with name: {assignment['title']}")
                                 is_assignment = True
-                                print("Found that old entry {} is an assignment!".format(posted_id))
+                                # print("Found that old entry {} is an assignment!".format(posted_id))
                             except googleapiclient.errors.HttpError:  # posted_id isn't there at all?
                                 pass
                         if is_assignment:
@@ -231,9 +236,9 @@ def create_assignments_announcements(spreadsheet_id):
                                 # print("Assignment with this ID {} hasn't been PUBLISHED yet.  "
                                 #      "Checking to see if it should be moved to new scheduled date.".format(posted_id))
                                 if is_work_date_current_date(assignment['scheduledTime'], day_info['date']):
-                                    print("assignment {} in Classroom is on same day it is currently "
-                                          "listed in sheet {}  "
-                                          "No change.  On to the next announcement/assignment".format(posted_id, sheet))
+                                    # print("assignment {} in Classroom is on same day it is currently "
+                                    #       "listed in sheet {}  "
+                                    #       "No change.  On to the next announcement/assignment".format(posted_id, sheet))
                                     continue
                                 else:  # posted day is on different day
                                     print("assignment {} in Classroom is on different day than is currently listed "
@@ -257,12 +262,12 @@ def create_assignments_announcements(spreadsheet_id):
                                     "classroom.\n  Something is wrong, but not sure what.\n  "
                                     "Try erasing the ID for this day and reposting the lesson.\n".format(posted_id))
                         else:
-                            print("maybe a materials")
+                            # print("maybe a materials")
                             try:
                                 materials = service_classroom.courses().courseWorkMaterials().get(courseId=course_id,
                                                                                                   id=posted_id).execute()
                                 is_materials = True
-                                print("Found that old entry {} is a material!".format(posted_id))
+                                # print("Found that old entry {} is a material!".format(posted_id))
 
                             except googleapiclient.errors.HttpError:  # posted_id isn't there at all?
                                 raise Exception("Previously posted assignment/announcement {} is neither "
@@ -282,10 +287,9 @@ def create_assignments_announcements(spreadsheet_id):
                                     # print("Assignment with this ID {} hasn't been PUBLISHED yet.  "
                                     #      "Checking to see if it should be moved to new scheduled date.".format(posted_id))
                                     if is_work_date_current_date(materials['scheduledTime'], day_info['date']):
-                                        print("materials {} in Classroom is on same day it is currently "
-                                              "listed in sheet {}  "
-                                              "No change.  On to the next announcement/assignment".format(posted_id,
-                                                                                                          sheet))
+                                        # print("materials {} in Classroom is on same day it is currently "
+                                        #       "listed in sheet {}  "
+                                        #       "No change.  On to the next announcement/assignment".format(posted_id,                                                                                                    sheet))
                                         continue
                                     else:  # posted day is on different day
                                         print("materials {} in Classroom is on different day than is currently listed "
@@ -329,17 +333,19 @@ def create_assignments_announcements(spreadsheet_id):
                 for posted_id in posted_ids:
                     is_assignment = False
                     is_announcement = False
-                    if posted_id == ' ' or posted_id == '':   # skip single space or blankones
+                    if posted_id == ' ' or posted_id == '':  # skip single space or blankones
                         continue
                     else:
                         announcement = {}
                         assignment = {}
                         materials = {}
-                        print("Encountered this old assignment/announcement/material {}.  "
-                              "Checking it out.".format(posted_id))
+                        # print("Encountered this old assignment/announcement/material {}.  "
+                        #       "Checking it out.".format(posted_id))
                         try:
-                            announcement = service_classroom.courses().announcements().get(courseId=course_id,                                                                                           id=posted_id).execute()
+                            announcement = service_classroom.courses().announcements().get(courseId=course_id,
+                                                                                           id=posted_id).execute()
                             is_announcement = True
+
                             print("Found that old entry {} is an announcement!".format(posted_id))
                         except googleapiclient.errors.HttpError:
                             pass
@@ -358,9 +364,9 @@ def create_assignments_announcements(spreadsheet_id):
                                 # print("Announcement with this ID {} hasn't been PUBLISHED yet.  "
                                 #      "Checking to see if it should be moved to new scheduled date.".format(posted_id))
                                 if is_work_date_current_date(announcement['scheduledTime'], day_info['date']):
-                                    print("announcement {} in Classroom is on same day it is currently listed in sheet "
-                                          "{}  "
-                                          "No change.  On to the next announcement/assignment".format(posted_id, sheet))
+                                    # print("announcement {} in Classroom is on same day it is currently listed in sheet "
+                                    #       "{}  "
+                                    #       "No change.  On to the next announcement/assignment".format(posted_id, sheet))
                                     continue
                                 else:  # posted day is on different day
                                     print("announcement {} in Classroom is on different day than is currently listed "
@@ -386,7 +392,7 @@ def create_assignments_announcements(spreadsheet_id):
                                 assignment = service_classroom.courses().courseWork().get(courseId=course_id,
                                                                                           id=posted_id).execute()
                                 is_assignment = True
-                                print("Found that old entry {} is an assignment!".format(posted_id))
+                                print(f"Day {i} class {sheet} found posted assignment {posted_id}")
                             except googleapiclient.errors.HttpError:  # posted_id isn't there at all?
                                 pass
                         if is_assignment:
@@ -400,9 +406,9 @@ def create_assignments_announcements(spreadsheet_id):
                                 # print("Assignment with this ID {} hasn't been PUBLISHED yet.  "
                                 #      "Checking to see if it should be moved to new scheduled date.".format(posted_id))
                                 if is_work_date_current_date(assignment['scheduledTime'], day_info['date']):
-                                    print("assignment {} in Classroom is on same day it is currently "
-                                          "listed in sheet {}  "
-                                          "No change.  On to the next announcement/assignment".format(posted_id, sheet))
+                                    # print("assignment {} in Classroom is on same day it is currently "
+                                    #       "listed in sheet {}  "
+                                    #       "No change.  On to the next announcement/assignment".format(posted_id, sheet))
                                     continue
                                 else:  # posted day is on different day
                                     print("assignment {} in Classroom is on different day than is currently listed "
@@ -430,7 +436,8 @@ def create_assignments_announcements(spreadsheet_id):
                                 materials = service_classroom.courses().courseWorkMaterials().get(courseId=course_id,
                                                                                                   id=posted_id).execute()
                                 is_materials = True
-                                print("Found that old entry {} is a material!".format(posted_id))
+                                # print("Found that old entry {} is a material!".format(posted_id))
+                                print(f"Day {i} class {sheet} found posted material {posted_id}")
 
                             except googleapiclient.errors.HttpError:  # posted_id isn't there at all?
                                 raise Exception("Previously posted assignment/announcement {} is neither "
@@ -450,10 +457,10 @@ def create_assignments_announcements(spreadsheet_id):
                                     # print("Assignment with this ID {} hasn't been PUBLISHED yet.  "
                                     #      "Checking to see if it should be moved to new scheduled date.".format(posted_id))
                                     if is_work_date_current_date(materials['scheduledTime'], day_info['date']):
-                                        print("materials {} in Classroom is on same day it is currently "
-                                              "listed in sheet {}  "
-                                              "No change.  On to the next announcement/assignment".format(posted_id,
-                                                                                                          sheet))
+                                        # print("materials {} in Classroom is on same day it is currently "
+                                        #       "listed in sheet {}  "
+                                        #       "No change.  On to the next announcement/assignment".format(posted_id,
+                                        #                                                                   sheet))
                                         continue
                                     else:  # posted day is on different day
                                         print("materials {} in Classroom is on different day than is currently listed "
@@ -490,7 +497,6 @@ def create_assignments_announcements(spreadsheet_id):
                     # print("assignment data to rescheulde")
                     # print(assignment_data_to_reschedule)
                     for assignment in assignment_data_to_reschedule:
-
                         single_id = post_assignment_reschedule(assignment['assignment'], assignment['date'], course_id,
                                                                assignment['id'], service_classroom,
                                                                spreadsheet_id, service_sheets)
