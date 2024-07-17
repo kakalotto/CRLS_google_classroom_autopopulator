@@ -4,25 +4,28 @@
 def create_calendar(spreadsheet_id):
     import googleapiclient
 
-    from generate_sheets_credential import generate_sheets_credential
+    from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
+    #from generate_sheets_credential import generate_sheets_credential
     from helper_functions.generate_school_dates import generate_school_dates
 
     #spreadsheet_id = '1Bows1MWZ8sQAbLZW9t7QTRD-NwNh8bYwua1n1eRvcAE'
     # spreadsheet_id = '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA' # Test_APCSP_Computer_principles
-    # spreadsheet_id = '1o_YPtSYB75fk9-r79GhNVqTDdkWr0VZA497nrC4r1h0'
+    # spreadsheet_id ='1o_YPtSYB75fk9-r79GhNVqTDdkWr0VZA497nrC4r1h0'
     #spreadsheet_id = '1veaJaPo--jFET5b5LGi71RujwKtIq4IAmuWu3YX8tUo'
     SHEET_NAME = 'Calendar'
 
     # Generate sheets service object
-    service_sheets = generate_sheets_credential()
+    services = generate_classroom_aspen_tools_credentials()
+    service_sheets = services[1]
 
     # Read in first day of school, assign to variable first_day
     print("In create_calendar, reading in first day of school")
     range_name = SHEET_NAME + '!F3:F3'  # Cell for first day of school, format 9/4/2018
     try:
         result = service_sheets.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
-    except googleapiclient.errors.HttpError:
-        raise Exception("Http error.  Is the spreadsheet ID correct?  Tried this one: {} ".format(spreadsheet_id))
+    except googleapiclient.errors.HttpError as error :
+        raise Exception(f"Http error.  Is the spreadsheet ID correct?  Tried this spreadsheet ID: {spreadsheet_id}\n"
+                        f"The error is this: \n{error}")
 
     value = result.get('values', [])
     if not value:

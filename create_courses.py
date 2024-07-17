@@ -1,8 +1,7 @@
 import googleapiclient.errors
 import configparser
-from generate_sheets_credential import generate_sheets_credential
-from generate_classroom_credential import generate_classroom_credential
-
+import re
+from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
 SHEET_NAME = 'Courses'
 print("Running create_courses.py")
 config = configparser.ConfigParser()
@@ -10,24 +9,37 @@ config_filename = "crls_teacher_tools.ini"
 config.read(config_filename)
 spreadsheet_id = config.get("CREATE_COURSES", "spreadsheet_id", fallback='')
 print("Trying to read Google sheet with this spreadsheet ID: " + str(spreadsheet_id))
+provision_status = config.get("CREATE_COURSES", "provisioned", fallback='PROVISIONED')
+
 
 # Set up sheets service object
-service_sheets = generate_sheets_credential()
-
-# Set up classroom service object
-service_classroom = generate_classroom_credential()
-
+[service_classroom, service_sheets] = generate_classroom_aspen_tools_credentials()
+classes_created = 0
 # Sample courses start at column C + D.  Real courses start at column E with a max of 12 courses.
 for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
     RANGE_NAME = SHEET_NAME + '!' + column + '3:' + column + '10'
 
     # Read course info
-    result = service_sheets.spreadsheets().values().get(spreadsheetId=spreadsheet_id,
-                                                        range=RANGE_NAME,
-                                                        majorDimension='COLUMNS').execute()
+    try:
+        result = service_sheets.spreadsheets().values().get(spreadsheetId=spreadsheet_id,
+                                                            range=RANGE_NAME,
+                                                            majorDimension='COLUMNS').execute()
+    except googleapiclient.errors.HttpError as error:
+        raise Exception(f"Crashed trying to read spreadsheet column {column}. Error.\n"
+                        f"Here is the error: {error}\n"
+                        f"'requested entity not found':\n"
+                        f"   Did you put in the correct spreadsheet?  Spreadsheet should be "
+                        f"   something like '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA'\n"
+                        f"   Spreadsheet we tried to read is this: {spreadsheet_id}.\n"
+                        f"   If you read a nonexistent spreadsheet, it will say something like this"
+                        f" .\n"
+                        f"'The caller does not have permission'\n"
+                        f"  Check that your spreadsheet is shared with same user as the token owner.\n"
+                        f"  Check that it's not the wrong spreadshheet")
+
     value = result.get('values', [])
     if not value:
-        print("no value in this column " + str(column) + " no course here")
+        # print("no value in this column " + str(column) + " no course here")
         continue   # no more courses
     elif len(value[0]) == 7:
         print(value[0])
@@ -46,11 +58,15 @@ for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
             'description': course_description,
             'room': course_room,
             'ownerId': 'me',
-            'courseState': 'ACTIVE'
+            'courseState': provision_status
         }
-        course = service_classroom.courses().create(body=course).execute()
-        print('Course created in Google Classroom: {} ({})'
-              .format(course.get('name'), course.get('id')))
+        try:
+            course = service_classroom.courses().create(body=course).execute()
+            print('Course created in Google Classroom: {} ({})'
+                  .format(course.get('name'), course.get('id')))
+            classes_created = classes_created + 1
+        except googleapiclient.errors.HttpError as error:
+            raise Exception(f"Crashed.  Error is this: {error}\n")
 
         # Course created, write course ID into sheet
         values = [[course.get('id')]]
@@ -63,21 +79,30 @@ for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
                                                                    valueInputOption='USER_ENTERED', body=body).execute()
             print('{} cells in Google sheet with spreadsheetID {} updated with courseID {}.'
                   .format(result.get('updatedCells'), spreadsheet_id, course.get('id')))
-        except googleapiclient.errors.HttpError:
-            raise Exception("Possible errors.\n  Did you put in the correct spreadsheet?  Spreadsheet should be "
-                            "something like '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA'\n"
-                            "Spreadsheet actually is {}.".format(spreadsheet_id))
+        except googleapiclient.errors.HttpError as error:
+            raise Exception(f"Crashed.  Error is this: {error}\n"
+                            f"Possible errors.\n  Did you put in the correct spreadsheet?  Spreadsheet should be "
+                            f"something like '1xkcNN1OFmscODqz3zbDUqRbkHAxIuIyx-FtMfXgqczA'\n"
+                            f"Spreadsheet actually is {spreadsheet_id}.")
         # Topics
         topics = value[0][5].split(',')
         course_id = course.get('id')
+
         for topic in topics:
+            topic2 = re.sub(r'\s+', '', topic, re.X | re.M | re.S)
+            if topic2 != topic:
+                print("Removed leading spaces in topic (separate topics by comma, not by comma space)")
+                topic = topic2
             body = {"name": topic}
             try:
                 result = service_classroom.courses().topics().create(
                     courseId=course_id,
                     body=body).execute()
-                print('In course id {}, with course name {}, created topic {}'.format(course_id, value[0][1], topic))
-            except googleapiclient.errors.HttpError:
-                raise Exception("Possible errors.\n  If 'requested entity already exists', maybe already have topic {}."
-                                "\n If 'requested entity not found', then the course id {} may not exist.\n)."
-                                .format(topic, values))
+                print(f'In course id {course_id}, with course name {value[0][1]}, created topic {topic}')
+            except googleapiclient.errors.HttpError as error:
+                raise Exception(f"Crashed.  Error is this: {error}\n"
+                                f"Possible errors.\n  If 'requested entity already exists', "
+                                f"maybe already have topic {topic}."
+                                f"\n If 'requested entity not found', then the course id {values} may not exist.\n).")
+
+print(f"Created this many classes: {classes_created}")
