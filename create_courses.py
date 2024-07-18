@@ -13,7 +13,7 @@ provision_status = config.get("CREATE_COURSES", "provisioned", fallback='PROVISI
 
 
 # Set up sheets service object
-[service_classroom, service_sheets] = generate_classroom_aspen_tools_credentials()
+[service_classroom, service_sheets, service_docs] = generate_classroom_aspen_tools_credentials()
 classes_created = 0
 # Sample courses start at column C + D.  Real courses start at column E with a max of 12 courses.
 for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:

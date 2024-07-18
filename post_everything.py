@@ -1,10 +1,12 @@
 import re
 import datetime
-from generate_sheets_credential import generate_sheets_credential
-from generate_classroom_credential import generate_classroom_credential
+from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
 
-course_id = 589543170473
-service_classroom = generate_classroom_credential()
+# Get sheet service credential and service_classroom credential
+[service_classroom, service_sheets] = generate_classroom_aspen_tools_credentials()
+
+
+course_id = 681197999730
 
 assignments = service_classroom.courses().courseWork().list(courseId=course_id,
                                                             courseWorkStates='DRAFT').execute()
