@@ -63,7 +63,8 @@ def generate_classroom_aspen_tools_credentials():
               'https://www.googleapis.com/auth/classroom.coursework.students',
               'https://www.googleapis.com/auth/classroom.topics',
               'https://www.googleapis.com/auth/classroom.courseworkmaterials',
-              'https://www.googleapis.com/auth/spreadsheets',]
+              'https://www.googleapis.com/auth/spreadsheets',
+              'https://www.googleapis.com/auth/documents.readonly',]
 
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
@@ -87,8 +88,9 @@ def generate_classroom_aspen_tools_credentials():
     try:
         service_classroom = build("classroom", "v1", credentials=creds)
         service_sheets = build("sheets", "v4", credentials=creds)
+        service_docs = build("docs", "v1", credentials=creds)
 
-        return [service_classroom, service_sheets]
+        return [service_classroom, service_sheets, service_docs]
 
     except HttpError as error:
         print(f"ERROR: Unable to generate credential for classroom aspen tools.   Error is this: {error}")
