@@ -3,10 +3,10 @@ import datetime
 from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
 
 # Get sheet service credential and service_classroom credential
-[service_classroom, service_sheets] = generate_classroom_aspen_tools_credentials()
+[service_classroom, service_sheets, _] = generate_classroom_aspen_tools_credentials()
 
 
-course_id = 681197999730
+course_id = 681225622282
 
 assignments = service_classroom.courses().courseWork().list(courseId=course_id,
                                                             courseWorkStates='DRAFT').execute()
@@ -48,9 +48,9 @@ for material in materials_list:
 
     if material['state'] == 'DRAFT':
         material_id = material['id']
-        print("THIS IS THE INFO!")
+        # print("THIS IS THE INFO!")
         print(material['id'])
-        print(material)
+        # print(material)
 
         #now_plus_1 = datetime.datetime.utcnow().isoformat() + 'Z'
         now = datetime.datetime.utcnow()
