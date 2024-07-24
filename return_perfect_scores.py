@@ -1,10 +1,13 @@
 def return_perfect_scores(classname:str, classes_to_return:list):
     import time
-    from generate_classroom_credential import generate_classroom_credential
+    # from generate_classroom_credential import generate_classroom_credential
     from helper_functions.classroom_functions import class_name_2_id
-
+    from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
     # Get the course ID
-    service_classroom = generate_classroom_credential()
+
+    services = generate_classroom_aspen_tools_credentials()
+    service_classroom = services[0]
+
     course_id = class_name_2_id(service_classroom, classname)
 
     # get all assignments from Google classroom

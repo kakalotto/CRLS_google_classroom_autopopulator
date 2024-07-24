@@ -10,7 +10,6 @@ classes_dict = read_return_perfect_info(config_filename)
 print(classes_dict)
 
 for key in classes_dict:
-
     return_perfect_scores(key, classes_dict[key])
 
 # for key in all_classes.keys():
