@@ -18,7 +18,7 @@ def create_assignments_announcements(spreadsheet_id):
     from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
 
     # Get sheet service credential and service_classroom credential
-    [service_classroom, service_sheets] = generate_classroom_aspen_tools_credentials()
+    [service_classroom, service_sheets, service_docs] = generate_classroom_aspen_tools_credentials()
     # service_sheets = generate_sheets_credential()
     # service_classroom = generate_classroom_credential()
 
@@ -309,9 +309,10 @@ def create_assignments_announcements(spreadsheet_id):
                                         update_cell = True
                                 elif materials['state'] == 'DELETED':
                                     raise Exception(
-                                        "The ID {} that was read in for this materials has been deleted in Google "
-                                        "classroom.\n  Something is wrong, but not sure what.\n  "
-                                        "Try erasing the ID for this day and reposting the lesson.\n".format(posted_id))
+                                        f"The ID {posted_id} that was read in from the sheet has been deleted in Google "
+                                        f"classroom.\n  Most likely, you deleted the assignment, but didn't delete"
+                                        f" the IDs in the Google sheet with spreadsheet {spreadsheet_id}.\n  "
+                                        f"Try erasing the IDs for day {i} in google classroom and rerun.\n")
 
                 announcement_data_to_repost = []
                 announcement_ids_to_delete = []
