@@ -102,7 +102,8 @@ for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
             except googleapiclient.errors.HttpError as error:
                 raise Exception(f"Crashed.  Error is this: {error}\n"
                                 f"Possible errors.\n  If 'requested entity already exists', "
-                                f"maybe already have topic {topic}."
+                                f"maybe already have topic {topic}, and you tried to make another topic with the same "
+                                f"name."
                                 f"\n If 'requested entity not found', then the course id {values} may not exist.\n).")
 
 print(f"Created this many classes: {classes_created}")

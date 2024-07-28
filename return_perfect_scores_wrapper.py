@@ -5,6 +5,7 @@ from return_perfect_scores import return_perfect_scores
 config = configparser.ConfigParser()
 
 config_filename = "crls_teacher_tools.ini"
+
 classes_dict = read_return_perfect_info(config_filename)
 
 print(classes_dict)

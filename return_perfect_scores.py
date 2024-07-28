@@ -14,7 +14,8 @@ def return_perfect_scores(classname:str, classes_to_return:list):
     print(f"Getting all assignments from Google classroom for class {classname} id {course_id} ")
     assignments_id_dict = {}
     all_assignments = service_classroom.courses().courseWork().list(courseId=course_id).execute()
-    all_assignments = all_assignments['courseWork']
+    if 'courseWork' in all_assignments:
+        all_assignments = all_assignments['courseWork']
 
     # loop over all assignments to get titles (assignment names) and perfect scores (maxPoints)
     for assignment in all_assignments:
