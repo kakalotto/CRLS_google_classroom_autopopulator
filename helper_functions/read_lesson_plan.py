@@ -99,8 +99,11 @@ def read_lesson_plan(p_spreadsheet_id, p_service):
             column_dict['topic'] = column[1]
             column_dict['assignment_or_announcement'] = 'materials'
         else:
-            raise Exception("In lesson with spreadsheet ID {}, something in row 2 has something other than "
-                            "'announcement' or 'assignment' or 'materials'.".format(p_spreadsheet_id))
+            raise Exception(f"In lesson with spreadsheet ID {p_spreadsheet_id}, something in row 2 has something other than "
+                            f"'announcement' or 'assignment' or 'materials'.\n"
+                            f"Type is this {column[0]} (should be announcement, assignment, or materials)"
+                            f"and entire column is this: {column}"
+                            f"If entire column is empty, then try to delete the contents of those columns")
         column_dict['text'] = column[4]
         column_dict['text'] = unicode_text(column[4])
         # print('fff final column ' + str(column_dict))
