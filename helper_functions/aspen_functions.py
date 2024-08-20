@@ -15,7 +15,7 @@ def generate_driver():
 #    p_driver = webdriver.Chrome(ChromeDriverManager().install())
     service = Service()
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
     p_driver = webdriver.Chrome(service=service, options=options)
     p_driver.get('https://aspen.cpsd.us')
     return p_driver
@@ -29,27 +29,53 @@ def aspen_login(p_driver, *, username='', password=''):
     :param password: password (string)
     :return: none
     """
+    import time
     from selenium.webdriver.support import expected_conditions as ec
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.common.by import By
     from selenium.common.exceptions import TimeoutException
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.common.action_chains import ActionChains
 
     try:
-        WebDriverWait(p_driver, 10).until(ec.presence_of_element_located((By.XPATH, "//input[@class='logonInput']")))
+#        WebDriverWait(p_driver, 10).until(ec.presence_of_element_located((By.XPATH, "//input[@class='logonInput']")))
+           WebDriverWait(p_driver, 10).until(ec.presence_of_element_located((By.CLASS_NAME, "login-button")))
+
     except TimeoutException:
-        print("Did not find logon screen")
+        print("Did not find logon button")
         print("quitting")
         p_driver.quit()
+    # time.sleep(500)
+
+    # buttons = p_driver.find_element(By.XPATH, "//button")
+    # print(buttons)
+    # time.sleep(500)
 
     if username and password:
+
+        print("Yes!")
         print("Login supplied via script.")
-        wait_for_element(p_driver, p_xpath_el="//input[@class='logonInput']")
-        wait_for_element(p_driver, p_xpath_el="//input[@name='password']")
-        print("sending pasword and usernamne")
-        p_driver.find_element_by_xpath("//input[@class='logonInput']").send_keys(username)
-        p_driver.find_element_by_xpath("//input[@name='password']").send_keys(password)
-        wait_for_element(p_driver, p_xpath_el="//button")
-        p_driver.find_element_by_xpath("//button").click()
+        p_driver.find_element(By.CLASS_NAME, "login-button").click()
+        # Second login button
+        WebDriverWait(p_driver, 10).until(ec.presence_of_element_located((By.CLASS_NAME, "login-button")))
+        p_driver.find_element(By.CLASS_NAME, "login-button").click()
+        time.sleep(1)
+        print("hopefully at Google sscreen")
+        p_driver.find_element(By.NAME, "identifier").send_keys(username)
+        p_driver.find_element(By.NAME, "identifier").send_keys(Keys.ENTER)
+        time.sleep(5)
+
+        actions = ActionChains(p_driver)
+        actions.send_keys(password + Keys.ENTER)
+        actions.perform()
+        #
+        # wait_for_element(p_driver, p_xpath_el="//input[@class='logonInput']")
+        # wait_for_element(p_driver, p_xpath_el="//input[@name='password']")
+        # print("sending pasword and usernamne")
+        # p_driver.find_element_by_xpath("//input[@class='logonInput']").send_keys(username)
+        # p_driver.find_element_by_xpath("//input[@name='password']").send_keys(password)
+        # wait_for_element(p_driver, p_xpath_el="//button")
+        # p_driver.find_element_by_xpath("//button").click()
     else:
         print("Login credentials not supplied.  Manual login")
         wait_for_element(p_driver, p_xpath_el="//a[@title='Gradebook tab']", timeout=30,
