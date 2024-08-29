@@ -45,6 +45,7 @@ def post_materials(p_topic, p_title, p_text, p_attachments, p_date, p_offset,
                         f"File: {p_material['materials']}\n"
                         f"@AttachmentNotVisible The item referenced by an attachment was not found or not visible to the user.\n"
                         f"   Check share permissions on file be sure it's shared to token owner (Google slide or doc)\n"
+                        f"   Check that you updated cell B1 with new courseID after creating the course\n"
                         f"Request contains an invalid argument' - is the topic you want for this assignment one that "
                         f"exists in this class within Google classroom?\n"
                         f"Alternatively, if there is a message 'materials: Duplicate materials are not allowed', you"
