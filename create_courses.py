@@ -1,4 +1,6 @@
 import googleapiclient.errors
+from google.auth.exceptions import RefreshError
+
 import configparser
 import re
 from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
@@ -13,7 +15,14 @@ provision_status = config.get("CREATE_COURSES", "provisioned", fallback='PROVISI
 
 
 # Set up sheets service object
-[service_classroom, service_sheets, service_docs] = generate_classroom_aspen_tools_credentials()
+try:
+    [service_classroom, service_sheets, service_docs] = generate_classroom_aspen_tools_credentials()
+# except:
+except RefreshError as error:
+    raise Exception(f"Refresh error: {error}\n"
+                    f"    Most likely problem: token expired.  Try to delete token_classroom_aspen_tools.json and "
+                    f"re-authenticate. ")
+
 classes_created = 0
 # Sample courses start at column C + D.  Real courses start at column E with a max of 12 courses.
 for column in ['E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']:
