@@ -6,7 +6,9 @@ def read_course_id(spreadsheet_id, sheet, service):
     result = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id,range=range_name,).execute()
     value = result.get('values', [])
     if not value:
-        raise ValueError("Could not read Course ID")  # no more courses
+        raise ValueError("Could not read Course ID\n"
+                         "    Did you remember to copy+paste course ID from 'Courses' tab, row 9"
+                         "    to cell B1 on the appropriate sheet?")  # no more courses
     else:
         course_id = value[0][0]
         return course_id
