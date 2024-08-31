@@ -1,11 +1,20 @@
+from google.auth.exceptions import RefreshError
 
 # from generate_sheets_credential import generate_sheets_credential
 from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
 
 # Get sheet service credential and service_classroom credential
-[service_classroom, service_sheets] = generate_classroom_aspen_tools_credentials()
+try:
+    [service_classroom, service_sheets, _] = generate_classroom_aspen_tools_credentials()
+except RefreshError as error:
+    raise Exception(f"Refresh error: {error}\n"
+                    f"    Most likely problem: token expired.  Try to delete token_classroom_aspen_tools.json and "
+                    f"re-authenticate. ")
 
 course_id = 681197999730
+
+course_id = 710120936540
+
 assignments = service_classroom.courses().courseWork().list(courseId=course_id,
                                                             courseWorkStates='DRAFT').execute()
 if 'courseWork' in assignments:
