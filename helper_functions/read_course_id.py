@@ -9,7 +9,7 @@ def read_course_id(spreadsheet_id, sheet, service):
         print ("Could not read Course ID\n"
                "    Did you remember to copy+paste course ID from 'Courses' tab, row 9\n"
                f"   to cell B1 on sheet {sheet} on spreadsheet_id {spreadsheet_id}?")  # no more courses
-        return 999  # 999 means no course ID and skip
+        return '999'  # 999 means no course ID and skip
     else:
         course_id = value[0][0]
         return course_id
