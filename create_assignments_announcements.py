@@ -44,13 +44,16 @@ def create_assignments_announcements(spreadsheet_id):
         try:
             course_results = service_classroom.courses().get(id=course_id).execute()
         except googleapiclient.errors.HttpError as error:
-            raise Exception(f"Error: {error}\n"
-                            f"Crashed while trying to read Google classroom.\n"
-                            f"Course ID tried to find is: {course_id} and name is {sheet}\n"
-                            f"'Requested entity was not found'.\n"
-                            f"  Did you update the course number in cell B2 of the sheet with assignments?\n"
-                            f"  Sometimes this error happens when you copy an old sheet but forget to update w/new "
-                            f"class ID")
+            print(f"Error: {error}\n"
+                  f"Crashed while trying to read Google classroom.\n"
+                  f"Course ID tried to find is: {course_id} and name is {sheet}\n"
+                  f"'Requested entity was not found'.\n"
+                  f"  Did you update the course number in cell B2 of the sheet with assignments?\n"
+                  f"  Sometimes this error happens when you copy an old sheet but forget to update w/new "
+                  f"class ID\n"
+                  f"OR you do not have permission on this classroom (i.e. Wu testing from two accounts,\n"
+                  f" different classrooms, but reading from same sheet).  Continuing on to next sheet..      ")
+            continue
         course_section = course_results['section']
         # Read entire sheet for this particular course (every day's assignment)
 
@@ -127,7 +130,8 @@ def create_assignments_announcements(spreadsheet_id):
                     if assignment_announcement['assignment_or_announcement'] == 'materials':
                         single_id = post_materials(assignment_announcement['topic'], assignment_announcement['title'],
                                                    assignment_announcement['text'],
-                                                   assignment_announcement['attachments'], day_info['date'],
+                                                  assignment_announcement['attachments'], day_info['date'],
+
                                                    assignment_counter, course_id, service_classroom)
                         assignment_counter += 1
                     all_ids += single_id + ','
