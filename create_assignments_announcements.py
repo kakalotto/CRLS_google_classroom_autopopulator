@@ -441,12 +441,11 @@ def create_assignments_announcements(spreadsheet_id):
                                 print(f"Day {i} class {sheet} found posted material {posted_id}")
 
                             except googleapiclient.errors.HttpError:  # posted_id isn't there at all?
-                                raise Exception("Previously posted assignment/announcement {} is neither "
-                                                "annoucement nor"
-                                                "assignment.  Did you copy+paste from somewhere else incorrectly?\n"
+                                raise Exception(f"Previously posted material {posted_id} is not in classroom "
+                                                "  Did you copy+paste from somewhere else incorrectly?\n"
                                                 "  Or else, did you delete it from Google classroom manually?\n"
                                                 " Or else, did you restart and just forget to delete the old ID's\n"
-                                                " Exiting.".format(posted_id))
+                                                f" Exiting sheet {sheet}.")
                             if is_materials:
                                 new_materials_data = {}
                                 if materials['state'] == 'PUBLISHED':
