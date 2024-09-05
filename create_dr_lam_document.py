@@ -25,9 +25,9 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
     import calendar
     import datetime
     # from copy import deepcopy
-    from generate_docs_credential import generate_docs_credential
-    from generate_sheets_credential import generate_sheets_credential
-    from generate_classroom_credential import generate_classroom_credential
+    # from generate_docs_credential import generate_docs_credential
+    # from generate_sheets_credential import generate_sheets_credential
+    # from generate_classroom_credential import generate_classroom_credential
     from helper_functions.dr_lam_functions import add_table, delete_entire_document, get_text, \
         add_regular_text, add_bold_normal, add_italic_normal, add_link, get_assignment_link, iter4obj_2_list, \
         insert_page_break
@@ -35,15 +35,19 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
     from helper_functions.sheets_functions import read_course_daily_data_all
     from helper_functions.quarters import quarter_dates
     from helper_functions.sheets_functions import read_in_holidays
+    from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
+
 
     if zoom_links is None:
         zoom_links = ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09']
     if assignments_dictionary is None:
         assignments_dictionary = {}
 
-    service_doc = generate_docs_credential()
-    service_sheets = generate_sheets_credential()
-    service_classroom = generate_classroom_credential()
+    [service_classroom, service_sheets, service_doc] = generate_classroom_aspen_tools_credentials()
+
+    # service_doc = generate_docs_credential()
+    # service_sheets = generate_sheets_credential()
+    # service_classroom = generate_classroom_credential()
 
     calendar_obj = calendar.Calendar()
 
@@ -68,18 +72,24 @@ def create_dr_lam_document(*, document_id='1KLMCq-Nvq-fCNnkCQ7mayIVOSS-HGupSTG_l
     # Read Google classroom for all of the course info
     print("Getting assignments from Google Classroom")
     courseworks = service_classroom.courses().courseWork().list(courseId=course_id).execute().get('courseWork', [])
+    print("asdfasdfs")
+
+    print(courseworks)
+    print()
+    print()
+
     print("Getting materials from Google classroom")
     materials = service_classroom.courses(). \
         courseWorkMaterials().list(courseId=course_id).execute().get('courseWorkMaterial', [])
 
     # Read Google sheets automator file for info about file names, etc...
-    print("Reading info from Google sheets")
+    print(f"Reading info from Google sheet, sheet id {spreadsheet_id}")
     sheet_values = read_course_daily_data_all(spreadsheet_id, sheet_id, service_sheets)
 
     # read in holidays
     holidays = read_in_holidays(spreadsheet_id, service_sheets)
     # print(f"These are the holidays {holidays}")
-
+    print(sheet_values)
     # Find the start of the quarter
     [q_start, q_end] = quarter_dates(fy=fy)
     print(f"Start quarter for course is this: {q_start} End quarter for course is this: {q_end}")

@@ -33,6 +33,7 @@ def return_perfect_scores(classname:str, classes_to_return:list):
     # loop over all assignments, skip if not in the classes_to_return list
     # Get all student works for that assignment.
     # if assignment is in the classes_to_return list, return everything perfect
+    # print(f"classes to return if perfect {classes_to_return}")
     for key in assignments_id_dict.keys():
         # print(f"Trying this one now {key}, {assignments_id_dict[key]}")
         if assignments_id_dict[key]['title'] not in classes_to_return:

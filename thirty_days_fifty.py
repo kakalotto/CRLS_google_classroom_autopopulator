@@ -8,7 +8,12 @@ def thirty_days_fifty(classname:str):
     import math
     from googleapiclient.errors import HttpError
     # Get the course ID
-    service_classroom = generate_classroom_credential()
+    from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
+
+    services = generate_classroom_aspen_tools_credentials()
+    service_classroom = services[0]
+
+    # service_classroom = generate_classroom_credential()
     course_id = class_name_2_id(service_classroom, classname)
 
     # get all assignments from Google classroom
