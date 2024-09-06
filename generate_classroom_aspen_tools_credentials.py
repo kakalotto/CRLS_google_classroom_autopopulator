@@ -64,7 +64,8 @@ def generate_classroom_aspen_tools_credentials():
               'https://www.googleapis.com/auth/classroom.topics',
               'https://www.googleapis.com/auth/classroom.courseworkmaterials',
               'https://www.googleapis.com/auth/spreadsheets',
-              'https://www.googleapis.com/auth/documents.readonly',]
+              'https://www.googleapis.com/auth/documents',
+              ]
 
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is

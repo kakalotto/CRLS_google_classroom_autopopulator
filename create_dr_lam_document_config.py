@@ -1,48 +1,71 @@
-apcsp_2024_s1 = {'document_id': '1OCjVV-NbSlKOuq8v-V7xQ-njI1jmt62Obm-Rc3lq6mA',
-                 'classroom_id': 'NjU2NzU2MTk0NjIw',
-                 'spreadsheet_id': '19qEGkr4d8uGFNaOVmJaT4W3yPMk7J_vkoaO1GyuCnms',
-                 'sheet_id': 'APCSP_S2_P1_002',
+apcsp_2025_s1 = {'document_id': '1bAEPQcPUHyEiyCNz6YZEfMQq4sB2fzZclDZDXGSkfjE',
+                 'classroom_id': 'NzA1MjUwMTk3MDYw',
+                 'spreadsheet_id': '1DJVSlcN8HqtVZ5M-qY4gOEjpwh-y8GUTpTsfW4wf8Yc',
+                 'sheet_id': 'APCSP_S1_P1',
                  'header_text': 'AP CSP\n',
-                 'course_id': 656756194620,
-                 'course_contract': 'https://docs.google.com/document/u/0/d/1fg77V_JX2B6mvH0OnMfJ3IbDb-J67TlI7JDagLN5qGc/edit?usp=drive_web',
+                 'course_id': 705250197060,
+                 'course_contract': 'https://docs.google.com/document/u/0/d/1RPf4bZhXaGMC8vm6o_DDlnaTeEJbu6TDcyAHJ9IUS6g/edit?usp=classroom_web',
                  'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
                  'assignments_dictionary': {},
                  'fy': False,
                  }
 
+apcsp_2025_s1_p3 = {'document_id': '1swAjAWTjcERIJB6DDk73881ilH3oNCssvu5afVnvE_Y',
+                 'classroom_id': 'NzA1MjUxMjQxMzQ1',
+                 'spreadsheet_id': '1DJVSlcN8HqtVZ5M-qY4gOEjpwh-y8GUTpTsfW4wf8Yc',
+                 'sheet_id': 'APCSP_S1_P3',
+                 'header_text': 'AP CSP\n',
+                 'course_id': 705251241345,
+                 'course_contract': 'https://docs.google.com/document/u/0/d/1RPf4bZhXaGMC8vm6o_DDlnaTeEJbu6TDcyAHJ9IUS6g/edit?usp=classroom_web',
+                 'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
+                 'assignments_dictionary': {},
+                 'fy': False,
+                 }
 
-l1_2024_s1 = {'document_id': '1Kg27bosspJsHuD16CyAxMsa9j-mdpjaJ0fzfZb1JxuU',
-              'classroom_id': 'NjU2NzU3MzA4Njk4',
-              'spreadsheet_id': '19qEGkr4d8uGFNaOVmJaT4W3yPMk7J_vkoaO1GyuCnms',
-              'sheet_id': 'L1_S2',
+apcsp_2025_s1_p4 = {'document_id': '1ugeUzbMpSK81YnP3tRAAUOhRS8xRyQWVnD1Z5G8eaLM',
+                 'classroom_id': 'NzEwNjg3NDQxNDg3',
+                 'spreadsheet_id': '1DJVSlcN8HqtVZ5M-qY4gOEjpwh-y8GUTpTsfW4wf8Yc',
+                 'sheet_id': 'APCSP_S1_P4',
+                 'header_text': 'AP CSP\n',
+                 'course_id': 710687441487,
+                 'course_contract': 'https://docs.google.com/document/u/0/d/1RPf4bZhXaGMC8vm6o_DDlnaTeEJbu6TDcyAHJ9IUS6g/edit?usp=classroom_web',
+                 'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
+                 'assignments_dictionary': {},
+                 'fy': False,
+                 }
+
+l1_2025_s1 = {'document_id': '1fYycOPACgmoAYKSTNv3Cp2mQFTuFnx7dRX-OQYera80',
+              'classroom_id': 'NzEwMzY1OTgwNDM0',
+              'spreadsheet_id': '1DJVSlcN8HqtVZ5M-qY4gOEjpwh-y8GUTpTsfW4wf8Yc',
+              'sheet_id': 'L1_S1',
               'header_text': 'CS1/IT1\n',
-              'course_id': 656757308698,
-              'course_contract': 'https://docs.google.com/document/u/0/d/1amH3xB51yLi7salXVRgYliaGDUma8Pj1ScudWWOnr18/edit?usp=drive_web',
+              'course_id': 705250197060,
+              'course_contract': 'https://docs.google.com/document/d/1Afp8LVowgw1gwFEdfiR50UmPmd4dpVQl0l7hMC7OSas/edit',
               'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
               'assignments_dictionary': {},
               'fy': False,
               }
 
 
-cs2_2024_fy = {'document_id': '1EUrbZp6glYtJq-IoBnysKLysC7uXBuMOSZHyF-Oql_Q',
-               'classroom_id': 'NjIwODgyNTgxMjI3',
-               'spreadsheet_id': '13LpOsLPMBGf5-sSMQOjeUT4L90XaiGhjNEab4XjJXV8',
+cs2_2025_fy = {'document_id': '1W7eNpH_vDYkmCozBYlXNM69y1TydYAVLfZwuCeqbFbg',
+               'classroom_id': 'NzEwNDM2MjQyNzUw',
+               'spreadsheet_id': '1GVIDfecgITPyD-dwjV8KHYHju2AS4L9Nw1bysednl2U',
                'sheet_id': 'CS2',
                'header_text': 'Computer Science 2\n',
-               'course_id': 620882581227,
+               'course_id': 710436242750,
                'course_contract': 'https://docs.google.com/document/d/1X-FjzNWiyZ-RaxO8NMn2KQ_UTu7lVwTT-7h2IyfJL_g/edit',
                'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
                'assignments_dictionary': {},
                'fy': True
                }
 
-it2_2024_fy = {'document_id': '1JOwjzWEEhH5jdbvEkIrtV_FBb2fNr5cNxS3h_hxdEEU',
-               'classroom_id': 'NTg5NTQ1OTk4Mjkz',
-               'spreadsheet_id': '1JKgmfje8z5X2H-BCqwMSqlzd6-F8PEpWekk0f8ouUZk',
+it2_2025_fy = {'document_id': '1wn3TfsBPsf6tre2_tSEjtebGoPuvy3cPCpxbUOfzwuU',
+               'classroom_id': 'NzA1MzQxODYwMDM3',
+               'spreadsheet_id': '1EMc9Z5urSNqEBZHMDhMtshfHXr5xewMymcXoZg5n1w4',
                'sheet_id': 'IT2',
                'header_text': 'Cybersecurity/Information Technology 2\n',
-               'course_id': 589545998293,
-               'course_contract': 'https://docs.google.com/document/d/1FWDANkBujW1_HwTItQXuOmR4jeDAuD2yuQSZLNq0WBI/edit',
+               'course_id': 705341860037,
+               'course_contract': 'https://docs.google.com/document/d/1c9jBnKAVMl-4AIKMLea5Ccy45fzDePuRXUSVdOlqvnA/edit',
                'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
                'assignments_dictionary': {},
                'fy': True
@@ -50,67 +73,54 @@ it2_2024_fy = {'document_id': '1JOwjzWEEhH5jdbvEkIrtV_FBb2fNr5cNxS3h_hxdEEU',
 
 
 
-it3_2023_fy = {'document_id': '1max2o3l138v-wuu2X78oxkN1Pc3lmBZQ_hvyffh451s',
-               'classroom_id': 'NTQ1NTI0MjIyNDQ1',
-               'spreadsheet_id': '1KUkVIDPOl8WdQs7EPp3pFEROflMzZ-JiNm3p04vTAVk',
+it3_2025_fy = {'document_id': '1W7eNpH_vDYkmCozBYlXNM69y1TydYAVLfZwuCeqbFbg',
+               'classroom_id': 'NzA1MzQxNjkxNTc0',
+               'spreadsheet_id': '1EMc9Z5urSNqEBZHMDhMtshfHXr5xewMymcXoZg5n1w4',
                'sheet_id': 'IT3',
                'header_text': 'Cybersecurity/Information Technology 3\n',
-               'course_id': 545524222445,
-               'course_contract': 'https://docs.google.com/document/d/'
-                                  '1zJArrh4Xq0YlF-vFZu3SCYznJhjMpM9pBs2GOLSsJV0/edit',
+               'course_id': 705341691574,
+               'course_contract': 'https://docs.google.com/document/d/1c9jBnKAVMl-4AIKMLea5Ccy45fzDePuRXUSVdOlqvnA/edit',
                'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
                'assignments_dictionary': {},
                'fy': True
                }
 
-cs3_2023_fy = {'document_id': '1eNVwTeA5omD0Tbs1NiqGwf9ayJt3x3_4Jv6qX9T-tac',
-               'classroom_id': 'NjIxMTY0MDI0Mjgw',
-               'spreadsheet_id': '13LpOsLPMBGf5-sSMQOjeUT4L90XaiGhjNEab4XjJXV8',
+cs3_2025_fy = {'document_id': '1mKdsxlXYdbH8BGkbeGKuVSrrHi8LoVKB4hacu6Rrpcg',
+               'classroom_id': 'NzEwMzU1NzA2MDkz',
+               'spreadsheet_id': '1GVIDfecgITPyD-dwjV8KHYHju2AS4L9Nw1bysednl2U',
                'sheet_id': 'CS3',
                'header_text': 'Computer Science 3\n',
-               'course_id': 621164024280,
-               'course_contract': 'https://docs.google.com/document/d/'
-                                  '1zJArrh4Xq0YlF-vFZu3SCYznJhjMpM9pBs2GOLSsJV0/edit',
+               'course_id': 710355706093,
+               'course_contract': 'https://docs.google.com/document/d/1X-FjzNWiyZ-RaxO8NMn2KQ_UTu7lVwTT-7h2IyfJL_g/edit',
                'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
                'assignments_dictionary': {},
                'fy': True
                }
 
-ics_2023_s1 = {'document_id': '1JB9tm4D0geIC-ft1JipV2n2dQJZys_a-bYVFAYNDbzs',
-               'classroom_id': 'NDg5MzEwNTA4MjM4',
-               'spreadsheet_id': '1Ea92piMS2ffIswrBDtgjj_9e9OiUy5SR3i3L6aUGDLU',
-               'sheet_id': 'ICS_S1P2',
-               'header_text': 'Intro to Computer Science\n',
-               'course_id': 489310508238,
-               'course_contract': '',
-               'zoom_links': ['https://zoom.us/j/5163593350?pwd=MzVVRktGcVZ4a0tEbXRwRGJDaFAxZz09'],
-               'assignments_dictionary': {},
-               'fy': False,
-               }
-
-apcsp_2023_s2_p1 = {'document_id': '1sHvhUURA5_uJcQ51th_0vz7Y-63n55qOOIjnhVyqSos',
-                    'classroom_id': 'NTg1NDUxNzEyMDM1',
-                    'spreadsheet_id': '1b9rnK5B1Ft9IBwmBgd-vouXi6WuEVMMfV5p7kMoYMcA',
-                    'sheet_id': 'APCSP_S2_P1',
-                    'header_text': 'AP Computer Science Principles P1\n',
-                    'course_id': 585451712035,
-                    'course_contract': 'https://docs.google.com/document/d/17SyCeu83T7xssjeaySVfYJntEnobHYGCgAIeX1vcRfE/edit',
-                    'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
-                    'assignments_dictionary': {},
-                    'fy': False,
-                    }
-
-apcsp_2023_s2_p4 = {'document_id': '1hYXqBUZzI17nwt1PiMSRKJLxBcvZH1wqts7ZPOIlDK0',
-                    'classroom_id': 'NTg1NDUwNzU2OTg5',
-                    'spreadsheet_id': '1b9rnK5B1Ft9IBwmBgd-vouXi6WuEVMMfV5p7kMoYMcA',
-                    'sheet_id': 'APCSP_S2_P4_002',
-                    'header_text': 'AP Computer Science Principles P4\n',
-                    'course_id': 585449768574,
-                    'course_contract': 'https://docs.google.com/document/d/17SyCeu83T7xssjeaySVfYJntEnobHYGCgAIeX1vcRfE/edit',
-                    'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
-                    'assignments_dictionary': {},
-                    'fy': False,
-                    }
+#
+# apcsp_2023_s2_p1 = {'document_id': '1sHvhUURA5_uJcQ51th_0vz7Y-63n55qOOIjnhVyqSos',
+#                     'classroom_id': 'NTg1NDUxNzEyMDM1',
+#                     'spreadsheet_id': '1b9rnK5B1Ft9IBwmBgd-vouXi6WuEVMMfV5p7kMoYMcA',
+#                     'sheet_id': 'APCSP_S2_P1',
+#                     'header_text': 'AP Computer Science Principles P1\n',
+#                     'course_id': 585451712035,
+#                     'course_contract': 'https://docs.google.com/document/d/17SyCeu83T7xssjeaySVfYJntEnobHYGCgAIeX1vcRfE/edit',
+#                     'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
+#                     'assignments_dictionary': {},
+#                     'fy': False,
+#                     }
+#
+# apcsp_2023_s2_p4 = {'document_id': '1hYXqBUZzI17nwt1PiMSRKJLxBcvZH1wqts7ZPOIlDK0',
+#                     'classroom_id': 'NTg1NDUwNzU2OTg5',
+#                     'spreadsheet_id': '1b9rnK5B1Ft9IBwmBgd-vouXi6WuEVMMfV5p7kMoYMcA',
+#                     'sheet_id': 'APCSP_S2_P4_002',
+#                     'header_text': 'AP Computer Science Principles P4\n',
+#                     'course_id': 585449768574,
+#                     'course_contract': 'https://docs.google.com/document/d/17SyCeu83T7xssjeaySVfYJntEnobHYGCgAIeX1vcRfE/edit',
+#                     'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
+#                     'assignments_dictionary': {},
+#                     'fy': False,
+#                     }
 
 
 # ics_2022_s1_p1 = {'document_id': '19sDv_eBO4xjey9e2oD-sjRoHk987VKud5-VWNMA0vKE',
@@ -149,17 +159,17 @@ apcsp_2023_s2_p4 = {'document_id': '1hYXqBUZzI17nwt1PiMSRKJLxBcvZH1wqts7ZPOIlDK0
 #                   'fy': True
 #                   }
 #
-web_2024_s2_p2 = {'document_id': '1GXTQTxO_totCTs28d8Ncfz8E8149E0PRm18KPJAIbGY',
-                  'classroom_id': 'NjI4MTc3NTIyNjY4',
-                  'spreadsheet_id': '13LpOsLPMBGf5-sSMQOjeUT4L90XaiGhjNEab4XjJXV8',
-                  'sheet_id': 'WebDesign',
-                  'header_text': 'Web Development\n',
-                  'course_id': 628177522668,
-                  'course_contract': 'https://docs.google.com/document/d/1X-FjzNWiyZ-RaxO8NMn2KQ_UTu7lVwTT-7h2IyfJL_g/edit',
-                  'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
-                  'assignments_dictionary': {},
-                  'fy': False
-                  }
+# web_2024_s2_p2 = {'document_id': '1GXTQTxO_totCTs28d8Ncfz8E8149E0PRm18KPJAIbGY',
+#                   'classroom_id': 'NjI4MTc3NTIyNjY4',
+#                   'spreadsheet_id': '13LpOsLPMBGf5-sSMQOjeUT4L90XaiGhjNEab4XjJXV8',
+#                   'sheet_id': 'WebDesign',
+#                   'header_text': 'Web Development\n',
+#                   'course_id': 628177522668,
+#                   'course_contract': 'https://docs.google.com/document/d/1X-FjzNWiyZ-RaxO8NMn2KQ_UTu7lVwTT-7h2IyfJL_g/edit',
+#                   'zoom_links': ['https://zoom.us/j/9332367963?pwd=WElmWmc0dHBqSjY2MDFpaWJsbEFsdz09'],
+#                   'assignments_dictionary': {},
+#                   'fy': False
+#                   }
 #
 # apcsp_2022_s1_p1 = {'document_id': '1LbKCRPsGATdy0HREKPVnk05L0TNTAlHYm2qipvtFYTg',
 #                     'classroom_id': 'Mzg4OTAwMTg5NjU2',
@@ -298,4 +308,5 @@ web_2024_s2_p2 = {'document_id': '1GXTQTxO_totCTs28d8Ncfz8E8149E0PRm18KPJAIbGY',
 # cs2_2023_fy, cs3_2023_fy, it3_2023_fy, it2_2023_fy,it1cs1_2023_fy_p1,
 #classes = [ it1_2022_fy_p1, exploratory_2023_s1, ]
 
-classes = [  it2_2024_fy, l1_2024_s1, cs2_2024_fy, apcsp_2024_s1, web_2024_s2_p2 ]
+classes = [   it3_2025_fy, cs3_2025_fy, apcsp_2025_s1, apcsp_2025_s1_p3, apcsp_2025_s1_p4, l1_2025_s1, it2_2025_fy, cs2_2025_fy, ]
+

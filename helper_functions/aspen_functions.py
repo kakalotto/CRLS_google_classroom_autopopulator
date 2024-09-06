@@ -15,9 +15,10 @@ def generate_driver():
 #    p_driver = webdriver.Chrome(ChromeDriverManager().install())
     service = Service()
     options = webdriver.ChromeOptions()
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
     p_driver = webdriver.Chrome(service=service, options=options)
-    p_driver.get('https://aspen.cpsd.us')
+    # p_driver.get('https://aspen.cpsd.us')
+    p_driver.get('https://aspen.cpsd.us/aspen/logonSSO.do?deploymentId=ma-cambridge&districtId=*dst&idpName=Cambridge%20Google%20SAML')
     return p_driver
 
 
@@ -37,14 +38,14 @@ def aspen_login(p_driver, *, username='', password=''):
     from selenium.webdriver.common.keys import Keys
     from selenium.webdriver.common.action_chains import ActionChains
 
-    try:
-#        WebDriverWait(p_driver, 10).until(ec.presence_of_element_located((By.XPATH, "//input[@class='logonInput']")))
-           WebDriverWait(p_driver, 10).until(ec.presence_of_element_located((By.CLASS_NAME, "login-button")))
-
-    except TimeoutException:
-        print("Did not find logon button")
-        print("quitting")
-        p_driver.quit()
+#     try:
+# #        WebDriverWait(p_driver, 10).until(ec.presence_of_element_located((By.XPATH, "//input[@class='logonInput']")))
+#            WebDriverWait(p_driver, 10).until(ec.presence_of_element_located((By.CLASS_NAME, "login-button")))
+#
+#     except TimeoutException:
+#         print("Did not find logon button")
+#         print("quitting")
+#         p_driver.quit()
     # time.sleep(500)
 
     # buttons = p_driver.find_element(By.XPATH, "//button")
@@ -55,11 +56,12 @@ def aspen_login(p_driver, *, username='', password=''):
 
         print("Yes!")
         print("Login supplied via script.")
-        p_driver.find_element(By.CLASS_NAME, "login-button").click()
-        # Second login button
-        WebDriverWait(p_driver, 10).until(ec.presence_of_element_located((By.CLASS_NAME, "login-button")))
-        p_driver.find_element(By.CLASS_NAME, "login-button").click()
-        time.sleep(1)
+        time.sleep(2)
+        # p_driver.find_element(By.CLASS_NAME, "login-button").click()
+        # # Second login button
+        # WebDriverWait(p_driver, 10).until(ec.presence_of_element_located((By.CLASS_NAME, "login-button")))
+        # p_driver.find_element(By.CLASS_NAME, "login-button").click()
+        # time.sleep(50)
         print("hopefully at Google sscreen")
         p_driver.find_element(By.NAME, "identifier").send_keys(username)
         p_driver.find_element(By.NAME, "identifier").send_keys(Keys.ENTER)
