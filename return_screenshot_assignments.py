@@ -52,37 +52,38 @@ def return_screenshot_assignments(classname:str, classes_to_return:list):
                 # print(work)
                 if work.get('state') == 'TURNED_IN':
                     if 'assignmentSubmission' in work.keys():
-                        attachments = work['assignmentSubmission']['attachments']
-                        for attachment in attachments:
-                            print(attachment)
-                            drivefile_title = attachment['driveFile']['title']
-                            if re.search('[Jj][Pp][Ee][Gg]$', drivefile_title, re.X | re.M | re.S) or \
-                               re.search('[Jj][Pp][Gg]$', drivefile_title, re.X | re.M | re.S) or \
-                               re.search('[Pp][Nn][Gg]$', drivefile_title, re.X | re.M | re.S) :
-                                # print("READY!")
-                                studentSubmission = {
-                                    'assignedGrade': assignments_id_dict[key]['maxPoints'],
-                                    'draftGrade': assignments_id_dict[key]['maxPoints'],
-                                }
-                                service_classroom.courses().courseWork().studentSubmissions().patch(
-                                    courseId=course_id, courseWorkId=key,id=work.get('id'),
-                                    updateMask='assignedGrade,draftGrade',
-                                    body = studentSubmission).execute()
-                                time.sleep(2)
-                                service_classroom.courses().courseWork().studentSubmissions().return_(courseId=course_id,
-                                                                                                      courseWorkId=key,
-                                                                                                      id=work.get('id')).execute()
-                                break
+                        if 'attachments' in work['assignmentSubmission'].keys():
+                            attachments = work['assignmentSubmission']['attachments']
+                            for attachment in attachments:
+                                print(attachment)
+                                drivefile_title = attachment['driveFile']['title']
+                                if re.search('[Jj][Pp][Ee][Gg]$', drivefile_title, re.X | re.M | re.S) or \
+                                   re.search('[Jj][Pp][Gg]$', drivefile_title, re.X | re.M | re.S) or \
+                                   re.search('[Pp][Nn][Gg]$', drivefile_title, re.X | re.M | re.S) :
+                                    # print("READY!")
+                                    studentSubmission = {
+                                        'assignedGrade': assignments_id_dict[key]['maxPoints'],
+                                        'draftGrade': assignments_id_dict[key]['maxPoints'],
+                                    }
+                                    service_classroom.courses().courseWork().studentSubmissions().patch(
+                                        courseId=course_id, courseWorkId=key,id=work.get('id'),
+                                        updateMask='assignedGrade,draftGrade',
+                                        body = studentSubmission).execute()
+                                    time.sleep(2)
+                                    service_classroom.courses().courseWork().studentSubmissions().return_(courseId=course_id,
+                                                                                                          courseWorkId=key,
+                                                                                                          id=work.get('id')).execute()
+                                    break
 
 
-        #
-        #             if work.get('draftGrade') and work.get('state') == 'TURNED_IN':
-        #             if work.get('draftGrade') and work.get('id') == 'Cg0IjZSL6icQ8rb5zo4T':
+            #
+            #             if work.get('draftGrade') and work.get('state') == 'TURNED_IN':
+            #             if work.get('draftGrade') and work.get('id') == 'Cg0IjZSL6icQ8rb5zo4T':
 
-                    # print(f"This is the draft grade! {work.get('draftGrade')} and the max {assignments_id_dict[key]['maxPoints']}"
-                    #       f"and the assignment name  {assignments_id_dict[key]['title']} and"
-                    #       f"id for thie work {work.get('id')}"
-                    #       f"and the work {work}"
-                    #       f"and the courseid {course_id}"
-                    #       f"and the assignment id {key}")
-                    # print(f"coureID {course_id} courseworkID {key} id {work.get('id')}" )
+                        # print(f"This is the draft grade! {work.get('draftGrade')} and the max {assignments_id_dict[key]['maxPoints']}"
+                        #       f"and the assignment name  {assignments_id_dict[key]['title']} and"
+                        #       f"id for thie work {work.get('id')}"
+                        #       f"and the work {work}"
+                        #       f"and the courseid {course_id}"
+                        #       f"and the assignment id {key}")
+                        # print(f"coureID {course_id} courseworkID {key} id {work.get('id')}" )
