@@ -15,7 +15,7 @@ def generate_driver():
 #    p_driver = webdriver.Chrome(ChromeDriverManager().install())
     service = Service()
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
     p_driver = webdriver.Chrome(service=service, options=options)
     # p_driver.get('https://aspen.cpsd.us')
     p_driver.get('https://aspen.cpsd.us/aspen/logonSSO.do?deploymentId=ma-cambridge&districtId=*dst&idpName=Cambridge%20Google%20SAML')
@@ -98,13 +98,16 @@ def goto_gradebook(p_driver, p_aspen_class):
     :return:
     """
     import time
+    from selenium.webdriver.common.by import By
 
     # print("Trying to go to gradebook")
     wait_for_element(p_driver, message='Trying to find gradebook but failed?', p_link_text='Gradebook')
-    p_driver.find_element_by_link_text("Gradebook").click()
+    # p_driver.find_ele
+    p_driver.find_element(By.LINK_TEXT, "Gradebook").click()
+
     # Do this twice, because Aspen is flaky
     wait_for_element(p_driver, p_link_text='Gradebook')
-    p_driver.find_element_by_link_text("Gradebook").click()
+    p_driver.find_element(By.LINK_TEXT, "Gradebook").click()
     time.sleep(5)
     wait_for_element(p_driver, p_link_text=p_aspen_class,
                      message="Be sure this EXACT class really exists in Aspen!\n" + str(p_aspen_class))
@@ -112,7 +115,9 @@ def goto_gradebook(p_driver, p_aspen_class):
     wait_for_element(p_driver, p_link_text='Scores')
     print("bbb clicking scores")
     time.sleep(2)
-    p_driver.find_element_by_link_text("Scores").click()
+    p_driver.find_element(By.LINK_TEXT, "Scores").click()
+
+    # p_driver.find_element_by_link_text("Scores").click()
     time.sleep(2)
 
 
@@ -678,9 +683,9 @@ def get_assignments_and_assignment_ids_from_aspen(p_driver):
         wait_for_element(p_driver, p_xpath_el="//tr[@class='listCell listRowHeight   ']")
         rows = len(p_driver.find_elements_by_xpath("//tr[@class='listCell listRowHeight   ']"))
         # print(f"rows {rows}")
-        # Looop over all rows in this table
+        # Looop over all rows in this table<
         for i in range(2, rows + 2):
-            xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[2]'
+            xpath_string = '//*[@id="dataGrid"]/table/t>body/tr[' + str(i) + ']/td[2]'
             wait_for_element(p_driver, p_xpath_el=xpath_string)
             aspen_assignment_id_el = p_driver.find_element_by_xpath(xpath_string)
             aspen_assignment_id = aspen_assignment_id_el.get_attribute('id')
