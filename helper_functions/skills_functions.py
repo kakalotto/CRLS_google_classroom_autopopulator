@@ -66,3 +66,68 @@ def skills_login(p_driver, *, username='', password=''):
     # buttons = p_driver.find_element(By.XPATH, "//button")
     # print(buttons)
     # t
+
+
+def which_rotation(p_changes: list, p_day: int) -> int:
+    """
+
+    Args:
+        list: list of day changes [1, 4, 9] means rotations change on 1, 4, 9
+        int: which day we're at now
+
+    Returns:
+        int: rotation number
+    """
+    for rotation, change_date in reversed(list(enumerate(p_changes))):
+
+        # print(f" in functioni p_day {p_day} and change date {change_date}")
+        if p_day >= change_date:
+            return rotation + 1
+
+
+def date_to_classroom_date(google_date:str) -> str :
+    google_date_only = google_date.split('T')[0]
+    google_date_numbers = google_date_only.split('/')
+    print(google_date_numbers)
+    p_year = int(google_date_numbers[2])
+    p_month = int(google_date_numbers[0])
+    p_day = int(google_date_numbers[1])
+    year_str = str(p_year)
+    if p_month < 10:
+        month_str = '0' + str(p_month)
+    else:
+        month_str = str(p_month)
+    if p_day < 10:
+        day_str = '0' + str(p_day)
+    else:
+        day_str = str(p_day)
+    return_str = year_str + '-' + month_str + '-' + day_str + 'T08:00:00.000Z'
+    return return_str
+
+
+def date_to_classroom_creation_date(google_date:str) -> str :
+    google_date_only = google_date.split('T')[0]
+    google_date_numbers = google_date_only.split('/')
+    print(google_date_numbers)
+    p_year = int(google_date_numbers[2])
+    p_month = int(google_date_numbers[0])
+    p_day = int(google_date_numbers[1])
+    year_str = str(p_year)
+    if p_month < 10:
+        month_str = '0' + str(p_month)
+    else:
+        month_str = str(p_month)
+    if p_day < 10:
+        day_str = '0' + str(p_day)
+    else:
+        day_str = str(p_day)
+    return_str = year_str + '-' + month_str + '-' + day_str + 'T08:00:00.000Z'
+    return return_str
+
+def date_to_classroom_due_date(google_date:str) -> dict :
+    google_date_only = google_date.split('T')[0]
+    google_date_numbers = google_date_only.split('/')
+    p_year = int(google_date_numbers[2])
+    p_month = int(google_date_numbers[0])
+    p_day = int(google_date_numbers[1])
+    return {'year': p_year, 'month': p_month, 'day': p_day}
