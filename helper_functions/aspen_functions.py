@@ -111,7 +111,8 @@ def goto_gradebook(p_driver, p_aspen_class):
     time.sleep(5)
     wait_for_element(p_driver, p_link_text=p_aspen_class,
                      message="Be sure this EXACT class really exists in Aspen!\n" + str(p_aspen_class))
-    p_driver.find_element_by_link_text(p_aspen_class).click()
+    p_driver.find_element(By.LINK_TEXT, p_aspen_class).click()
+    # p_driver.find_element_by_link_text(p_aspen_class).click()
     wait_for_element(p_driver, p_link_text='Scores')
     print("bbb clicking scores")
     time.sleep(2)
@@ -127,8 +128,11 @@ def goto_students(p_driver):
     :param p_driver: Selenium driver object
     :return:
     """
+    from selenium.webdriver.common.by import By
+
     wait_for_element(p_driver, p_link_text='Student')
-    p_driver.find_element_by_link_text("Student").click()
+    p_driver.find_element(By.LINK_TEXT, "Student").click()
+    # p_driver.find_element_by_link_text("Student").click()
 
 def search_name(p_driver, p_name):
     """
@@ -161,8 +165,15 @@ def goto_student(p_driver, p_student_id):
     :param p_driver: Selenium driver object
     :return:
     """
+    from selenium.webdriver.common.by import By
+    p_driver.find_element(By.LINK_TEXT, "Student").click()
+
+
     wait_for_element(p_driver, p_link_text=p_student_id)
-    p_driver.find_element_by_link_text(p_student_id).click()
+    from selenium.webdriver.common.by import By
+    p_driver.find_element(By.LINK_TEXT, p_student_id).click()
+
+    # p_driver.find_element_by_link_text(p_student_id).click()
 
 
 def extract_email(p_driver):
@@ -179,9 +190,13 @@ def goto_assignments(p_driver, p_aspen_class):
     :param p_aspen_class: Name of the class in Aspen.
     :return:
     """
+    from selenium.webdriver.common.by import By
+
     goto_gradebook(p_driver, p_aspen_class)
     wait_for_element(p_driver, p_link_text='Assignments')
-    p_driver.find_element_by_link_text("Assignments").click()
+    p_driver.find_element(By.LINK_TEXT, "Assignments").click()
+
+    # p_driver.find_element_by_link_text("Assignments").click()
 
 
 def goto_assignments_this_quarter(p_driver, p_aspen_class, p_quarter):
@@ -219,11 +234,14 @@ def goto_scores(p_driver, p_aspen_class):
     :return:
     """
     import time
+    from selenium.webdriver.common.by import By
+
     goto_gradebook(p_driver, p_aspen_class)
     wait_for_element(p_driver, p_link_text='Assignments')  # just to be sure loading is done
     p_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     wait_for_element_clickable(p_driver, p_link_text='Scores')  # just to be sure loading is done
-    p_driver.find_element_by_link_text("Scores").click()
+    p_driver.find_element(By.LINK_TEXT, "Scores").click()
+
     wait_for_element(p_driver, p_link_text='Scores')  # just to be sure loading is done
     #        wait.until(EC.invisibility_of_element_located((By.XPATH, '//img[contains(@src, "loading")]')))
 
@@ -426,6 +444,7 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
 def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_db_conn, p_default_category,
                     p_style):
     import time
+    from selenium.webdriver.common.by import By
 
     print("tt att add assignments")
     #
@@ -437,19 +456,24 @@ def add_assignments(p_driver, p_courseworks, p_content_knowledge_completion, p_d
         full_xpath = '/ html / body / form / table / tbody / tr[2] / td ' \
                      '/ div / table[2] / tbody / tr[1] / td[2] / div / table / tbody / tr[2] / td[2] / a'
         wait_for_element(p_driver, p_link_text='Categories')
-        p_driver.find_element_by_link_text("Categories").click()
+        p_driver.find_element(By.LINK_TEXT, "Categories").click()
+
+        # p_driver.find_element_by_link_text("Categories").click()
         category_element = p_driver.find_element_by_xpath(full_xpath)
         category = category_element.get_attribute('text')
         wait_for_element(p_driver, p_link_text='Assignments')
         print("ttt found assignments")
+        p_driver.find_element(By.LINK_TEXT, "Assignments").click()
 
-        p_driver.find_element_by_link_text("Assignments").click()
+        # p_driver.find_element_by_link_text("Assignments").click()
         wait_for_element(p_driver, p_link_text='Assignments')
         for coursework in p_courseworks:
             coursework['aspen_category'] = category
 
     print("ttt found scores")
-    p_driver.find_element_by_link_text("Scores").click()
+    p_driver.find_element(By.LINK_TEXT, "Scores").click()
+
+    # p_driver.find_element_by_link_text("Scores").click()
     wait_for_element(p_driver, p_link_text='Scores')
     for coursework in p_courseworks:
         if p_content_knowledge_completion:
@@ -628,12 +652,17 @@ def get_assignments_from_aspen(p_driver):
     :param p_driver:   Selenium driver object
     :return: list of Aspen assignment column names (string)
     """
+    from selenium.webdriver.common.by import By
+
     from selenium.common.exceptions import NoSuchElementException
     print("Getting assignments from Aspen")
 
     # Navigate to assignments page
     wait_for_element(p_driver, p_link_text='Assignments')
-    p_driver.find_element_by_link_text("Assignments").click()
+
+    # p_driver.find_element_by_link_text("Assignments").click()
+    p_driver.find_element(By.LINK_TEXT, "Assignments").click()
+
     wait_for_element(p_driver, p_xpath_el="//div[@id='dataGrid']", message='Did not find assignments')
 
     # Extract assignments
@@ -641,7 +670,7 @@ def get_assignments_from_aspen(p_driver):
     done = False
     aspen_column_names = []
     while done is False:
-        rows = len(p_driver.find_elements_by_xpath("//tr[@class='listCell listRowHeight   ']"))
+        rows = len(p_driver.find_element(By.XPATH, "//tr[@class='listCell listRowHeight   ']"))
         for i in range(2, rows + 2):
             xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[8]'
             gb_column_name_el = p_driver.find_element_by_xpath(xpath_string)
@@ -667,13 +696,17 @@ def get_assignments_and_assignment_ids_from_aspen(p_driver):
     """
     import time
     from selenium.common.exceptions import NoSuchElementException
+    from selenium.webdriver.common.by import By
+
     print("Getting assignments and IDs from Aspen")
 
     # Navigate to assignments page
     print("lll navigating to assignments page")
     time.sleep(2)
     wait_for_element(p_driver, p_link_text='Assignments')
-    p_driver.find_element_by_link_text("Assignments").click()
+    # p_driver.find_element_by_link_text("Assignments").click()
+    p_driver.find_element(By.LINK_TEXT, "Assignments").click()
+
     wait_for_element(p_driver, p_xpath_el="//div[@id='dataGrid']", message='Did not find assignments')
 
     print("ooo")
