@@ -16,7 +16,7 @@ course_prefix = 'T120'
 t_username = 'ewu@cpsd.us'
 t_password = 'silverstreet11'
 aspen_username = 'ewu@cpsd.us'
-aspen_password = '***REMOVED***'
+aspen_password = 'Juniorwetworth123$'
 dates = ['9/3/2024',
          '9/4/2024',
          '9/5/2024',
