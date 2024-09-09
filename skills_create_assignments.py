@@ -13,8 +13,8 @@ print(f"Opening up this config file now: {config_filename}")
 config = configparser.ConfigParser()
 config.read("crls_teacher_tools.ini")
 
-username = config.get('LOGIN', 'username', fallback='')
-password = config.get('LOGIN', 'password', fallback='')
+aspen_username = config.get('LOGIN', 'username', fallback='')
+aspen_password = config.get('LOGIN', 'password', fallback='')
 
 
 today_quarter_obj = which_quarter_today()
