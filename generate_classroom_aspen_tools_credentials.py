@@ -65,6 +65,7 @@ def generate_classroom_aspen_tools_credentials():
               'https://www.googleapis.com/auth/classroom.courseworkmaterials',
               'https://www.googleapis.com/auth/spreadsheets',
               'https://www.googleapis.com/auth/documents',
+              'https://www.googleapis.com/auth/classroom.profile.emails ',
               ]
 
     creds = None
