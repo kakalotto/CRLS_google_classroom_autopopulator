@@ -25,3 +25,21 @@ for key in all_classes.keys():
                               p_ignore_noduedate=ignore_noduedate_value,
                               p_use_stored_gc_students=use_stored_gc_students_value)
 input("Press enter 2x to end")
+
+# ("https://www.googleapis.com/auth/classroom.courses "
+#  "https://www.googleapis.com/auth/documents "
+#  "https://www.googleapis.com/auth/classroom.topics "
+#  "https://www.googleapis.com/auth/spreadsheets "
+#  "https://www.googleapis.com/auth/classroom.coursework.students "
+#  "https://www.googleapis.com/auth/classroom.courseworkmaterials "
+#  "https://www.googleapis.com/auth/classroom.announcements "
+#  "https://www.googleapis.com/auth/classroom.profile.emails ")
+# to
+# ("https://www.googleapis.com/auth/classroom.courses "
+#  "https://www.googleapis.com/auth/documents "
+#  "https://www.googleapis.com/auth/classroom.topics "
+#  "https://www.googleapis.com/auth/spreadsheets "
+#  "https://www.googleapis.com/auth/classroom.coursework.students "
+#  "https://www.googleapis.com/auth/classroom.courseworkmaterials"
+#  " https://www.googleapis.com/auth/classroom.announcements "
+#  "https://www.googleapis.com/auth/classroom.profile.emails").

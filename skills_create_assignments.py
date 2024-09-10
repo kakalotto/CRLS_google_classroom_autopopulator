@@ -1,5 +1,6 @@
 import re
 import time
+
 import configparser
 from helper_functions.aspen_functions import generate_driver, aspen_login, add_assignments, \
     check_new_aspen_names, get_assignments_from_aspen, goto_assignments, goto_categories, add_skills_category

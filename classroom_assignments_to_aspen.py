@@ -3,7 +3,7 @@
 def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content_knowledge_completion=False,
                                    ignore_ungraded=False,
                                    username='', password='', default_category='', ignore_noduedate=False):
-    from generate_classroom_credential import generate_classroom_credential
+    # from generate_classroom_credential import generate_classroom_credential
     from helper_functions.aspen_functions import generate_driver, aspen_login, add_assignments, \
         check_new_aspen_names, get_assignments_from_aspen, goto_assignments
     from helper_functions.quarters import which_quarter_today
@@ -12,13 +12,19 @@ def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content
     from helper_functions.db_functions import create_connection, execute_sql, query_db
     import time
     import re
+    from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
+
 
     # Get current quarter's start date, get gc assignments,
     today_quarter_obj = which_quarter_today()
-    service_classroom = generate_classroom_credential()
+    [service_classroom, service_sheets, service_doc] = generate_classroom_aspen_tools_credentials()
+
+
+    # service_classroom = generate_classroom_credential()
     course_id = class_name_2_id(service_classroom, p_gc_classname)
     courseworks = get_assignments_from_classroom(service_classroom, course_id, today_quarter_obj)
-
+    # for coursework in courseworks:
+    #     print(coursework)
     print(f"The name of the class is this: {p_gc_classname}")
     if p_gc_classname == 'AP Computer Science Principles':
         return

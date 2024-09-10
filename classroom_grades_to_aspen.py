@@ -16,6 +16,8 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
         nothing
     """
     from generate_classroom_credential import generate_classroom_credential
+    from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
+
     from helper_functions.aspen_functions import generate_driver, aspen_login,  goto_assignments_this_quarter, \
         goto_scores_this_quarter, get_student_ids_from_aspen, get_assignments_and_assignment_ids_from_aspen, \
         input_assignments_into_aspen
@@ -34,7 +36,9 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
     # print(f'next quarter obj {today_quarter_obj}')
     #
     # print(f'next quarter obj {next_quarter_obj}')
-    service_classroom = generate_classroom_credential()
+    # service_classroom = generate_classroom_credential()
+    [service_classroom, service_sheets, service_doc] = generate_classroom_aspen_tools_credentials()
+
     course_id = class_name_2_id(service_classroom, p_gc_classname)
     print("Getting courseworks")
     courseworks = get_assignments_from_classroom(service_classroom, course_id, today_quarter_obj,
