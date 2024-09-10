@@ -36,8 +36,8 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
     # print(f'next quarter obj {today_quarter_obj}')
     #
     # print(f'next quarter obj {next_quarter_obj}')
-    service_classroom = generate_classroom_credential()
-    # [service_classroom, service_sheets, service_doc] = generate_classroom_aspen_tools_credentials()
+    # service_classroom = generate_classroom_credential()
+    [service_classroom, service_sheets, service_doc] = generate_classroom_aspen_tools_credentials()
 
     course_id = class_name_2_id(service_classroom, p_gc_classname)
     print("Getting courseworks")
