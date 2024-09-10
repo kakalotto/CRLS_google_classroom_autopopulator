@@ -1,10 +1,22 @@
 import re
+
+import configparser
 from helper_functions.aspen_functions import generate_driver, aspen_login, add_assignments, \
     check_new_aspen_names, get_assignments_from_aspen, goto_assignments
 from helper_functions.classroom_functions import scrub_courseworks
 from helper_functions.quarters import which_quarter_today
 from helper_functions.db_functions import execute_sql, query_db, create_connection
 from helper_functions.skills_functions import date_to_classroom_due_date, date_to_classroom_creation_date
+
+
+config_filename = "crls_teacher_tools.ini"
+print(f"Opening up this config file now: {config_filename}")
+config = configparser.ConfigParser()
+config.read("crls_teacher_tools.ini")
+
+aspen_username = config.get('LOGIN', 'username', fallback='')
+aspen_password = config.get('LOGIN', 'password', fallback='')
+
 
 today_quarter_obj = which_quarter_today()
 dates = ['9/3/2024',
@@ -130,8 +142,11 @@ p_style = "no_due_dates"
 #     75,
 # ]
 
+<<<<<<< HEAD
 aspen_username = 'ewu@cpsd.us'
 aspen_password = 'Juniorwetworth123$'
+=======
+>>>>>>> 56e99b9089531cdcceac512e42c8f57f4a768b21
 course_letter = 'L'
 course_prefix = 'T120'
 # T120L-I-001

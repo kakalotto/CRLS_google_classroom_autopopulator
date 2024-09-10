@@ -297,8 +297,12 @@ def read_return_perfect_info(p_filename):
         assignments_5 = config.get('RETURN_PERFECT', 'assignments5', fallback='')
         gc_6 = config.get('RETURN_PERFECT', 'gc_class6', fallback='')
         assignments_6 = config.get('RETURN_PERFECT', 'assignments6', fallback='')
-
-
+        gc_7 = config.get('RETURN_PERFECT', 'gc_class7', fallback='')
+        assignments_7 = config.get('RETURN_PERFECT', 'assignments7', fallback='')
+        gc_8 = config.get('RETURN_PERFECT', 'gc_class8', fallback='')
+        assignments_8 = config.get('RETURN_PERFECT', 'assignments8', fallback='')
+        gc_9 = config.get('RETURN_PERFECT', 'gc_class9', fallback='')
+        assignments_9 = config.get('RETURN_PERFECT', 'assignments9', fallback='')
     else:
         raise ValueError("Need to have a file called: " +
                          str(p_filename) +
@@ -322,6 +326,15 @@ def read_return_perfect_info(p_filename):
     if gc_6:
         classes = config_string_to_dict(assignments_6)
         classes_dict[gc_6] = classes
+    if gc_7:
+        classes = config_string_to_dict(assignments_7)
+        classes_dict[gc_7] = classes
+    if gc_8:
+        classes = config_string_to_dict(assignments_8)
+        classes_dict[gc_8] = classes
+    if gc_9:
+        classes = config_string_to_dict(assignments_9)
+        classes_dict[gc_9] = classes
 
     return classes_dict
 
