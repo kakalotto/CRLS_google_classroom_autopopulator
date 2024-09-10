@@ -3,7 +3,7 @@
 def classroom_assignments_to_aspen(p_gc_classname, p_aspen_classname, *, content_knowledge_completion=False,
                                    ignore_ungraded=False,
                                    username='', password='', default_category='', ignore_noduedate=False):
-    from generate_classroom_credential import generate_classroom_credential
+    # from generate_classroom_credential import generate_classroom_credential
     from helper_functions.aspen_functions import generate_driver, aspen_login, add_assignments, \
         check_new_aspen_names, get_assignments_from_aspen, goto_assignments
     from helper_functions.quarters import which_quarter_today
