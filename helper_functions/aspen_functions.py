@@ -808,7 +808,8 @@ def get_assignments_and_assignment_ids_from_aspen(p_driver):
         # print(f"rows {rows}")
         # Looop over all rows in this table<
         for i in range(2, rows + 2):
-            xpath_string = '//*[@id="dataGrid"]/table/t>body/tr[' + str(i) + ']/td[2]'
+            # //*[@id="dataGrid"] //*[@id="dataGrid"]/table/tbody/tr[1]
+            xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[2]'
             wait_for_element(p_driver, p_xpath_el=xpath_string)
             aspen_assignment_id_el = p_driver.find_element_by_xpath(xpath_string)
             aspen_assignment_id = aspen_assignment_id_el.get_attribute('id')
