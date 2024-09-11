@@ -7,7 +7,8 @@ config = configparser.ConfigParser()
 config_filename = "crls_teacher_tools.ini"
 classes_dict = read_return_screenshot_assignments(config_filename)
 
-print(classes_dict)
+for key in classes_dict.keys():
+    print(f"{key} has this assignments {classes_dict[key]}")
 
 for key in classes_dict:
     return_screenshot_assignments(key, classes_dict[key])
