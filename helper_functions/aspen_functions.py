@@ -70,14 +70,7 @@ def aspen_login(p_driver, *, username='', password=''):
         actions = ActionChains(p_driver)
         actions.send_keys(password + Keys.ENTER)
         actions.perform()
-        #
-        # wait_for_element(p_driver, p_xpath_el="//input[@class='logonInput']")
-        # wait_for_element(p_driver, p_xpath_el="//input[@name='password']")
-        # print("sending pasword and usernamne")
-        # p_driver.find_element_by_xpath("//input[@class='logonInput']").send_keys(username)
-        # p_driver.find_element_by_xpath("//input[@name='password']").send_keys(password)
-        # wait_for_element(p_driver, p_xpath_el="//button")
-        # p_driver.find_element_by_xpath("//button").click()
+
     else:
         print("Login credentials not supplied.  Manual login")
         wait_for_element(p_driver, p_xpath_el="//a[@title='Gradebook tab']", timeout=30,
@@ -196,6 +189,74 @@ def goto_assignments(p_driver, p_aspen_class):
     wait_for_element(p_driver, p_link_text='Assignments')
     p_driver.find_element(By.LINK_TEXT, "Assignments").click()
 
+    # p_driver.find_element_by_link_text("Assignments").click()
+
+
+def goto_categories(p_driver, p_aspen_class):
+    """
+    Goto Assignments.  Assumes are are at the aspen login.
+    :param p_driver: Selenium driver object
+    :param p_aspen_class: Name of the class in Aspen.
+    :return:
+    """
+    from selenium.webdriver.common.by import By
+
+    goto_gradebook(p_driver, p_aspen_class)
+    wait_for_element(p_driver, p_link_text='Categories')
+    p_driver.find_element(By.LINK_TEXT, "Categories").click()
+
+    # p_driver.find_element_by_link_text("Assignments").click()
+
+
+def add_skills_category(p_driver, category):
+    """
+    Goto Assignments.  Assumes are are at the aspen login.
+    :param p_driver: Selenium driver object
+    :param p_aspen_class: Name of the class in Aspen.
+    :return:
+    """
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import Select
+    import time
+    from selenium.webdriver.common.action_chains import ActionChains
+    from selenium.webdriver.common.keys import Keys
+
+    # select = Select(p_driver.find_element(By.LINK_TEXT, 'Options'))
+    # # select by visible text
+    # select.select_by_visible_text('Add')
+
+    wait_for_element(p_driver, p_id='options')
+    p_driver.find_element(By.ID, "options").click()
+    wait_for_element(p_driver, p_id='options_Option1')
+    p_driver.find_element(By.ID, "options_Option1").click()
+    # for="propertyValue(gctColType)"
+    # for="propertyValue(gctTypeDesc)"
+    field_value = { 'propertyValue(gctColType)': 'exp-avg',
+                    'propertyValue(gctTypeDesc)': 'Exploratory Average',
+                    'propertyValue(gctTypeWeight)': '1'}
+    print(f"Field value! {field_value}")
+    action = ActionChains(p_driver)
+
+    for key in field_value.keys():
+        # time.sleep(1)
+        wait_for_element(p_driver, p_name=key)
+        print(f"finding the element {key}")
+        element = p_driver.find_element(By.NAME, key)
+        # element = p_driver.find_element_by_name(key)
+        action.move_to_element(element).perform()
+        # time.sleep(1)
+        element.click()
+        print("backspacing")
+        for i in range(35):
+            element.send_keys(Keys.BACKSPACE)
+        element.send_keys(field_value[key])
+    wait_for_element(p_driver, p_name='saveButton')
+    time.sleep(4)
+    # p_driver.find_element_by_name('saveButton').click()
+    p_driver.find_element(By.NAME, 'saveButton').click()
+
+    # wait_for_element(p_driver, p_link_text='Add')
+    # p_driver.find_element(By.LINK_TEXT, "Add").click()
     # p_driver.find_element_by_link_text("Assignments").click()
 
 

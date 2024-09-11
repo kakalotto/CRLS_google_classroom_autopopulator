@@ -1,8 +1,9 @@
 import re
+import time
 
 import configparser
 from helper_functions.aspen_functions import generate_driver, aspen_login, add_assignments, \
-    check_new_aspen_names, get_assignments_from_aspen, goto_assignments
+    check_new_aspen_names, get_assignments_from_aspen, goto_assignments, goto_categories, add_skills_category
 from helper_functions.classroom_functions import scrub_courseworks
 from helper_functions.quarters import which_quarter_today
 from helper_functions.db_functions import execute_sql, query_db, create_connection
@@ -142,11 +143,6 @@ p_style = "no_due_dates"
 #     75,
 # ]
 
-<<<<<<< HEAD
-aspen_username = 'ewu@cpsd.us'
-aspen_password = 'Juniorwetworth123$'
-=======
->>>>>>> 56e99b9089531cdcceac512e42c8f57f4a768b21
 course_letter = 'L'
 course_prefix = 'T120'
 # T120L-I-001
@@ -154,7 +150,11 @@ course_prefix = 'T120'
 # Aspen
 
 for rotation_number in range(1, 12):
-    course_number = course_prefix + course_letter + '-I-00' + str(rotation_number)
+    if rotation_number < 10:
+        course_number = course_prefix + course_letter + '-I-00' + str(rotation_number)
+    else:
+        course_number = course_prefix + course_letter + '-I-0' + str(rotation_number)
+
     print(f"Course number xxx {course_number}")
     assignment_numbers = assignments_list[rotation_number - 1]
     assignment_names = ['day_' + str(assignment_number) for assignment_number in assignment_numbers ]
@@ -211,6 +211,11 @@ for rotation_number in range(1, 12):
             print(course['title'])
         driver = generate_driver()
         aspen_login(driver, username=aspen_username, password=aspen_password)
+
+        # goto_categories(driver, course_number)
+        # add_skills_category(driver, 'blah')
+        # print("asdf")
+
         goto_assignments(driver, course_number)
         aspen_assignments = get_assignments_from_aspen(driver)
         courseworks = scrub_courseworks(courseworks, 'Aspen', aspen_assignments, content_knowledge_completion)
