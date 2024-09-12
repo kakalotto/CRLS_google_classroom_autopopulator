@@ -268,22 +268,30 @@ def goto_assignments_this_quarter(p_driver, p_aspen_class, p_quarter):
     :param p_quarter: This quarter (Q1, Q3, Q3, etc...) (string)
     :return: none
     """
+    from selenium.webdriver.common.by import By
+
     goto_assignments(p_driver, p_aspen_class)
     p_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     wait_for_element(p_driver, p_xpath_el="//a[@title='List of assignment records']")  # assignments on the left
     wait_for_element(p_driver, p_xpath_el='//*[@id="filterMenu"]')  # funnel icon
-    p_driver.find_element_by_xpath('//*[@id="filterMenu"]').click()
+    p_driver.find_element(By.XPATH, '//*[@id="filterMenu"]').click()
+    # p_driver.find_element_by_xpath('//*[@id="filterMenu"]').click()
     wait_for_element(p_driver, p_xpath_el='//*[@id="filterMenu_Option2"]/td[2]')  # term= pulldown
-    p_driver.find_element_by_xpath('//*[@id="filterMenu_Option2"]/td[2]').click()
+    p_driver.find_element(By.XPATH, '//*[@id="filterMenu_Option2"]/td[2]').click()
+
+    # p_driver.find_element_by_xpath('//*[@id="filterMenu_Option2"]/td[2]').click()
     window_before = p_driver.window_handles[0]
     window_after = p_driver.window_handles[1]
     p_driver.switch_to.window(window_after)
     wait_for_element(p_driver, p_xpath_el='//input[@name="value(prompt1)"]')  # term ID field
-    term_id_field = p_driver.find_element_by_xpath('//input[@name="value(prompt1)"]')
+    # term_id_field = p_driver.find_element_by_xpath('//input[@name="value(prompt1)"]')
+    term_id_field = p_driver.find_element(By.XPATH, '//input[@name="value(prompt1)"]')
     term_id_field.click()  # Click in the popup termID field
     term_id_field.send_keys(p_quarter)  # type in the quarter
     wait_for_element(p_driver, p_xpath_el='//*[@id="submitButton"]')  # Submit button
-    p_driver.find_element_by_xpath('//*[@id="submitButton"]').click()
+    p_driver.find_element(By.XPATH, '//*[@id="submitButton"]').click()
+
+    # p_driver.find_element_by_xpath('//*[@id="submitButton"]').click()
     p_driver.switch_to.window(window_before)
 
 
@@ -804,7 +812,9 @@ def get_assignments_and_assignment_ids_from_aspen(p_driver):
     done = False
     while done is False:
         wait_for_element(p_driver, p_xpath_el="//tr[@class='listCell listRowHeight   ']")
-        rows = len(p_driver.find_elements_by_xpath("//tr[@class='listCell listRowHeight   ']"))
+        # rows = len(p_driver.find_elements_by_xpath("//tr[@class='listCell listRowHeight   ']"))
+        rows = len(p_driver.find_elements(By.XPATH, "//tr[@class='listCell listRowHeight   ']"))
+
         # print(f"rows {rows}")
         # Looop over all rows in this table<
         for i in range(2, rows + 2):
