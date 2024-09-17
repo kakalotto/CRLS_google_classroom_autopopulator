@@ -224,7 +224,7 @@ def add_skills_category(p_driver, category):
     # select = Select(p_driver.find_element(By.LINK_TEXT, 'Options'))
     # # select by visible text
     # select.select_by_visible_text('Add')
-
+    print("In add skill category")
     wait_for_element(p_driver, p_id='options')
     p_driver.find_element(By.ID, "options").click()
     wait_for_element(p_driver, p_id='options_Option1')
@@ -341,7 +341,9 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
    #  wait_for_element(p_driver, p_xpath_el="//select[@name='termFilter']")  # term pulldown menu
     xpath = "//select[@name='termFilter']/option[text()='" + str(p_quarter) + "']"
     wait_for_element(p_driver, p_xpath_el=xpath)  # term pulldown menu
-    p_driver.find_element_by_xpath(xpath).click()
+    p_driver.find_element(By.XPATH, xpath).click()
+
+    # p_driver.find_element_by_xpath(xpath).click()
     print("found pulldown maybe")
 
   # xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select'
@@ -351,7 +353,10 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
 # /html/body/form/table/tbody/tr[2]/td/div/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[4]/select/option[4]
 # /html/body/form/table/tbody/tr[2]/td/div/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[2]/table/tbody/tr/td[1]/select/option[1]
 #           //*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[2]/table/tbody/tr/td[1]/select/option[1]
-    p_driver.find_element_by_xpath(xpath).click()  # clicks on Grade Columns ALL (all categories)
+
+    # p_driver.find_element_by_xpath(xpath).click()  # clicks on Grade Columns ALL (all categories)
+    p_driver.find_element(By.XPATH, xpath).click()  # clicks on Grade Columns ALL (all categories)
+
     # xpath += "/option[text()='All']"
     # wait_for_element(p_driver, p_xpath_el=xpath)
     # p_driver.find_element_by_xpath(xpath).click()
@@ -680,17 +685,24 @@ def get_student_ids_from_aspen(p_driver):
     :return: dictionary key is name in Aspen, value is Aspen student ID.  i.e.
     {'Fakir, Shahnawaz': 'STD0000007I3ZV', 'Hailemichael, Daniel': 'stdX2002052929'}
     """
+    from selenium.webdriver.common.by import By
+
     import re
     import time
     id_scholars = {}
     height = 0
     wait_for_element(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
-    scr = p_driver.find_element_by_xpath("//div[@class='scrollCell invisible-horizontal-scrollbar']")
+
+    # scr = p_driver.find_element_by_xpath("//div[@class='scrollCell invisible-horizontal-scrollbar']")
+    scr = p_driver.find_element(By.XPATH, "//div[@class='scrollCell invisible-horizontal-scrollbar']")
+
     old_names = []
     for i in range(10):
         wait_for_element_clickable(p_driver, p_xpath_el="//a")
         time.sleep(1.5)  # wut?  can't redefine names inside of list so  will just sleep
-        names = p_driver.find_elements_by_xpath("//a")
+        names = p_driver.find_elements(By.XPATH, "//a")
+
+        # names = p_driver.find_elements_by_xpath("//a")
         new_names = []
         for a in names:
             try:
@@ -701,7 +713,9 @@ def get_student_ids_from_aspen(p_driver):
                 continue
             # print("sleeping")
             try:
-                p_driver.find_elements_by_xpath("//a")
+                # p_driver.find_elements_by_xpath("//a")
+                p_driver.find_elements(By.XPATH, "//a")
+
                 a_attrib = a.get_attribute('href')
                 if re.search('openGradeInputDetail', a_attrib) and \
                         (re.search('STD', a_attrib) or re.search('std', a_attrib)):
@@ -821,15 +835,20 @@ def get_assignments_and_assignment_ids_from_aspen(p_driver):
             # //*[@id="dataGrid"] //*[@id="dataGrid"]/table/tbody/tr[1]
             xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[2]'
             wait_for_element(p_driver, p_xpath_el=xpath_string)
-            aspen_assignment_id_el = p_driver.find_element_by_xpath(xpath_string)
+            # aspen_assignment_id_el = p_driver.find_element_by_xpath(xpath_string)
+            aspen_assignment_id_el = p_driver.find_element(By.XPATH, xpath_string)
             aspen_assignment_id = aspen_assignment_id_el.get_attribute('id')
             xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[9]'
             wait_for_element(p_driver, p_xpath_el=xpath_string)
-            gb_column_name_el = p_driver.find_element_by_xpath(xpath_string)
+            # gb_column_name_el = p_driver.find_element_by_xpath(xpath_string)
+            gb_column_name_el = p_driver.find_element(By.XPATH, xpath_string)
+
             gb_column_name = gb_column_name_el.text
             p_aspen_assignment_ids[gb_column_name] = aspen_assignment_id
         try:
-            button = p_driver.find_element_by_xpath('//*[@id="topnextPageButton"]')
+            button = p_driver.find_element(By.XPATH, '//*[@id="topnextPageButton"]')
+
+            # button = p_driver.find_element_by_xpath('//*[@id="topnextPageButton"]')
             disabled = button.get_attribute('disabled')
             if disabled is None:
                 button.click()

@@ -8,15 +8,18 @@ from helper_functions.classroom_functions import scrub_courseworks
 from helper_functions.quarters import which_quarter_today
 from helper_functions.db_functions import execute_sql, query_db, create_connection
 from helper_functions.skills_functions import date_to_classroom_due_date, date_to_classroom_creation_date
-
+import getpass
 
 config_filename = "crls_teacher_tools.ini"
 print(f"Opening up this config file now: {config_filename}")
 config = configparser.ConfigParser()
 config.read("crls_teacher_tools.ini")
 
-aspen_username = config.get('LOGIN', 'username', fallback='')
-aspen_password = config.get('LOGIN', 'password', fallback='')
+# aspen_username = config.get('LOGIN', 'username', fallback='')
+# aspen_password = config.get('LOGIN', 'password', fallback='')
+# Aspen
+aspen_username = input("Give me your aspen username (include .cpsd.us, i.e. ewu@cpsd.us) ")
+aspen_password = getpass.getpass('Give me the password for Aspen ')
 
 
 today_quarter_obj = which_quarter_today()
@@ -143,7 +146,9 @@ p_style = "no_due_dates"
 #     75,
 # ]
 
-course_letter = 'L'
+course_letter = 'L' # Info Tech
+course_letter = 'B' # BioTech
+
 course_prefix = 'T120'
 # T120L-I-001
 
