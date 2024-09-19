@@ -9,11 +9,11 @@ from helper_functions.db_functions import execute_sql, query_db, create_connecti
 from helper_functions.skills_functions import date_to_classroom_due_date, date_to_classroom_creation_date
 import getpass
 
-config_filename = "crls_teacher_tools.ini"
-print(f"Opening up this config file now: {config_filename}")
-config = configparser.ConfigParser()
-config.read("crls_teacher_tools.ini")
-import getpass
+# config_filename = "crls_teacher_tools.ini"
+# print(f"Opening up this config file now: {config_filename}")
+# config = configparser.ConfigParser()
+# config.read("crls_teacher_tools.ini")
+# import getpass
 
 # aspen_username = input("Give me your aspen username (no .cpsd.us)")
 # aspen_password = getpass.getpass('Type your password plz ')
@@ -147,6 +147,7 @@ p_style = "no_due_dates"
 
 course_letter = 'L'  # IT/CS
 course_letter = 'B'  # Biotech
+course_letter = 'E'  # Culinary
 
 course_prefix = 'T120'
 # T120L-I-001
