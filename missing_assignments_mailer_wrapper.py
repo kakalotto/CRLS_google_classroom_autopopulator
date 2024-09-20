@@ -1,5 +1,6 @@
 from helper_functions.read_ini_functions import read_mailer_info
 from missing_assignments_mailer import missing_assignments_mailer
+import get_student_info_config  # gives us class_students_dict
 
 # Read in info
 config_filename = "crls_teacher_tools.ini"
