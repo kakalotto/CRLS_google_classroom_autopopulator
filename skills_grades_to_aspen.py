@@ -33,7 +33,7 @@ programs_dict = {
 programs_dict = {'Biotechnology': {'letter': 'B'}}
 
 course_prefix = 'T120'
-course_letter = 'L'
+# course_letter = 'L'
 course_letter = 'B'
 
 t_username = 'ewu@cpsd.us'
