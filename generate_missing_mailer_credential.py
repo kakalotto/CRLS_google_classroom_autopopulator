@@ -9,6 +9,7 @@ def generate_missing_mailer_credential():
 
     # If modifying these scopes, delete the file token_gmail.json.
     SCOPES = [
+        'https://www.googleapis.com/auth/spreadsheets.readonly',
         "https://www.googleapis.com/auth/gmail.send",
         'https://www.googleapis.com/auth/classroom.courses.readonly',
         'https://www.googleapis.com/auth/classroom.rosters.readonly',
@@ -40,6 +41,9 @@ def generate_missing_mailer_credential():
     try:
         service_google_classroom_send_emails_1_gmail = build("gmail", "v1", credentials=creds)
         service_google_classroom_send_emails_1_classroom = build("classroom", "v1", credentials=creds)
-        return [service_google_classroom_send_emails_1_classroom, service_google_classroom_send_emails_1_gmail]
+        service_sheets_classroom_send_emails_1_classroom = build("sheets", "v4", credentials=creds)
+
+        return [service_google_classroom_send_emails_1_classroom, service_google_classroom_send_emails_1_gmail,
+                service_sheets_classroom_send_emails_1_classroom]
     except HttpError as error:
         print(f"ERROR: Unable to generate credential for missing_mailer_credential.   Error is this: {error}")

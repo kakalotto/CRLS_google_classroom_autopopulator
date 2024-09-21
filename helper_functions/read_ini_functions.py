@@ -217,6 +217,23 @@ def read_mailer_info(p_filename):
         p_message6 = config.get('MAILER', 'message6', fallback='')
         p_message7 = config.get('MAILER', 'message7', fallback='')
         p_message8 = config.get('MAILER', 'message8', fallback='')
+        p_spreadsheet_id1 = config.get('MAILER', 'spreadsheet_id1', fallback='')
+        p_spreadsheet_id2 = config.get('MAILER', 'spreadsheet_id2', fallback='')
+        p_spreadsheet_id3 = config.get('MAILER', 'spreadsheet_id3', fallback='')
+        p_spreadsheet_id4 = config.get('MAILER', 'spreadsheet_id4', fallback='')
+        p_spreadsheet_id5 = config.get('MAILER', 'spreadsheet_id5', fallback='')
+        p_spreadsheet_id6 = config.get('MAILER', 'spreadsheet_id6', fallback='')
+        p_spreadsheet_id7 = config.get('MAILER', 'spreadsheet_id7', fallback='')
+        p_spreadsheet_id8 = config.get('MAILER', 'spreadsheet_id8', fallback='')
+        p_sheet_id1 = config.get('MAILER', 'sheet_id1', fallback='')
+        p_sheet_id2 = config.get('MAILER', 'sheet_id2', fallback='')
+        p_sheet_id3 = config.get('MAILER', 'sheet_id3', fallback='')
+        p_sheet_id4 = config.get('MAILER', 'sheet_id4', fallback='')
+        p_sheet_id5 = config.get('MAILER', 'sheet_id5', fallback='')
+        p_sheet_id6 = config.get('MAILER', 'sheet_id6', fallback='')
+        p_sheet_id7 = config.get('MAILER', 'sheet_id7', fallback='')
+        p_sheet_id8 = config.get('MAILER', 'sheet_id8', fallback='')
+
         p_student1 = config.get('MAILER', 'email1', fallback='')
         p_student2 = config.get('MAILER', 'email2', fallback='')
         p_student3 = config.get('MAILER', 'email3', fallback='')
@@ -264,13 +281,33 @@ def read_mailer_info(p_filename):
     p_teachercc = [p_teachercc1, p_teachercc2, p_teachercc3, p_teachercc4, p_teachercc5, p_teachercc6,
                   p_teachercc7, p_teachercc8]
     p_messages = [p_message1, p_message2, p_message3, p_message4, p_message5, p_message6, p_message7, p_message8]
+    p_spreadsheet_ids = [p_spreadsheet_id1,
+                         p_spreadsheet_id2,
+                         p_spreadsheet_id3,
+                         p_spreadsheet_id4,
+                         p_spreadsheet_id5,
+                         p_spreadsheet_id6,
+                         p_spreadsheet_id7,
+                         p_spreadsheet_id8,
+                         ]
+    p_sheet_ids = [
+        p_sheet_id1,
+        p_sheet_id2,
+        p_sheet_id3,
+        p_sheet_id4,
+        p_sheet_id5,
+        p_sheet_id6,
+        p_sheet_id7,
+        p_sheet_id8,
+    ]
+
     p_student_cc = {p_student1: p_guardian1, p_student2: p_guardian2, p_student3: p_guardian3, p_student4: p_guardian4,
                     p_student5: p_guardian5, p_student6: p_guardian6, p_student7: p_guardian7, p_student8: p_guardian8,
                     p_student9: p_guardian9, p_student10: p_guardian10, p_student11: p_guardian11,
                     p_student12: p_guardian12, p_student13: p_guardian13, p_student14: p_guardian14,
                     p_student15: p_guardian15, p_student16: p_guardian16, p_student17: p_guardian17}
     print(f"Here is the studentCC's {p_student_cc}")
-    return [p_mailclasses, p_teachercc, p_messages, p_student_cc, p_send_email, ]
+    return [p_mailclasses, p_teachercc, p_messages, p_student_cc, p_send_email, p_spreadsheet_ids, p_sheet_ids ]
 
 
 def config_string_to_dict(p_string):
