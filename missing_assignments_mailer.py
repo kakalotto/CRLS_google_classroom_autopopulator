@@ -158,33 +158,46 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
     values = read_course_daily_data_all(p_spreadsheet_id, p_sheet_id, service_sheets)
 
     # Find index of today
-    for i, row in enumerate(values, 1):
-        day_info = read_day_info(row)
-        this_date_obj = datetime.datetime.strptime(day_info['date'], '%m/%d/%Y')
-        this_date_obj = this_date_obj.date()
-        print(f"this day obj {this_date_obj}")
-        if this_date_obj == today_obj:
-            today_index = i
-            print(f"it is today!!!! {today_index}")
+    found = False
+    while not found:
+        for i, row in enumerate(values, 1):
+            day_info = read_day_info(row)
+            this_date_obj = datetime.datetime.strptime(day_info['date'], '%m/%d/%Y')
+            this_date_obj = this_date_obj.date()
+            # print(f"this day obj {this_date_obj}")
+            if this_date_obj == today_obj:
+                today_index = i
+                print(f"it is today!!!! {today_index}")
+                found = True
+                break
+        today_obj = datetime.date.today() - datetime.timedelta(days=1)
+
     # Find index of 6 days ago
+
     for i, row in enumerate(values, 1):
         day_info = read_day_info(row)
         this_date_obj = datetime.datetime.strptime(day_info['date'], '%m/%d/%Y')
         this_date_obj = this_date_obj.date()
-        print(f"this day obj {this_date_obj}")
+        # print(f"this day obj {this_date_obj}")
         if this_date_obj > one_week_previous_obj:
             one_week_previous_index = i
             print(f"index of 6 days ago is today!!!! {one_week_previous_index}")
             break
     # Find index of future
-    for i, row in enumerate(values, 1):
-        day_info = read_day_info(row)
-        this_date_obj = datetime.datetime.strptime(day_info['date'], '%m/%d/%Y')
-        this_date_obj = this_date_obj.date()
-        print(f"this day obj {this_date_obj}")
-        if this_date_obj == one_week_future_obj:
-            one_week_future_index = i
-            print(f"future is today!!!! {one_week_future_index}")
+    found = False
+    while not found:
+        for i, row in enumerate(values, 1):
+            day_info = read_day_info(row)
+            this_date_obj = datetime.datetime.strptime(day_info['date'], '%m/%d/%Y')
+            this_date_obj = this_date_obj.date()
+            # print(f"this day obj {this_date_obj}")
+            if this_date_obj == one_week_future_obj:
+                one_week_future_index = i
+                found = True
+                print(f"future is today!!!! {one_week_future_index}")
+                break
+        if not found:
+            one_week_future_obj = one_week_future_obj + datetime.timedelta(days=1)
 
     # get info for each of the days
     counter = one_week_previous_index - 1
@@ -194,7 +207,12 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
     while counter < today_index:
         row = values[counter]
         print(row)
-        todays_assignments_string = row[3]
+        try:
+            todays_assignments_string = row[3]
+        except IndexError:
+            print("You don't have it planned this far out")
+            counter = counter + 1
+            continue
         todays_assignments_list = todays_assignments_string.split('and')
         assignments.extend(todays_assignments_list)
         print(f"assignments {assignments}, todays_assignments_list {todays_assignments_list}, todays_string {todays_assignments_string}")
@@ -214,7 +232,12 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
     while counter < one_week_future_index:
         row = values[counter]
         print(row)
-        todays_assignments_string = row[3]
+        try:
+            todays_assignments_string = row[3]
+        except IndexError:
+            print("You don't have it planned this far out")
+            counter = counter + 1
+            continue
         todays_assignments_list = todays_assignments_string.split('and')
         future_assignments.extend(todays_assignments_list)
         # print(f"assignments {assignments}, todays_assignments_list {todays_assignments_list}, todays_string {todays_assignments_string}")
@@ -252,7 +275,7 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
     print(f"birthday names {birthday_names}" )
     birthday_string = ''
     if len(birthday_names) > 0:
-        birthday_string = 'This week, we wish Happy Birthday to ' + birthday_names[0]
+        birthday_string = 'This week, we wished Happy Birthday to ' + birthday_names[0]
         if len(birthday_names) > 1:
             for name in birthday_names[1:]:
                 birthday_string = birthday_string + ' and ' + name
@@ -289,7 +312,7 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
             else:
                 first_name = name_list[0]
             if not message[key]:
-                message[key] = 'You have everything turned in that is due.  Great work!'
+                message[key] = 'Everything that is due has been turned in.  Great work!'
             else:
                 message[key] = "Here are assignments that are past due that are not turned in yet:\n\n" + \
                                message[key]

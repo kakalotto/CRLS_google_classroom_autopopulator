@@ -1,23 +1,87 @@
 past_days = {
+    'Python 034 - Sorting hat functions': 'We started our fourth unit of Python programming, \n'
+                                          'in which we learn about how to use functions.\n'
+                                          'Functions are a way to shorten what we write \n'
+                                          '(for example, cookie recipe vs the 8 steps of making cookies).\n'
+                                          'Using functions in our programming can make code easier to read\n'
+                                          ' and easier to maintain.\n',
+    'Python 041 - The Samuel L. Jackson algorithm': 'We started our fifth unit of Python programming, \n'
+                                                    'in which we put together previously learned concepts in\n'
+                                                    'bigger codes.  This is our first attempt at longer codes, \n'
+                                                    'which we will need to be able to do for the AP exam.\n',
+    'Python 047 The Rock Says': 'We continue our fifth unit of Python programming, \n'
+                                'in which we put together previously learned concepts in\n'
+                                'bigger codes. We will need to be able to write longer codes for the AP exam.\n',
+    'Create task practice 1': "We started a practice assignment for the AP exam, which is the\n"
+                              " same assignment as the AP CSP Create task.  For this assignment\n"
+                              "we write a longer program with certain requirements, copy+paste some code segments, \n"
+                              " and make a video of the code running.  For the AP exam (and for this class) \n"
+                              "students will have to answer questions about this program using only their code\n"
+                              "segments are reference material.  Everybody does this assignment, \n"
+                              "whether or not they are taking the AP exam.\n",
+    'Scratch 2.3a Asks + joins': 'We started our second unit of Scratch programming,\n'
+                                 'in which we learn about repeats, asking questions,\n'
+                                 'and if/else statements.  We will use these concepts later\n'
+                                 'when we learn how to program in Python.\n',
     'What is the internet': 'We learned about the basics of the internet. \nTopics included '
                             'internet redundancy and fault tolerance,\n'
                             'the basics of internet protocols,\n'
                             'and scaling of the internet.\n'
                             'The internet is a huge topic, and our focus is mostly learning\n'
                             'the material to do well on the AP CSP exam.\n',
+    'Research yourself': 'We learned about internet privacy and safety with some assignments\n'
+                         'that show how easy it can be to find information about\n'
+                         'people or to make correlations between different sites that\n'
+                         'expose internet identities.\n',
     'Join the AP classroom': 'We talked about the procedure to sign up for the AP exam.\n'
-                             'If you want to take the AP exam, you need to sign up in AP classroom\n'
+                             'If your student wants to take the AP exam, your student needs to sign up in AP classroom\n'
                              'and then pay for it with myschoolbucks.  Instructions for myschoolbucks\n'
-                             'are in Google classroom.  If you qualify for reduced lunch, you will want to be sure\n'
-                             'you have the proper paperwork set up with your student\'s learning community,\n'
-                             'as reduced lunch fees are much lower than that of regular lunch.\n',
+                             'are in Google classroom.  If your student qualifies for reduced cost lunch, you will want to be sure\n'
+                             'to have the proper paperwork set up with your student\'s learning community,\n'
+                             'as the AP exam is much cheaper if you qualify for reduced cost lunch\n',
 }
 
 future_days = {
+    'end of quarter': 'End of quarter is coming soon.  Last day to turn in any assignment\n'
+                      'is end of class period on the last day of quarter (ALL assignments \n'
+                      ' are due by end of class, NOT 11:59PM, per homework policy)\n',
     'Python quiz1': 'Python quiz1 is coming soon.  There is a review document \n'
-                    'in Google classroom with many practice problems.  Remember\n'
-                    'that quizzes are 70% of your grade, so please be sure to practice\n'
-                    'the review questions!',
+                    'in Google classroom with many practice problems.  Your student will be allowed\n'
+                    'to use existing Pycharm codes that are at school for this quiz.\n'
+                    'Remember that quizzes are 70% of the grade, so please be sure to practice\n'
+                    'the review questions!\n',
+    'Quiz (Encoding + Internet)': 'A code on encoding is coming soon.  There is a review document \n'
+                                  'in Google classroom with a practice Google form as well as a \n'
+                                  'practice Google doc.  This is a CLOSED note quiz with no calculators.\n'
+                                  'Students will need to be able to do binary on pencil and paper.\n'
+                                  'Remember that quizzes are 70% of the grade, so please be sure to practice\n'
+                                  'the review questions!\n',
+    'Python Quiz 2/3': 'Python quiz2/3 is coming soon.  There is a review document \n'
+                       'in Google classroom with many practice problems.  Students will be allowed\n'
+                       'to use existing Pycharm codes that are at school for this quiz.\n'
+                       'Remember that quizzes are 70% of grades, so please be sure to practice\n'
+                       'the review questions!  This is historically a much harder and much lower-scoring'
+                       'quiz than Python quiz1\n',
+    'Create task quiz': 'Python create task quiz is coming soon.  There is a review document \n'
+                       'in Google classroom with many practice problems.  Students will be required.\n'
+                       'to have the PPR from the Create task practice for this quiz.  This quiz \n'
+                        'helps prepare students for the AP exam, as they will see very similar questions\n'
+                        'on that exam.  The quiz is required whether or not the student are taking the AP exam.\n',
+    'Python 1 quiz retake': 'Python quiz 1 retakes are coming soon.  If your student chooses to take this retake, \n'
+                            ' their first quiz is FULLY replaced (as if the student never took the first quiz).\n',
+    'Encoding quiz':  'Encoding quiz 1 retakes are coming soon.  If your student chooses to take this retake, \n'
+                       ' their first quiz is FULLY replaced (as if your student never took the first quiz).\n',
+    'Create task quiz retake (P1 + P2)': 'Create task quiz retakes are coming soon.  If your student chooses to take this retake, \n'
+                                         ' their first quiz is FULLY replaced (as if your student never took the first quiz).\n',
+    'Create task quiz retake (P3 + P4)': 'Create task quiz retakes are coming soon.  If your student chooses to take this retake, \n'
+                                         ' their first quiz is FULLY replaced (as if your student never took the first quiz).\n',
+    'Python 2/3 quiz retake': 'Python quiz 2/3 retakes are coming soon.  If your student chooses to take this retake, \n'
+                            ' their first quiz is FULLY replaced (as if your student never took the first quiz).\n',
+    'Quiz Scratch 1': 'Scratch quiz 1 is coming soon.  There is a review document \n'
+                      'in Google classroom with some practice problems.  Students will be allowed\n'
+                      'to use previous Scratch assignments, but internet, phone, and partners\n'
+                      'are not allowed.   Remember that quizzes are 70% of the grade, \n'
+                      'so please be sure to practice the review questions!',
 }
 
 
@@ -31,4 +95,11 @@ nicknames_dict = {
     '25kfaye@cpsd.us': 'Khadi',
     '25efraley@cpsd.us': 'Leigh',
     '27nstauffer@cpsd.us': 'Nick',
+    '28btine@cpsd.us': 'Ben',
+}
+
+teachers_dict = {
+    'ajang@cpsd.us': 'Andrew',
+    'mtupper@cpsd.us': 'Dr. Tupper',
+    'ewu@cpsd.us': 'Dr. Wu',
 }
