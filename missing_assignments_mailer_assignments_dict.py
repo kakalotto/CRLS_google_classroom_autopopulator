@@ -1,4 +1,15 @@
 past_days = {
+    'HTML 1': 'We started our introduction to Web Design, \n'
+              'in which we learn about how to use HTML to create content for a web page.\n',
+    'Google Fonts': 'We started our second unit of Web Design, \n'
+                    'in which we learn about typography.\n'
+                    'This includes CSS, which helps us style our web pages. \n',
+    'HTML 2': 'We continue our HTML unit, \n'
+              'in which we put together previously learned concepts \n'
+              'and include more CSS in our web page design.\n',
+    'Boxes,_Chrome_Developer_tools,_block_vs_inline_lab': "We started our third Web Design Unit, \n"
+                                                          " in which we begin learning tools for layout of a web page.\n",
+
     'Python 034 - Sorting hat functions': 'We started our fourth unit of Python programming, \n'
                                           'in which we learn about how to use functions.\n'
                                           'Functions are a way to shorten what we write \n'
@@ -82,14 +93,40 @@ future_days = {
                       'to use previous Scratch assignments, but internet, phone, and partners\n'
                       'are not allowed.   Remember that quizzes are 70% of the grade, \n'
                       'so please be sure to practice the review questions!',
+    'Web quiz 1': 'A quiz on HTML and intro CSS is coming soon.  There is a review \n'
+              'document in Google classroom with a practice page to make \n'
+              'Students will need to be able to make a similar web page \n'
+              'during the quiz.\n'
+              'Remember that quizzes are 70% of the grade, so please be \n'
+              'sure to practice.\n',
+    'Web quiz 2': 'Web quiz 2 on typography is coming soon.  There is a review document \n'
+              'in Google classroom with questions and a practice page.\n'
+              'Students will be allowed to use existing HTML and CSS codes \n'
+              ' that are at school for this quiz.\n'
+              'Remember that quizzes are 70% of the grade, so please be \n'
+              'sure to practice.\n',
+    'Web quiz 3': 'Web quiz 3 on the block model and layout is coming soon.  There is a \n'
+              'review document in Google classroom with questions and a \n'
+              'practice page.  Students will be allowed\n'
+              'to use existing HTML and CSS codes that are at school for \n'
+              ' this quiz.  Remember that quizzes are 70% of grades, so  \n'
+              'please be sure to practice!\n',
+
+    'Web quiz 1 retake': 'Web quiz 1 retakes are coming soon.  If your student chooses to take this retake, \n'
+                         ' their first quiz is FULLY replaced (as if the student never took the first quiz).\n',
+    'Web quiz 2 retake': 'Web quiz 2 retakes are coming soon.  If your student chooses to take this retake, \n'
+                         ' their first quiz is FULLY replaced (as if your student never took the first quiz).\n',
+    'Web quiz 3 retake': 'Web quiz 3 retakes are coming soon.  If your student chooses to take this retake, \n'
+                                   ' their first quiz is FULLY replaced (as if your student never took the first quiz).\n',
 }
 
 
 
 nicknames_dict = {
     '25aprajapati@cpsd.us': 'Ashi',
-    '26nmalaviya@cpsd.us': 'Nik',
     '26elevy@cpsd.us': 'Manu',
+    '27lglorioso@cpsd.us': 'Leo',
+    '26nmalaviya@cpsd.us': 'Nik',
     '28rmunson-ghassemi@cpsd.us': 'Razi',
     '28esu@cpsd.us': 'Ellie',
     '25kfaye@cpsd.us': 'Khadi',
@@ -102,4 +139,6 @@ teachers_dict = {
     'ajang@cpsd.us': 'Andrew',
     'mtupper@cpsd.us': 'Dr. Tupper',
     'ewu@cpsd.us': 'Dr. Wu',
+    'mtmurphy@cpsd.us': 'Mr. Murphy',
+    'caleonard@cpsd.us': 'Ms. Leonard',
 }
