@@ -878,7 +878,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
        {'abcdefg': [['DANIEL HAILEMICHAEL', 55], ['Shahnawaz Fakir', 33]],
         'def': [['DANIEL HAILEMICHAEL', 22], ['Shahnawaz Fakir', 5]]
         }
-    :param p_aspen_student_ids: Student IDs dictionary from Google classroom.  Looks like this:
+    :param p_aspen_student_ids: Student IDs dictionary from Aspen.  Looks like this:
        {'Fakir, Shahnawaz': 'STD0000007I3ZV', 'Hailemichael, Daniel': 'stdX2002052929'}
     :param  p_aspen_assignments: Aspen column names and IDs. .  Looks like this:
        {'GCD000000UDRPL': 'Creepy -C', 'GCD000000UDRPP': 'Creepy -K', 'GCD000000UDRPX': 'Web scr-C',
