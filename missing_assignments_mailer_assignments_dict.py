@@ -122,6 +122,10 @@ future_days = {
                          ' their first quiz is FULLY replaced (as if your student never took the first quiz).\n',
     'Web quiz 3 retake': 'Web quiz 3 retakes are coming soon.  If your student chooses to take this retake, \n'
                                    ' their first quiz is FULLY replaced (as if your student never took the first quiz).\n',
+    'IT2 hardware quiz 1': 'IT2 hardware quiz 1 is coming soon.  There is a review Socrative\n'
+                    'activity in Google classroom with many practice problems. This is a closed-note.\n'
+                    'multiple choice quiz.  Remember that quizzes are 70% of the grade, so please be sure to practice\n'
+                    'the review questions!\n',
 }
 
 

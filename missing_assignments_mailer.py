@@ -346,12 +346,31 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
                     else:
                         caretaker_string = maya_student_info_dict[email_address]['caretaker_emails'][0]
                     email_message['to'] = email_address + ',' + caretaker_string
-                # else:
-                #     email_message['to'] = email_address
+                else:
+                    email_message['to'] = email_address
+
+                # Add parental emails
+                caretakers_email = ''
+                for maya_student in maya_this_class_students:
+                    print(f"trying to find {email_address} {maya_student['email']}")
+                    if email_address == maya_student['email']:
+                        caretakers_email = maya_student['caretaker_emails']
+                        break
+                print("before caretaker email")
+                if caretakers_email:
+                    if len(caretakers_email) == 1:
+                        email_message['to'] = email_address + ',' + caretakers_email[0]
+                    else:
+                        email_message['to'] = email_address + ',' + caretakers_email[0] + ',' + caretakers_email[1]
+                print("before teachercc'")
                 if p_teachercc:
                     email_message['cc'] = p_teachercc
                 email_message['subject'] = p_gc_name + '  assignments report'
+                print(f"THis is email message {email_message} before miming\n to: {email_message['to']} cc {email_message['cc']} ")
+
                 email_message.attach(MIMEText(msg_text, 'plain'))
+                print(f"THis is email message {email_message} \n to: {email_message['to']} cc {email_message['cc']} ")
+                # raise "testing"
                 raw_string = base64.urlsafe_b64encode(email_message.as_bytes()).decode()
                 send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
                 print(send_message)
