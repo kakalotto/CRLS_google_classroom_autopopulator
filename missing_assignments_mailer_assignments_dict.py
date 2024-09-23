@@ -61,8 +61,8 @@ future_days = {
                       'is end of class period on the last day of quarter (ALL assignments \n'
                       ' are due by end of class, NOT 11:59PM, per homework policy)\n',
     'Python quiz1': 'Python quiz1 is coming soon.  There is a review document \n'
-                    'in Google classroom with many practice problems.  Your student will be allowed\n'
-                    'to use existing Pycharm codes that are at school for this quiz.\n'
+                    'in Google classroom with many practice problems.  For the quiz, your student will be allowed\n'
+                    'to use code and notes saved in Python on the school computer.\n'
                     'Remember that quizzes are 70% of the grade, so please be sure to practice\n'
                     'the review questions!\n',
     'Quiz (Encoding + Internet)': 'A code on encoding is coming soon.  There is a review document \n'
@@ -94,7 +94,7 @@ future_days = {
                             ' their first quiz is FULLY replaced (as if your student never took the first quiz).\n',
     'Quiz Scratch 1': 'Scratch quiz 1 is coming soon.  There is a review document \n'
                       'in Google classroom with some practice problems.  Students will be allowed\n'
-                      'to use previous Scratch assignments, but internet, phone, and partners\n'
+                      'to use previous Scratch assignments and Google, but phone and partners\n'
                       'are not allowed.   Remember that quizzes are 70% of the grade, \n'
                       'so please be sure to practice the review questions!',
     'Web quiz 1': 'A quiz on HTML and intro CSS is coming soon.  There is a review \n'
