@@ -8,15 +8,18 @@ from helper_functions.classroom_functions import scrub_courseworks
 from helper_functions.quarters import which_quarter_today
 from helper_functions.db_functions import execute_sql, query_db, create_connection
 from helper_functions.skills_functions import date_to_classroom_due_date, date_to_classroom_creation_date
+import getpass
+#
+# config_filename = "crls_teacher_tools.ini"
+# print(f"Opening up this config file now: {config_filename}")
+# config = configparser.ConfigParser()
+# config.read("crls_teacher_tools.ini")
 
-
-config_filename = "crls_teacher_tools.ini"
-print(f"Opening up this config file now: {config_filename}")
-config = configparser.ConfigParser()
-config.read("crls_teacher_tools.ini")
-
-aspen_username = config.get('LOGIN', 'username', fallback='')
-aspen_password = config.get('LOGIN', 'password', fallback='')
+# aspen_username = config.get('LOGIN', 'username', fallback='')
+# aspen_password = config.get('LOGIN', 'password', fallback='')
+# Aspen
+aspen_username = input("Give me your aspen username (include .cpsd.us, i.e. ewu@cpsd.us) ")
+aspen_password = getpass.getpass('Give me the password for Aspen ')
 
 
 today_quarter_obj = which_quarter_today()
@@ -143,11 +146,34 @@ p_style = "no_due_dates"
 #     75,
 # ]
 
-course_letter = 'L'
+course_letter = 'G' # EEC
+
+# course_letter = 'L' # Info Tech
+course_letter = 'B' # BioTech
+course_letter = 'E' # Culinary
+
+#
 course_prefix = 'T120'
 # T120L-I-001
 
 # Aspen
+all_previous_assignments = []
+for rotation_number in range(1, 12):
+    if rotation_number < 10:
+        course_number = course_prefix + course_letter + '-I-00' + str(rotation_number)
+    else:
+        course_number = course_prefix + course_letter + '-I-0' + str(rotation_number)
+
+
+    db_filename = 'database_gc_assignments_put_in_aspen_' + course_number + '.db'
+
+    db_conn = create_connection(db_filename)
+    sql = 'SELECT * FROM aspen_assignments;'
+    style = ''
+    rows = query_db(db_conn, sql)
+    this_class_posted_assignments = [x[0] for x in rows]
+    all_previous_assignments.extend(this_class_posted_assignments)
+    print(f"all previous assignment now {all_previous_assignments}")
 
 for rotation_number in range(1, 12):
     if rotation_number < 10:
@@ -158,8 +184,17 @@ for rotation_number in range(1, 12):
     print(f"Course number xxx {course_number}")
     assignment_numbers = assignments_list[rotation_number - 1]
     assignment_names = ['day_' + str(assignment_number) for assignment_number in assignment_numbers ]
-    print("Here is the list of assignments we are putting in xxx:")
+    print("Here is the list of assignments we are putting in xxx (initial check):")
     print(assignment_names)
+
+
+    final_assignment_names =  []
+    for assignment_name in assignment_names:
+        if assignment_name not in all_previous_assignments:
+            final_assignment_names.append(assignment_name)
+    assignment_names = final_assignment_names
+    print(f"These are final assignments {final_assignment_names}")
+
     courseworks = []
     for assignment_name in assignment_names:
         day_number = re.sub(r'day_', '', assignment_name )

@@ -1,7 +1,7 @@
 def generate_driver():
     """
         Creates a selenium driver object and returns it
-    :return: Selenium driver object
+    :return: Selenium driver
     """
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
@@ -94,25 +94,33 @@ def goto_gradebook(p_driver, p_aspen_class):
     from selenium.webdriver.common.by import By
 
     # print("Trying to go to gradebook")
-    wait_for_element(p_driver, message='Trying to find gradebook but failed?', p_link_text='Gradebook')
-    # p_driver.find_ele
-    p_driver.find_element(By.LINK_TEXT, "Gradebook").click()
-
+    # wait_for_element(p_driver, message='Trying to find gradebook but failed?', p_link_text='Gradebook')
+    # # p_driver.find_ele
+    # p_driver.find_element(By.LINK_TEXT, "Gradebook").click()
     # Do this twice, because Aspen is flaky
-    wait_for_element(p_driver, p_link_text='Gradebook')
-    p_driver.find_element(By.LINK_TEXT, "Gradebook").click()
-    time.sleep(5)
-    wait_for_element(p_driver, p_link_text=p_aspen_class,
-                     message="Be sure this EXACT class really exists in Aspen!\n" + str(p_aspen_class))
-    p_driver.find_element(By.LINK_TEXT, p_aspen_class).click()
-    # p_driver.find_element_by_link_text(p_aspen_class).click()
-    wait_for_element(p_driver, p_link_text='Scores')
+    # wait_for_element(p_driver, p_link_text='Gradebook')
+    # p_driver.find_element(By.LINK_TEXT, "Gradebook").click()
+    # time.sleep(5)
+
+    gradebook = click_button(p_driver, By.LINK_TEXT, 'Gradebook', 10)
+    gradebook = click_button(p_driver, By.LINK_TEXT, 'Gradebook', 10)
+    aspen_class = click_button(p_driver, By.LINK_TEXT, p_aspen_class, 10)
     print("bbb clicking scores")
-    time.sleep(2)
-    p_driver.find_element(By.LINK_TEXT, "Scores").click()
+    time.sleep(3)
+    scores = click_button(p_driver, By.LINK_TEXT, 'Scores', 10)
+
+    # wait_for_element(p_driver, p_link_text=p_aspen_class,
+    #                  message="Be sure this EXACT class really exists in Aspen!\n" + str(p_aspen_class))
+    # p_driver.find_element(By.LINK_TEXT, p_aspen_class).click()
+
+    # p_driver.find_element_by_link_text(p_aspen_class).click()
+    # wait_for_element(p_driver, p_link_text='Scores')
+    # print("bbb clicking scores")
+    # time.sleep(2)
+    # p_driver.find_element(By.LINK_TEXT, "Scores").click()
 
     # p_driver.find_element_by_link_text("Scores").click()
-    time.sleep(2)
+    # time.sleep(2)
 
 
 def goto_students(p_driver):
@@ -186,11 +194,86 @@ def goto_assignments(p_driver, p_aspen_class):
     from selenium.webdriver.common.by import By
 
     goto_gradebook(p_driver, p_aspen_class)
-    wait_for_element(p_driver, p_link_text='Assignments')
-    p_driver.find_element(By.LINK_TEXT, "Assignments").click()
+    assignments_button = click_button(p_driver, By.LINK_TEXT, "Assignments", 5, )
+
+    # wait_for_element(p_driver, p_link_text='Assignments')
+    # p_driver.find_element(By.LINK_TEXT, "Assignments").click()
 
     # p_driver.find_element_by_link_text("Assignments").click()
 
+
+# Maya
+def get_student_ids_from_class(p_driver, class_code):
+    from selenium.webdriver.common.by import By
+    from selenium.common.exceptions import NoSuchElementException
+    import time
+    print('ggg gradebook')
+    gradebook = click_button(p_driver, By.PARTIAL_LINK_TEXT, "Gradebook", 9)
+    print('hhh class button gradebook')
+
+    class_button = click_button(p_driver, By.PARTIAL_LINK_TEXT, class_code, 9)
+    time.sleep(1)
+    print('hhh roster')
+
+    roster_button = click_button(p_driver, By.PARTIAL_LINK_TEXT, "Roster", 9)
+    if gradebook == "dne" or class_button == "dne" or roster_button == "dne":
+        return False
+    try:
+        raw_data = p_driver.find_elements(by=By.CSS_SELECTOR, value="td")
+    except NoSuchElementException:
+        return False
+    str_data = [item.text for item in raw_data]
+    student_ids = [student_id for student_id in str_data if student_id.isdigit() and len(student_id) == 7]
+    return student_ids
+
+# Written by Maya
+def click_button(p_driver, by_value, value_value, wait_time):
+    from selenium.webdriver.support.wait import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as ec
+    from selenium.common.exceptions import TimeoutException
+
+    if wait_time:
+        try:
+            wait = WebDriverWait(p_driver, timeout=wait_time)
+            wait.until(ec.element_to_be_clickable((by_value, value_value)))
+
+        except TimeoutException:
+            return "dne"
+
+    button = (p_driver.find_element(by=by_value, value=value_value))
+    button.click()
+    return button
+
+# Maya
+def goto_student_profile_by_id(p_driver, student_id):
+    from selenium.webdriver.common.by import By
+    import time
+    click_button(p_driver, By.PARTIAL_LINK_TEXT, "Student", 2)
+    try:
+        click_button(p_driver, By.PARTIAL_LINK_TEXT, "Student List", 2)
+        print("clicked student list")
+    except:
+        print("Did not click student list")
+    can_continue = True
+    student_nonexistant = False
+    while can_continue and click_button(p_driver, By.PARTIAL_LINK_TEXT, student_id, 1) == "dne":
+        student_nonexistant = click_button(p_driver, By.PARTIAL_LINK_TEXT, student_id, 1) == "dne"
+        time.sleep(.2)
+        next_button = p_driver.find_element(by=By.NAME, value="nextPageButton")
+        can_continue = next_button.is_enabled()
+        time.sleep(.2)
+        next_button.click()
+    if student_nonexistant and not can_continue:
+        return "na" + student_id
+    return True
+
+
+# Maya
+def get_birthday(p_driver):
+    from selenium.webdriver.common.by import By
+
+    bday_box = p_driver.find_element(By.ID, "propertyValue(relStdPsnOid_psnDob)-span")
+    return bday_box.text[:bday_box.text.index(" ")]
 
 def goto_categories(p_driver, p_aspen_class):
     """
@@ -202,9 +285,10 @@ def goto_categories(p_driver, p_aspen_class):
     from selenium.webdriver.common.by import By
 
     goto_gradebook(p_driver, p_aspen_class)
-    wait_for_element(p_driver, p_link_text='Categories')
-    p_driver.find_element(By.LINK_TEXT, "Categories").click()
+    categories_button = click_button(p_driver, By.LINK_TEXT, "Categories", 5, )
 
+    # wait_for_element(p_driver, p_link_text='Categories')
+    # p_driver.find_element(By.LINK_TEXT, "Categories").click()
     # p_driver.find_element_by_link_text("Assignments").click()
 
 
@@ -224,7 +308,7 @@ def add_skills_category(p_driver, category):
     # select = Select(p_driver.find_element(By.LINK_TEXT, 'Options'))
     # # select by visible text
     # select.select_by_visible_text('Add')
-
+    print("In add skill category")
     wait_for_element(p_driver, p_id='options')
     p_driver.find_element(By.ID, "options").click()
     wait_for_element(p_driver, p_id='options_Option1')
@@ -244,10 +328,11 @@ def add_skills_category(p_driver, category):
         element = p_driver.find_element(By.NAME, key)
         # element = p_driver.find_element_by_name(key)
         action.move_to_element(element).perform()
-        # time.sleep(1)
+        time.sleep(1)
         element.click()
         print("backspacing")
         for i in range(35):
+            print(f"i {i}")
             element.send_keys(Keys.BACKSPACE)
         element.send_keys(field_value[key])
     wait_for_element(p_driver, p_name='saveButton')
@@ -268,22 +353,30 @@ def goto_assignments_this_quarter(p_driver, p_aspen_class, p_quarter):
     :param p_quarter: This quarter (Q1, Q3, Q3, etc...) (string)
     :return: none
     """
+    from selenium.webdriver.common.by import By
+
     goto_assignments(p_driver, p_aspen_class)
     p_driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     wait_for_element(p_driver, p_xpath_el="//a[@title='List of assignment records']")  # assignments on the left
     wait_for_element(p_driver, p_xpath_el='//*[@id="filterMenu"]')  # funnel icon
-    p_driver.find_element_by_xpath('//*[@id="filterMenu"]').click()
+    p_driver.find_element(By.XPATH, '//*[@id="filterMenu"]').click()
+    # p_driver.find_element_by_xpath('//*[@id="filterMenu"]').click()
     wait_for_element(p_driver, p_xpath_el='//*[@id="filterMenu_Option2"]/td[2]')  # term= pulldown
-    p_driver.find_element_by_xpath('//*[@id="filterMenu_Option2"]/td[2]').click()
+    p_driver.find_element(By.XPATH, '//*[@id="filterMenu_Option2"]/td[2]').click()
+
+    # p_driver.find_element_by_xpath('//*[@id="filterMenu_Option2"]/td[2]').click()
     window_before = p_driver.window_handles[0]
     window_after = p_driver.window_handles[1]
     p_driver.switch_to.window(window_after)
     wait_for_element(p_driver, p_xpath_el='//input[@name="value(prompt1)"]')  # term ID field
-    term_id_field = p_driver.find_element_by_xpath('//input[@name="value(prompt1)"]')
+    # term_id_field = p_driver.find_element_by_xpath('//input[@name="value(prompt1)"]')
+    term_id_field = p_driver.find_element(By.XPATH, '//input[@name="value(prompt1)"]')
     term_id_field.click()  # Click in the popup termID field
     term_id_field.send_keys(p_quarter)  # type in the quarter
     wait_for_element(p_driver, p_xpath_el='//*[@id="submitButton"]')  # Submit button
-    p_driver.find_element_by_xpath('//*[@id="submitButton"]').click()
+    p_driver.find_element(By.XPATH, '//*[@id="submitButton"]').click()
+
+    # p_driver.find_element_by_xpath('//*[@id="submitButton"]').click()
     p_driver.switch_to.window(window_before)
 
 
@@ -333,7 +426,9 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
    #  wait_for_element(p_driver, p_xpath_el="//select[@name='termFilter']")  # term pulldown menu
     xpath = "//select[@name='termFilter']/option[text()='" + str(p_quarter) + "']"
     wait_for_element(p_driver, p_xpath_el=xpath)  # term pulldown menu
-    p_driver.find_element_by_xpath(xpath).click()
+    p_driver.find_element(By.XPATH, xpath).click()
+
+    # p_driver.find_element_by_xpath(xpath).click()
     print("found pulldown maybe")
 
   # xpath = '//*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[1]/table/tbody/tr/td[1]/select'
@@ -343,7 +438,10 @@ def goto_scores_this_quarter(p_driver, p_aspen_class, p_quarter):
 # /html/body/form/table/tbody/tr[2]/td/div/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[4]/select/option[4]
 # /html/body/form/table/tbody/tr[2]/td/div/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[2]/table/tbody/tr/td[1]/select/option[1]
 #           //*[@id="contentArea"]/table[2]/tbody/tr[1]/td[2]/table[3]/tbody/tr[2]/td[2]/table/tbody/tr/td[1]/select/option[1]
-    p_driver.find_element_by_xpath(xpath).click()  # clicks on Grade Columns ALL (all categories)
+
+    # p_driver.find_element_by_xpath(xpath).click()  # clicks on Grade Columns ALL (all categories)
+    p_driver.find_element(By.XPATH, xpath).click()  # clicks on Grade Columns ALL (all categories)
+
     # xpath += "/option[text()='All']"
     # wait_for_element(p_driver, p_xpath_el=xpath)
     # p_driver.find_element_by_xpath(xpath).click()
@@ -486,10 +584,12 @@ def add_assignment(p_driver, p_coursework, p_content_knowledge_completion, p_db_
         element.click()
         print("backspacing")
         for i in range(35):
+            time.sleep(.01)
+            print(f"{i}", end=' ')
             element.send_keys(Keys.BACKSPACE)
         element.send_keys(field_value[key])
     wait_for_element(p_driver, p_name='saveButton')
-    time.sleep(4)
+    time.sleep(5)
     # p_driver.find_element_by_name('saveButton').click()
     p_driver.find_element(By.NAME, 'saveButton').click()
 
@@ -665,6 +765,28 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     return column_name
 
 
+def get_student_email(p_driver):
+    from selenium.webdriver.common.by import By
+    student_email = p_driver.find_element(By.ID, "propertyValue(relStdPsnOid_psnEmail01)-span").text
+    return student_email
+
+def get_caretaker_emails(p_driver):
+    from selenium.webdriver.common.by import By
+    click_button(p_driver, By.PARTIAL_LINK_TEXT, "Contacts", 5)
+    raw_data = p_driver.find_elements(by=By.CSS_SELECTOR, value="a")
+    an_emails = [item.text for item in raw_data if "@" in item.text]
+    return list(set(an_emails))
+
+
+def get_name(p_driver):
+    from selenium.webdriver.common.by import By
+    import time
+    time.sleep(1)
+    std_name = p_driver.find_element(By.ID, "propertyValue(stdViewName)-span").text
+    i = std_name.index(",")
+    return std_name[i + 2:] + " " + std_name[:i]
+
+
 def get_student_ids_from_aspen(p_driver):
     """
     Gets the aspen IDs from aspen
@@ -672,17 +794,24 @@ def get_student_ids_from_aspen(p_driver):
     :return: dictionary key is name in Aspen, value is Aspen student ID.  i.e.
     {'Fakir, Shahnawaz': 'STD0000007I3ZV', 'Hailemichael, Daniel': 'stdX2002052929'}
     """
+    from selenium.webdriver.common.by import By
+
     import re
     import time
     id_scholars = {}
     height = 0
     wait_for_element(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
-    scr = p_driver.find_element_by_xpath("//div[@class='scrollCell invisible-horizontal-scrollbar']")
+
+    # scr = p_driver.find_element_by_xpath("//div[@class='scrollCell invisible-horizontal-scrollbar']")
+    scr = p_driver.find_element(By.XPATH, "//div[@class='scrollCell invisible-horizontal-scrollbar']")
+
     old_names = []
     for i in range(10):
         wait_for_element_clickable(p_driver, p_xpath_el="//a")
         time.sleep(1.5)  # wut?  can't redefine names inside of list so  will just sleep
-        names = p_driver.find_elements_by_xpath("//a")
+        names = p_driver.find_elements(By.XPATH, "//a")
+
+        # names = p_driver.find_elements_by_xpath("//a")
         new_names = []
         for a in names:
             try:
@@ -693,7 +822,9 @@ def get_student_ids_from_aspen(p_driver):
                 continue
             # print("sleeping")
             try:
-                p_driver.find_elements_by_xpath("//a")
+                # p_driver.find_elements_by_xpath("//a")
+                p_driver.find_elements(By.XPATH, "//a")
+
                 a_attrib = a.get_attribute('href')
                 if re.search('openGradeInputDetail', a_attrib) and \
                         (re.search('STD', a_attrib) or re.search('std', a_attrib)):
@@ -804,22 +935,29 @@ def get_assignments_and_assignment_ids_from_aspen(p_driver):
     done = False
     while done is False:
         wait_for_element(p_driver, p_xpath_el="//tr[@class='listCell listRowHeight   ']")
-        rows = len(p_driver.find_elements_by_xpath("//tr[@class='listCell listRowHeight   ']"))
+        # rows = len(p_driver.find_elements_by_xpath("//tr[@class='listCell listRowHeight   ']"))
+        rows = len(p_driver.find_elements(By.XPATH, "//tr[@class='listCell listRowHeight   ']"))
+
         # print(f"rows {rows}")
         # Looop over all rows in this table<
         for i in range(2, rows + 2):
             # //*[@id="dataGrid"] //*[@id="dataGrid"]/table/tbody/tr[1]
             xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[2]'
             wait_for_element(p_driver, p_xpath_el=xpath_string)
-            aspen_assignment_id_el = p_driver.find_element_by_xpath(xpath_string)
+            # aspen_assignment_id_el = p_driver.find_element_by_xpath(xpath_string)
+            aspen_assignment_id_el = p_driver.find_element(By.XPATH, xpath_string)
             aspen_assignment_id = aspen_assignment_id_el.get_attribute('id')
             xpath_string = '//*[@id="dataGrid"]/table/tbody/tr[' + str(i) + ']/td[9]'
             wait_for_element(p_driver, p_xpath_el=xpath_string)
-            gb_column_name_el = p_driver.find_element_by_xpath(xpath_string)
+            # gb_column_name_el = p_driver.find_element_by_xpath(xpath_string)
+            gb_column_name_el = p_driver.find_element(By.XPATH, xpath_string)
+
             gb_column_name = gb_column_name_el.text
             p_aspen_assignment_ids[gb_column_name] = aspen_assignment_id
         try:
-            button = p_driver.find_element_by_xpath('//*[@id="topnextPageButton"]')
+            button = p_driver.find_element(By.XPATH, '//*[@id="topnextPageButton"]')
+
+            # button = p_driver.find_element_by_xpath('//*[@id="topnextPageButton"]')
             disabled = button.get_attribute('disabled')
             if disabled is None:
                 button.click()
@@ -1008,7 +1146,7 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
                         action.move_to_element(grade_element).perform()
                         # print("jjj this cell ID " + str(cell_id))
                         grade_element.click()
-                        time.sleep(2)
+                        time.sleep(2.5)
                         # wait_for_element(p_driver, p_id=edit_cell_id)
                         grade_element2 = p_driver.find_element_by_id(edit_cell_id)
                         grade_element2.send_keys(gc_score)

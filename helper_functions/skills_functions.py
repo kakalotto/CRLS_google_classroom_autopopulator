@@ -17,6 +17,7 @@ def generate_driver():
     p_driver.get('https://skillslibrary-rsta.com/')
     return p_driver
 
+
 def skills_login(p_driver, *, username='', password=''):
     """
     Logs in to Aspen
@@ -32,6 +33,7 @@ def skills_login(p_driver, *, username='', password=''):
     from selenium.common.exceptions import TimeoutException
     from selenium.webdriver.common.keys import Keys
     from selenium.webdriver.common.action_chains import ActionChains
+    from helper_functions.aspen_functions import click_button
     import time
     try:
 #        WebDriverWait(p_driver, 10).until(ec.presence_of_element_located((By.XPATH, "//input[@class='logonInput']")))
@@ -43,25 +45,33 @@ def skills_login(p_driver, *, username='', password=''):
         print("quitting")
         p_driver.quit()
 
-    username_field = p_driver.find_element(By.XPATH, '//*[@id="main-box"]/div/form/div[1]/input')
-    username_field.click()
+    username_field = click_button(p_driver, By.XPATH, '//*[@id="main-box"]/div/form/div[1]/input', 2, )
     username_field.send_keys(username)
-    time.sleep(0.5)
-    password_field = p_driver.find_element(By.XPATH, '//*[@id="main-box"]/div/form/div[2]/input')
-    password_field.click()
+    password_field = click_button(p_driver, By.XPATH, '//*[@id="main-box"]/div/form/div[2]/input', 2, )
     password_field.send_keys(password)
     time.sleep(0.5)
-    sign_in_button = p_driver.find_element(By.XPATH, '//*[@id="sign-in-btn"]')
-    sign_in_button.click()
-    print("CLICKED!")
-    time.sleep(2)
-    continue_button = p_driver.find_element(By.XPATH, '//*[@id="continue-btn"]')
-    continue_button.click()
-    exploratory = p_driver.find_element(By.XPATH, '/html/body/div/div/section/div/div[1]/div/ul/li[3]/div[1]')
-    exploratory.click()
-    exploratory_attendance_rubric = p_driver.find_element(By.XPATH, '/html/body/div/div/section/div/div[1]/div/ul/li[3]/div[2]/div[3]/form/input[3]')
-    exploratory_attendance_rubric.click()
+    sign_in_button = click_button(p_driver, By.XPATH, '//*[@id="sign-in-btn"]', 2, )
+    continue_button = click_button(p_driver, By.XPATH, '//*[@id="continue-btn"]', 2, )
+    exploratory_button = click_button(p_driver, By.XPATH,
+                                      '/html/body/div/div/section/div/div[1]/div/ul/li[3]/div[1]', 2, )
+    exploratory_attendance_rubric_button = click_button(p_driver, By.XPATH,
+                                      '/html/body/div/div/section/div/div[1]/div/ul/li[3]/div[2]/div[3]/form/input[3]', 2, )
 
+    # time.sleep(0.5)
+    # username_field = p_driver.find_element(By.XPATH, '//*[@id="main-box"]/div/form/div[1]/input')
+    # username_field.click()
+
+    # password_field = p_driver.find_element(By.XPATH, '//*[@id="main-box"]/div/form/div[2]/input')
+    # password_field.click()
+
+    # sign_in_button = p_driver.find_element(By.XPATH, '//*[@id="sign-in-btn"]')
+    # sign_in_button.click()
+    # continue_button = p_driver.find_element(By.XPATH, '//*[@id="continue-btn"]')
+    # continue_button.click()
+    # exploratory = p_driver.find_element(By.XPATH, '/html/body/div/div/section/div/div[1]/div/ul/li[3]/div[1]')
+    # exploratory.click()
+    # exploratory_attendance_rubric = p_driver.find_element(By.XPATH, '/html/body/div/div/section/div/div[1]/div/ul/li[3]/div[2]/div[3]/form/input[3]')
+    # exploratory_attendance_rubric.click()
     # continue_button.click()
     # buttons = p_driver.find_element(By.XPATH, "//button")
     # print(buttons)
