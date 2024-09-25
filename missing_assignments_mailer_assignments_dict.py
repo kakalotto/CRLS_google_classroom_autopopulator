@@ -7,9 +7,8 @@ past_days = {
     'HTML 2': 'We continue our HTML unit, \n'
               'in which we put together previously learned concepts \n'
               'and include more CSS in our web page design.\n',
-    'Boxes,_Chrome_Developer_tools,_block_vs_inline_lab': "We started our third Web Design Unit, \n"
-                                                          " in which we begin learning tools for layout of a web page.\n",
-
+    'Boxes': "We started our third Web Design unit, \n"
+             "in which we begin learning tools for layout of a web page.\n",
     'Python 034 - Sorting hat functions': 'We started our fourth unit of Python programming, \n'
                                           'in which we learn about how to use functions.\n'
                                           'Functions are a way to shorten what we write \n'
@@ -50,6 +49,11 @@ past_days = {
                              'are in Google classroom.  If your student qualifies for reduced cost lunch, you will want to be sure\n'
                              'to have the proper paperwork set up with your student\'s learning community,\n'
                              'as the AP exam is much cheaper if you qualify for reduced cost lunch\n',
+    'BIOS': "We continued our computer hardware unit with CPUs and BIOS.  Students\n"
+            "learned theoretical aspects of the CPU (the brains of the computer) and\n"
+            "removed and installed CPUs on working machines.  We also went over\n"
+            "how BIOS systems can be password protected, and how to beat this password\n"
+            "protection.\n"
 }
 
 future_days = {
