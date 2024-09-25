@@ -93,9 +93,15 @@ future_days = {
                       'to use previous Scratch assignments, but internet, phone, and partners\n'
                       'are not allowed.   Remember that quizzes are 70% of the grade, \n'
                       'so please be sure to practice the review questions!',
+    'IT2 quiz 1': 'A quiz on hardware (ESD, RAM, PCI-e, and Storage) is coming soon.  There is a review \n'
+                  'document in Google classroom with a practice Socrative quiz.\n'
+                  'Remember that quizzes are 70% of the grade, so please be \n'
+                  'sure to practice.\n',
+    'IT2 quiz 1 retake': 'IT2 quiz1 retakes are coming soon.  If your student chooses to take this retake, \n'
+                         ' their first quiz is FULLY replaced (as if your student never took the first quiz).\n',
     'Web quiz 1': 'A quiz on HTML and intro CSS is coming soon.  There is a review \n'
-              'document in Google classroom with a practice page to make \n'
-              'Students will need to be able to make a similar web page \n'
+                  'document in Google classroom with a practice page to make \n'
+                  'Students will need to be able to make a similar web page \n'
               'during the quiz.\n'
               'Remember that quizzes are 70% of the grade, so please be \n'
               'sure to practice.\n',
@@ -125,14 +131,16 @@ future_days = {
 nicknames_dict = {
     '25aprajapati@cpsd.us': 'Ashi',
     '26elevy@cpsd.us': 'Manu',
+    '27nstauffer@cpsd.us': 'Nick',
+    '28btine@cpsd.us': 'Ben',
     '27lglorioso@cpsd.us': 'Leo',
     '26nmalaviya@cpsd.us': 'Nik',
     '28rmunson-ghassemi@cpsd.us': 'Razi',
     '28esu@cpsd.us': 'Ellie',
     '25kfaye@cpsd.us': 'Khadi',
     '25efraley@cpsd.us': 'Leigh',
-    '27nstauffer@cpsd.us': 'Nick',
-    '28btine@cpsd.us': 'Ben',
+    '26noconnell@cpsd.us': 'Nate',
+
 }
 
 teachers_dict = {
