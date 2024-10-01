@@ -322,7 +322,7 @@ def add_skills_category(p_driver, category):
     action = ActionChains(p_driver)
 
     for key in field_value.keys():
-        # time.sleep(1)
+        time.sleep(2)
         wait_for_element(p_driver, p_name=key)
         print(f"finding the element {key}")
         element = p_driver.find_element(By.NAME, key)
