@@ -18,8 +18,9 @@ import getpass
 # aspen_username = config.get('LOGIN', 'username', fallback='')
 # aspen_password = config.get('LOGIN', 'password', fallback='')
 # Aspen
-aspen_username = input("Give me your aspen username (include .cpsd.us, i.e. ewu@cpsd.us) ")
-aspen_password = getpass.getpass('Give me the password for Aspen ')
+aspen_username = input("Give me your aspen username (no .cpsd.us)")
+aspen_password = getpass.getpass('Type your password plz ')
+aspen_username = aspen_username + '@cpsd.us'
 
 
 today_quarter_obj = which_quarter_today()
@@ -156,110 +157,115 @@ course_letter = 'E' # Culinary
 course_prefix = 'T120'
 # T120L-I-001
 
+# course_letter = 'L'  # IT/CS
+# course_letter = 'B'  # Biotech
+# course_letter = 'E'  # Culinary
 # Aspen
-all_previous_assignments = []
-for rotation_number in range(1, 12):
-    if rotation_number < 10:
-        course_number = course_prefix + course_letter + '-I-00' + str(rotation_number)
-    else:
-        course_number = course_prefix + course_letter + '-I-0' + str(rotation_number)
+course_letters = ['A', 'C', 'D', 'F', 'G', 'H', 'J', 'K']
+for course_letter in course_letters:
+    all_previous_assignments = []
+    for rotation_number in range(1, 12):
+        if rotation_number < 10:
+            course_number = course_prefix + course_letter + '-I-00' + str(rotation_number)
+        else:
+            course_number = course_prefix + course_letter + '-I-0' + str(rotation_number)
 
 
-    db_filename = 'database_gc_assignments_put_in_aspen_' + course_number + '.db'
+        db_filename = 'database_gc_assignments_put_in_aspen_' + course_number + '.db'
 
-    db_conn = create_connection(db_filename)
-    sql = 'SELECT * FROM aspen_assignments;'
-    style = ''
-    rows = query_db(db_conn, sql)
-    this_class_posted_assignments = [x[0] for x in rows]
-    all_previous_assignments.extend(this_class_posted_assignments)
-    print(f"all previous assignment now {all_previous_assignments}")
+        db_conn = create_connection(db_filename)
+        sql = 'SELECT * FROM aspen_assignments;'
+        style = ''
+        rows = query_db(db_conn, sql)
+        this_class_posted_assignments = [x[0] for x in rows]
+        all_previous_assignments.extend(this_class_posted_assignments)
+        print(f"all previous assignment now {all_previous_assignments}")
 
-for rotation_number in range(1, 12):
-    if rotation_number < 10:
-        course_number = course_prefix + course_letter + '-I-00' + str(rotation_number)
-    else:
-        course_number = course_prefix + course_letter + '-I-0' + str(rotation_number)
+    for rotation_number in range(1, 12):
+        if rotation_number < 10:
+            course_number = course_prefix + course_letter + '-I-00' + str(rotation_number)
+        else:
+            course_number = course_prefix + course_letter + '-I-0' + str(rotation_number)
 
-    print(f"Course number xxx {course_number}")
-    assignment_numbers = assignments_list[rotation_number - 1]
-    assignment_names = ['day_' + str(assignment_number) for assignment_number in assignment_numbers ]
-    print("Here is the list of assignments we are putting in xxx (initial check):")
-    print(assignment_names)
+        print(f"Course number xxx {course_number}")
+        assignment_numbers = assignments_list[rotation_number - 1]
+        assignment_names = ['day_' + str(assignment_number) for assignment_number in assignment_numbers ]
+        print("Here is the list of assignments we are putting in xxx (initial check):")
+        print(assignment_names)
 
 
-    final_assignment_names =  []
-    for assignment_name in assignment_names:
-        if assignment_name not in all_previous_assignments:
-            final_assignment_names.append(assignment_name)
-    assignment_names = final_assignment_names
-    print(f"These are final assignments {final_assignment_names}")
+        final_assignment_names =  []
+        for assignment_name in assignment_names:
+            if assignment_name not in all_previous_assignments:
+                final_assignment_names.append(assignment_name)
+        assignment_names = final_assignment_names
+        print(f"These are final assignments {final_assignment_names}")
 
-    courseworks = []
-    for assignment_name in assignment_names:
-        day_number = re.sub(r'day_', '', assignment_name )
-        day_number = int(day_number) - 1
-        coursework = {}
-        coursework['title'] = assignment_name
-        coursework['state'] = 'Published'
-        date = dates[day_number]
-        creation_time = date_to_classroom_creation_date(date)
-        coursework['creationTime'] = creation_time
-        coursework['scheduledTime'] = creation_time
+        courseworks = []
+        for assignment_name in assignment_names:
+            day_number = re.sub(r'day_', '', assignment_name )
+            day_number = int(day_number) - 1
+            coursework = {}
+            coursework['title'] = assignment_name
+            coursework['state'] = 'Published'
+            date = dates[day_number]
+            creation_time = date_to_classroom_creation_date(date)
+            coursework['creationTime'] = creation_time
+            coursework['scheduledTime'] = creation_time
 
-        due_date = date_to_classroom_due_date(date)
-        print(due_date)
-        coursework['dueDate'] = due_date
-        coursework['maxPoints'] = 100
-        courseworks.append(coursework)
-    print("Printing out all courseworks")
-    for coursework in courseworks:
-        print(coursework)
-    print("Opening up the sqlite DB, which has info about classes that have already been put in Aspen.\n"
-          "If you need something to edit this manually: https://sqlitebrowser.org/")
-    db_filename = 'database_gc_assignments_put_in_aspen_' + course_number + '.db'
-    db_conn = create_connection(db_filename)
-    print("connection created")
-    sql = 'CREATE TABLE IF NOT EXISTS aspen_assignments (id varchar(60) PRIMARY KEY, date varchar(60));'
-    # sql = 'CREATE TABLE IF NOT EXISTS aspen_assignments (id varchar(60) PRIMARY KEY);'
-
-    execute_sql(db_conn, sql)
-    sql = 'SELECT * FROM aspen_assignments;'
-    style = ''
-    rows = query_db(db_conn, sql)
-    if rows and len(rows[0]) == 1:
-        print("classroom_assignments_to_aspen: old style")
-        previous_assignments = [x[0] for x in rows]
-        style = 'no_due_dates'
-    else:
-        print("classroom_assignments_to_aspen: new style")
-        previous_assignments = []
-        for row in rows:
-            previous_assignments.append([row[0], row[1]])
-        style = 'due_dates'
-    print(f"fff previous_assignments are here, extracted from the DB!! {previous_assignments}")
-    if len(courseworks) == 0:
-        print("No assignments to enter into Aspen!")
-    else:
-        print("classroom _assignments_to_aspen Here are the final courseworks!")
-        for course in courseworks:
-            print(course['title'])
-        driver = generate_driver()
-        aspen_login(driver, username=aspen_username, password=aspen_password)
-
-        # goto_categories(driver, course_number)
-        # add_skills_category(driver, 'blah')
-        # print("asdf")
-
-        goto_assignments(driver, course_number)
-        aspen_assignments = get_assignments_from_aspen(driver)
-        courseworks = scrub_courseworks(courseworks, 'Aspen', aspen_assignments, content_knowledge_completion)
-
-        print("The Final list of courses we are going to try to put in is this:")
+            due_date = date_to_classroom_due_date(date)
+            print(due_date)
+            coursework['dueDate'] = due_date
+            coursework['maxPoints'] = 100
+            courseworks.append(coursework)
+        print("Printing out all courseworks")
         for coursework in courseworks:
-            print(coursework['title'])
-        add_assignments(driver, courseworks, content_knowledge_completion, db_conn, default_category, style)
-        driver.close()
+            print(coursework)
+        print("Opening up the sqlite DB, which has info about classes that have already been put in Aspen.\n"
+              "If you need something to edit this manually: https://sqlitebrowser.org/")
+        db_filename = 'database_gc_assignments_put_in_aspen_' + course_number + '.db'
+        db_conn = create_connection(db_filename)
+        print("connection created")
+        sql = 'CREATE TABLE IF NOT EXISTS aspen_assignments (id varchar(60) PRIMARY KEY, date varchar(60));'
+        # sql = 'CREATE TABLE IF NOT EXISTS aspen_assignments (id varchar(60) PRIMARY KEY);'
+
+        execute_sql(db_conn, sql)
+        sql = 'SELECT * FROM aspen_assignments;'
+        style = ''
+        rows = query_db(db_conn, sql)
+        if rows and len(rows[0]) == 1:
+            print("classroom_assignments_to_aspen: old style")
+            previous_assignments = [x[0] for x in rows]
+            style = 'no_due_dates'
+        else:
+            print("classroom_assignments_to_aspen: new style")
+            previous_assignments = []
+            for row in rows:
+                previous_assignments.append([row[0], row[1]])
+            style = 'due_dates'
+        print(f"fff previous_assignments are here, extracted from the DB!! {previous_assignments}")
+        if len(courseworks) == 0:
+            print("No assignments to enter into Aspen!")
+        else:
+            print("classroom _assignments_to_aspen Here are the final courseworks!")
+            for course in courseworks:
+                print(course['title'])
+            driver = generate_driver()
+            aspen_login(driver, username=aspen_username, password=aspen_password)
+
+            # goto_categories(driver, course_number)
+            # add_skills_category(driver, 'blah')
+            # print("asdf")
+
+            goto_assignments(driver, course_number)
+            aspen_assignments = get_assignments_from_aspen(driver)
+            courseworks = scrub_courseworks(courseworks, 'Aspen', aspen_assignments, content_knowledge_completion)
+
+            print("The Final list of courses we are going to try to put in is this:")
+            for coursework in courseworks:
+                print(coursework['title'])
+            add_assignments(driver, courseworks, content_knowledge_completion, db_conn, default_category, style)
+            driver.close()
 
     #
     # driver = generate_driver()
