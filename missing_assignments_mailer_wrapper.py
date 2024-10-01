@@ -13,6 +13,8 @@ config_filename = "crls_teacher_tools.ini"
 mailerinfo = read_mailer_info(config_filename)
 classes = mailerinfo[0]
 scholar_guardians = mailerinfo[3]
+
+
 send_email = mailerinfo[4]
 spreadsheet_ids = mailerinfo[5]
 sheet_ids = mailerinfo[6]
