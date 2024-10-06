@@ -9,12 +9,23 @@ past_days = {
               'and include more CSS in our web page design.\n',
     'Boxes': "We started our third Web Design unit, \n"
              "in which we begin learning tools for layout of a web page.\n",
+    'Border-radius': "We continued our third Web Design unit,\n"
+                     "in which we learn how to make webpages look better with\n"
+                     "things like shadows, rounded corners, and even animations!\n",
+
     'Python 034 - Sorting hat functions': 'We started our fourth unit of Python programming, \n'
                                           'in which we learn about how to use functions.\n'
                                           'Functions are a way to shorten what we write \n'
                                           '(for example, cookie recipe vs the 8 steps of making cookies).\n'
                                           'Using functions in our programming can make code easier to read\n'
                                           ' and easier to maintain.\n',
+    'Python 039 - Biggest pumpkin': 'We wrapped up our fourth unit of Python programming, \n'
+                                    'in which we learn about how to use functions.\n'
+                                    'We how to use functions with and without returns\n'
+                                    'Historically, functions do give students some troubles, so if\n'
+                                    'your student is having problems, we are available before and\n'
+                                    'after school.\n'
+    ,
     'Python 041 - The Samuel L. Jackson algorithm': 'We started our fifth unit of Python programming, \n'
                                                     'in which we put together previously learned concepts in\n'
                                                     'bigger codes.  This is our first attempt at longer codes, \n'
@@ -33,6 +44,8 @@ past_days = {
                                  'in which we learn about repeats, asking questions,\n'
                                  'and if/else statements.  We will use these concepts later\n'
                                  'when we learn how to program in Python.\n',
+    'Scratch 2.6 What goes up': 'We continued our second unit of Scratch programming in which we learn\n'
+                                 'how to simulate gravity in a video game.\n',
     'What is the internet': 'We learned about the basics of the internet. \nTopics included '
                             'internet redundancy and fault tolerance,\n'
                             'the basics of internet protocols,\n'
@@ -53,7 +66,13 @@ past_days = {
             "learned theoretical aspects of the CPU (the brains of the computer) and\n"
             "removed and installed CPUs on working machines.  We also went over\n"
             "how BIOS systems can be password protected, and how to beat this password\n"
-            "protection.\n"
+            "protection.\n",
+    'Motherboards': "We continued our computer hardware unit with power and motherboards.  Students\n"
+            "learned theoretical aspects of the power, including how to protect computers and\n"
+            "removed and installed power supplies on working machines.  We also identified\n"
+            "all of the parts of the motherboard and installed motherboards in computers.\n",
+    'WDS still': "We continued our work on creating an virtualbox environment with four servers in which\n"
+                 "we can have automated installs of computers via network, which is how things are done industry.\n",
 }
 
 future_days = {
@@ -65,7 +84,7 @@ future_days = {
                     'to use existing Pycharm codes that are at school for this quiz.\n'
                     'Remember that quizzes are 70% of the grade, so please be sure to practice\n'
                     'the review questions!\n',
-    'Quiz (Encoding + Internet)': 'A code on encoding is coming soon.  There is a review document \n'
+    'Quiz (Encoding + Internet)': 'A quiz on encoding is coming soon.  There is a review document \n'
                                   'in Google classroom with a practice Google form as well as a \n'
                                   'practice Google doc.  This is a CLOSED note quiz with no calculators.\n'
                                   'Students will need to be able to do binary on pencil and paper.\n'
@@ -145,7 +164,9 @@ nicknames_dict = {
     '25kfaye@cpsd.us': 'Khadi',
     '25efraley@cpsd.us': 'Leigh',
     '26noconnell@cpsd.us': 'Nate',
-
+    '28haaria@cpsd.us': 'Ahoo',
+    '28rscott@cpsd.us': 'Remy',
+    '28ebowersliu@cpsd.us': 'Evie',
 }
 
 teachers_dict = {

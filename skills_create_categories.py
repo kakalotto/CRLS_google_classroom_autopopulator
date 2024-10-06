@@ -9,17 +9,19 @@ from helper_functions.db_functions import execute_sql, query_db, create_connecti
 from helper_functions.skills_functions import date_to_classroom_due_date, date_to_classroom_creation_date
 import getpass
 
-# config_filename = "crls_teacher_tools.ini"
-# print(f"Opening up this config file now: {config_filename}")
-# config = configparser.ConfigParser()
-# config.read("crls_teacher_tools.ini")
+config_filename = "crls_teacher_tools.ini"
+print(f"Opening up this config file now: {config_filename}")
+config = configparser.ConfigParser()
+config.read("crls_teacher_tools.ini")
 # import getpass
 
-# aspen_username = input("Give me your aspen username (no .cpsd.us)")
-# aspen_password = getpass.getpass('Type your password plz ')
 # aspen_username = config.get('LOGIN', 'username', fallback='')
 # aspen_password = config.get('LOGIN', 'password', fallback='')
-# aspen_username = aspen_username + '.cpsd.us'
+aspen_username = input("Give me your aspen username (no .cpsd.us)")
+aspen_password = getpass.getpass('Type your password plz ')
+# aspen_username = config.get('LOGIN', 'username', fallback='')
+# aspen_password = config.get('LOGIN', 'password', fallback='')
+aspen_username = aspen_username + '@cpsd.us'
 
 today_quarter_obj = which_quarter_today()
 dates = ['9/3/2024',
@@ -148,30 +150,31 @@ p_style = "no_due_dates"
 course_letter = 'L'  # IT/CS
 course_letter = 'B'  # Biotech
 course_letter = 'E'  # Culinary
-
+course_letters = ['A', 'C', 'D', 'F', 'G', 'H', 'J', 'K']
 course_prefix = 'T120'
 # T120L-I-001
 
 # Aspen
-aspen_username = input("Give me your aspen username (include .cpsd.us, i.e. ewu@cpsd.us) ")
-aspen_password = getpass.getpass('Give me the password for Aspen ')
+# aspen_username = input("Give me your aspen username (include .cpsd.us, i.e. ewu@cpsd.us) ")
+# aspen_password = getpass.getpass('Give me the password for Aspen ')
+for course_letter in course_letters:
 
-for rotation_number in range(1, 12):
-    if rotation_number < 10:
-        course_number = course_prefix + course_letter + '-I-00' + str(rotation_number)
-    else:
-        course_number = course_prefix + course_letter + '-I-0' + str(rotation_number)
+    for rotation_number in range(1, 12):
+        if rotation_number < 10:
+            course_number = course_prefix + course_letter + '-I-00' + str(rotation_number)
+        else:
+            course_number = course_prefix + course_letter + '-I-0' + str(rotation_number)
 
-    print(f"Course number xxx {course_number}")
-    assignment_numbers = assignments_list[rotation_number - 1]
-    print("classroom _assignments_to_aspen Here are the final courseworks!")
-    driver = generate_driver()
-    aspen_login(driver, username=aspen_username, password=aspen_password)
-    goto_assignments(driver, course_number)
-    print("Done with goto assignments")
-    goto_categories(driver, course_number)
-    add_skills_category(driver, 'exp_avg')
-    driver.close()
+        print(f"Course number xxx {course_number}")
+        assignment_numbers = assignments_list[rotation_number - 1]
+        print("classroom _assignments_to_aspen Here are the final courseworks!")
+        driver = generate_driver()
+        aspen_login(driver, username=aspen_username, password=aspen_password)
+        goto_assignments(driver, course_number)
+        print("Done with goto assignments")
+        goto_categories(driver, course_number)
+        add_skills_category(driver, 'exp_avg')
+        driver.close()
 
 
 
