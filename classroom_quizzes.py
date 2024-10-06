@@ -3,6 +3,7 @@ from helper_functions.read_ini_functions import read_quizzes_info, read_period_i
 from helper_functions.post_assignment import post_assignment, change_assignment_assignees
 import datetime
 import re
+from generate_classroom_aspen_tools_credentials import generate_classroom_aspen_tools_credentials
 
 # Read in info
 config_filename = "crls_teacher_tools.ini"
@@ -19,10 +20,13 @@ due_date = quiz_info_dict['due_date']
 assignment_counter = 0
 # need ID course
 # spreadsheet ID? nah
-service_classroom = generate_classroom_credential()
+# service_classroom = generate_classroom_credential()
+[service_classroom, service_sheets, service_docs] = generate_classroom_aspen_tools_credentials()
+
 course_id = quiz_info_dict['course_id']
 course_results = service_classroom.courses().get(id=course_id).execute()
 #print(course_results)
+print(f"course results {course_results}")
 course_description = course_results['section']
 #course_description='23/24 S1, P1'
 points = 23
@@ -100,14 +104,16 @@ start_time_hour = start_time_list[0]
 start_time_minute = start_time_list[1]
 start_time_obj = datetime.datetime(year=int(year), month=int(month), day=int(dom),
                                    hour=int(start_time_hour), minute=int(start_time_minute))
-start_time_obj = start_time_obj + datetime.timedelta(minutes=60)
+# start_time_obj = start_time_obj + datetime.timedelta(minutes=60)
+start_time_obj = start_time_obj
+
 # print(period_dict)
 # print(start_time_obj)
 
 if date_obj.weekday() == 3 or date_obj.weekday() == 4:
-    due_time_obj = start_time_obj + datetime.timedelta(minutes=75)
+    due_time_obj = start_time_obj + datetime.timedelta(minutes=65)
 else:
-    due_time_obj = start_time_obj + datetime.timedelta(minutes=85)
+    due_time_obj = start_time_obj + datetime.timedelta(minutes=75)
 
 post_time_obj = due_time_obj - datetime.timedelta(minutes=int(quiz_length)) \
                     - datetime.timedelta(minutes=5)
