@@ -139,6 +139,7 @@ nicknames_dict = {
     '28btine@cpsd.us': 'Ben',
     '27lglorioso@cpsd.us': 'Leo',
     '26nmalaviya@cpsd.us': 'Nik',
+    '28haaria@cpsd.us': 'Ahoo',
     '28rmunson-ghassemi@cpsd.us': 'Razi',
     '28esu@cpsd.us': 'Ellie',
     '25kfaye@cpsd.us': 'Khadi',
