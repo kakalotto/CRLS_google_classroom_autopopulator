@@ -9,7 +9,7 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
     :param p_send_email: Boolean whether to send email (Bool)
     :param p_teachercc: email address to cc on this class (string)
     :param p_message: Email message to append for this class (string)
-    :param p_scholar_guardians: Dictionary of keys scholar emails, values guardian emails.
+    :param p_scholar_guardians: Dictionary of keys scholar emails, values guardian emails., deprecated with Maya
     :param p_classes_students_dict: dictionary from Maya's program giving student info emails, birthdays
     :param p_classes_students_dict: dictionary hard coded with nicknames
     :param p_spreadsheet_ids: list of spreadsheet ids
@@ -180,8 +180,8 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
         this_date_obj = this_date_obj.date()
         # print(f"this day obj {this_date_obj}")
         if this_date_obj > one_week_previous_obj:
-            one_week_previous_index = i
-            print(f"index of 6 days ago is today!!!! {one_week_previous_index}")
+            one_week_previous_index = i-2
+            print(f"index of 6 days ago is today!!!! {one_week_previous_index} this row {day_info}")
             break
     # Find index of future
     found = False
@@ -204,9 +204,9 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
     print(f"values ")
     print(values)
     assignments = []
-    while counter < today_index:
+    while counter < today_index-1:
         row = values[counter]
-        print(row)
+        print(f'looking at this row {row}')
         try:
             todays_assignments_string = row[3]
         except IndexError:
@@ -339,18 +339,23 @@ def missing_assignments_mailer(p_config_filename, p_gc_name, p_send_email=False,
 
             if p_send_email:
                 email_message = MIMEMultipart()
-                if email_address in p_scholar_guardians.keys():
-                    if len(maya_student_info_dict[email_address]['caretaker_emails']) == 2:
-                        caretaker_string = maya_student_info_dict[email_address]['caretaker_emails'][0] + ',' + \
-                                           maya_student_info_dict[email_address]['caretaker_emails'][1]
-                    else:
-                        caretaker_string = maya_student_info_dict[email_address]['caretaker_emails'][0]
-                    email_message['to'] = email_address + ',' + caretaker_string
+                print(f"email address is this {email_address}")
+                print(f"_scholar_guardians {p_scholar_guardians}")
+                # if email_address in p_scholar_guardians.keys():
+                if len(maya_student_info_dict[email_address]['caretaker_emails']) == 2:
+                    caretaker_string = maya_student_info_dict[email_address]['caretaker_emails'][0] + ',' + \
+                                       maya_student_info_dict[email_address]['caretaker_emails'][1]
+                else:
+                    caretaker_string = maya_student_info_dict[email_address]['caretaker_emails'][0]
+                email_message['to'] = email_address + ',' + caretaker_string
+
                 # else:
                 #     email_message['to'] = email_address
                 if p_teachercc:
                     email_message['cc'] = p_teachercc
-                email_message['subject'] = p_gc_name + '  assignments report'
+                email_message['subject'] = p_gc_name + ' assignments report'
+                print(f"email message {email_message} to {email_message['to']} cc {email_message['cc']} "
+                      f"subjec {email_message['subject']} msg_txt {msg_text}")
                 email_message.attach(MIMEText(msg_text, 'plain'))
                 raw_string = base64.urlsafe_b64encode(email_message.as_bytes()).decode()
                 send_message = service_gmail.users().messages().send(userId='me', body={'raw': raw_string}).execute()
