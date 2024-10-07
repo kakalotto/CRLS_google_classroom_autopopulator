@@ -12,6 +12,11 @@ past_days = {
     'Border-radius': "We continued our third Web Design unit,\n"
                      "in which we learn how to make webpages look better with\n"
                      "things like shadows, rounded corners, and even animations!\n",
+    'Fancy links - putting it together': "We continued our third Web Design unit,\n"
+                                         "in which we learn how to make webpages look better.\n"
+                                         "This week, we looked at putting shadows, changing colors,\n"
+                                         "and subtle translations to make modern-looking links that pop\n"
+                                         "We also look at using icons and studied color theory.",
 
     'Python 034 - Sorting hat functions': 'We started our fourth unit of Python programming, \n'
                                           'in which we learn about how to use functions.\n'
@@ -30,6 +35,12 @@ past_days = {
                                                     'in which we put together previously learned concepts in\n'
                                                     'bigger codes.  This is our first attempt at longer codes, \n'
                                                     'which we will need to be able to do for the AP exam.\n',
+    'Python 044 NBA finals': 'We continue our fifth unit of Python programming, \n'
+                             'by writing a simple simulation of the NBA finals\n'
+                             'Making simulations with simple probabilities dictating the outcome of the program\n'
+                             'is a transferrable skill that shows up in many types of games -\n '
+                             'baseball and softball simulators, role playing games, and basically any game\n'
+                             'of chance.\n',
     'Python 047 The Rock Says': 'We continue our fifth unit of Python programming, \n'
                                 'in which we put together previously learned concepts in\n'
                                 'bigger codes. We will need to be able to write longer codes for the AP exam.\n',
@@ -46,6 +57,11 @@ past_days = {
                                  'when we learn how to program in Python.\n',
     'Scratch 2.6 What goes up': 'We continued our second unit of Scratch programming in which we learn\n'
                                  'how to simulate gravity in a video game.\n',
+    'Scratch 3.5 Platform game': 'We continued our programming in Scratch by starting to make a simplified platform game!\n'
+                                 'We put together things we learned from before about simulating gravity,\n'
+                                 'moving sprites, and make a simplified Mario-type game.  It is neat\n'
+                                 'for students to see that they understand the inner-workings of\n'
+                                 'the games that they play on console!',
     'What is the internet': 'We learned about the basics of the internet. \nTopics included '
                             'internet redundancy and fault tolerance,\n'
                             'the basics of internet protocols,\n'
@@ -71,8 +87,16 @@ past_days = {
             "learned theoretical aspects of the power, including how to protect computers and\n"
             "removed and installed power supplies on working machines.  We also identified\n"
             "all of the parts of the motherboard and installed motherboards in computers.\n",
+    'Printers 1': "We continued our computer hardware unit with printers.  We learned to \n"
+                  "add printers, debug printers, and about different types of printers.\n"
+                  "The classroom does not have a printer, but after this lab, if your student\n"
+                  "needs to print something like an SAT admissions form to the office printer, \n"
+                  "this is now possible!",
     'WDS still': "We continued our work on creating an virtualbox environment with four servers in which\n"
                  "we can have automated installs of computers via network, which is how things are done industry.\n",
+    'Databases 0': "We started a unit on databases, in which we install a database on a virtual machine.\n"
+                   "Databases are used to store large amounts of information and it is important to know how\n"
+                   "to manage them in corporate IT environments.",
 }
 
 future_days = {
