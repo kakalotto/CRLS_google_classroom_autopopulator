@@ -148,6 +148,9 @@ def classroom_grades_to_aspen(p_gc_classname, p_aspen_classname, *, content_know
                 students_done = True
 
         print("Putting in the grades now")
+        print(f" Here is what to put in gc_assignment_scores_student_id {gc_assignment_scores_student_id}\n"
+              f" aspen students {aspen_students}, aspen assignments {aspen_assignments},"
+              f" content knowledge {content_knowledge_completion} ")
         input_assignments_into_aspen(driver, gc_assignment_scores_student_id, aspen_students,
                                      aspen_assignments,
                                      content_knowledge_completion, db_conn)

@@ -22,15 +22,16 @@ now = datetime.datetime.now()
 aspen_username = input("Give me your aspen username (include .cpsd.us, i.e. ewu@cpsd.us) ")
 aspen_password = getpass.getpass('Give me the password for Aspen ')
 # programs = ['Info Technology']
-programs = ['Biotechnology']
-programs = ['Culinary Arts']
-# programs_dict = {'Biotechnology': {'letter': 'B'},
-#                  'Info Technology': {'letter': 'L'}}
-programs_dict = {
-                 'Early Ed & Care': {'letter': 'G'}}
-programs_dict = {
-                 'Info Technology': {'letter': 'L'}}
-programs_dict = {'Biotechnology': {'letter': 'B'}}
+# programs = ['Biotechnology']
+# programs = ['Culinary Arts']
+programs = ['Auto', 'Early Ed', 'Carpentry', 'Health assisting',
+            'media', 'engineering', 'something', 'something'
+            ]
+
+programs_dict = {'Biotechnology': {'letter': 'B'},
+                 'Early Ed & Care': {'letter': 'G'},
+                 'Info Technology': {'letter': 'L'}
+                 }
 
 course_prefix = 'T120'
 # course_letter = 'L'
@@ -145,38 +146,41 @@ rotation_change = [
 
 # course_letter = 'B' # BioTech
 
+course_letter = 'L'  # IT/CS
+course_letter = 'B'  # Biotech
+course_letter = 'E'  # Culinary
+course_letters = ['A', 'C', 'D', 'F', 'G', 'H', 'J', 'K']
 
-# Figure out what days are already done
-all_completed_days = []
-for rotation_number in range(1, 12):
-
-    if rotation_number < 10:
-        course_number = course_prefix + course_letter + '-I-00' + str(rotation_number)
-    else:
-        course_number = course_prefix + course_letter + '-I-0' + str(rotation_number)
-    db_filename = 'database_gc_grades_put_in_aspen_' + course_number + '.db'
-
-    db_conn = create_connection(db_filename)
-
-    sql = 'CREATE TABLE IF NOT EXISTS  "completed_days" ("id"	varchar(60),  PRIMARY KEY("id"));'
-    execute_sql(db_conn, sql)
-
-    sql = 'SELECT * FROM completed_days;'
-    style = ''
-    rows = query_db(db_conn, sql)
-    completed_days = [x[0] for x in rows]
-    # this_class_posted_assignments = set(this_class_posted_assignments)
-    all_completed_days.extend(completed_days)
-    # print(f"all previous assignment now {all_previous_assignments}")
-
-print(f"final all  completed days {all_completed_days}")
-
-
-driver = generate_skills_driver()
-skills_login(driver,  username=t_username, password=t_password)
-
-# Extract data from skills
 for program in programs_dict.keys():
+
+    course_letter = programs_dict[key]['letter']
+
+    # Figure out what days are already done
+    all_completed_days = []
+    for rotation_number in range(1, 12):
+        if rotation_number < 10:
+            course_number = course_prefix + course_letter + '-I-00' + str(rotation_number)
+        else:
+            course_number = course_prefix + course_letter + '-I-0' + str(rotation_number)
+        db_filename = 'database_gc_grades_put_in_aspen_' + course_number + '.db'
+        db_conn = create_connection(db_filename)
+        sql = 'CREATE TABLE IF NOT EXISTS  "completed_days" ("id"	varchar(60),  PRIMARY KEY("id"));'
+        execute_sql(db_conn, sql)
+        sql = 'SELECT * FROM completed_days;'
+        style = ''
+        rows = query_db(db_conn, sql)
+        completed_days = [x[0] for x in rows]
+        # this_class_posted_assignments = set(this_class_posted_assignments)
+        all_completed_days.extend(completed_days)
+        # print(f"all previous assignment now {all_previous_assignments}")
+
+    print(f"final all  completed days {all_completed_days}\n"
+          f"for this rotation {course_letter}")
+
+    driver = generate_skills_driver()
+    skills_login(driver,  username=t_username, password=t_password)
+
+    # Extract data from skills
     print(f"Clicking program {program}")
     select = Select(driver.find_element(By.ID, 'whatprogramnumber'))
     # select by visible text
@@ -234,12 +238,12 @@ for program in programs_dict.keys():
     print(f"this is the grade dictionary {grade_dict}")
     print("final sleeping")
     driver.close()
-# # {1:[{2:{}}, {3:{}}, {4:{}}]   }
-# # key 2, 3, 4, 5 (day)
-# # val dict {id: grade}
-#
-# # key 1 2 3  (rotation
-# # val {2: {val dict} , 3: {val dict}}
+    # # {1:[{2:{}}, {3:{}}, {4:{}}]   }
+    # # key 2, 3, 4, 5 (day)
+    # # val dict {id: grade}
+    #
+    # # key 1 2 3  (rotation
+    # # val {2: {val dict} , 3: {val dict}}
     final_aspen_grade_dict = {}
     for day in grade_dict.keys():  # assignment
         rotation = which_rotation(rotation_change, day)
@@ -372,7 +376,7 @@ for program in programs_dict.keys():
                 # print(p_input)
                 if re.search(r'grdrow[0-9]+', p_input.get_attribute('id')):
                     row_count += 1
-            if abs(row_count - num_students) > 3  and counter != 10:
+            if abs(row_count - num_students) > 3 and counter != 10:
                 print('row count found in page' + str(row_count))
                 # print(p_aspen_student_ids)
                 print(f'Num students is {num_students}')
@@ -557,7 +561,7 @@ for program in programs_dict.keys():
                 else:
                     print(f"last check to add completed added grades {added_grades} num_aspen_students {num_aspen_students} ")
         driver.close()
-        # time.sleep(400)
+    # time.sleep(400)
 # gc_assignments_scores_student_id
 # {'cpus': [[monique, 63], ['apollo barua', 63] }
 # aspen students {'barua, apoollo' : 'stdx2002029840', "bennet-richard":'stdX2002104663}
