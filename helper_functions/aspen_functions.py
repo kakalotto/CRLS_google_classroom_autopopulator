@@ -15,7 +15,7 @@ def generate_driver():
 #    p_driver = webdriver.Chrome(ChromeDriverManager().install())
     service = Service()
     options = webdriver.ChromeOptions()
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
     p_driver = webdriver.Chrome(service=service, options=options)
     # p_driver.get('https://aspen.cpsd.us')
     p_driver.get('https://aspen.cpsd.us/aspen/logonSSO.do?deploymentId=ma-cambridge&districtId=*dst&idpName=Cambridge%20Google%20SAML')
@@ -713,6 +713,9 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = p_name
     new_title = re.sub(r'Python - Dictionaries', 'Dict', new_title, re.X | re.S | re.M)
     new_title = re.sub('Anchor', 'A', new_title)
+    new_title = re.sub('DO NOW', 'DN', new_title)
+    new_title = re.sub('Why lists part ', 'l-p', new_title)
+
     new_title = re.sub('Module', 'M', new_title)
     new_title = re.sub('JavaScript', 'J', new_title)
     new_title = re.sub('section', 's', new_title)
@@ -726,7 +729,11 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'Final\sreview', 'Frev', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Post\sgraduate\splans,\s', 'grad', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Wireless', 'W', new_title, re.X | re.S | re.M)
+    new_title = re.sub('Printers', 'P', new_title)
     new_title = re.sub(r'Cracking', 'Cr', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'AWS: Cloud', 'A', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'AWS:', 'A', new_title, re.X | re.S | re.M)
+
     new_title = re.sub(r'Warmup', 'wup', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Create Task Practice', 'CrTaPr', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Project', 'P w', new_title, re.X | re.S | re.M)
@@ -742,6 +749,7 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'Typescript', 'TS', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Node', 'N', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'Install', 'I', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'Motherboard', 'MB', new_title)
 
 #
     new_title = re.sub(r'Set up Dev Env Part', 'Devenv', new_title, re.X | re.S | re.M)
