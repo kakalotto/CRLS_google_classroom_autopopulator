@@ -731,6 +731,9 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub(r'Wireless', 'W', new_title, re.X | re.S | re.M)
     new_title = re.sub('Printers', 'P', new_title)
     new_title = re.sub(r'Cracking', 'Cr', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'AWS: Computing Solutions', 'A C S', new_title, re.X | re.S | re.M)
+    new_title = re.sub(r'AWS: Cloud Computing Essentials', 'A C E', new_title, re.X | re.S | re.M)
+
     new_title = re.sub(r'AWS: Cloud', 'A', new_title, re.X | re.S | re.M)
     new_title = re.sub(r'AWS:', 'A', new_title, re.X | re.S | re.M)
 
