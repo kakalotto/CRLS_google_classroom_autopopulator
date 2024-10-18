@@ -715,6 +715,8 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub('Anchor', 'A', new_title)
     new_title = re.sub('DO NOW', 'DN', new_title)
     new_title = re.sub('Why lists part ', 'l-p', new_title)
+    new_title = re.sub('Databases', 'DB', new_title)
+    new_title = re.sub('Coding challenge', 'cg', new_title)
 
     new_title = re.sub('Module', 'M', new_title)
     new_title = re.sub('JavaScript', 'J', new_title)
@@ -1064,8 +1066,9 @@ def input_assignments_into_aspen(p_driver, p_assignments_from_classroom, p_aspen
             print("Aspen bug in loading page, reloading now...")
             p_driver.get(p_driver.current_url)
             p_driver.refresh()
+            time.sleep(1)
             wait_for_element_clickable(p_driver, p_xpath_el="//div[@class='scrollCell invisible-horizontal-scrollbar']")
-            time.sleep(1.5)
+            time.sleep(2)
             print("restarting, current counter is this: " + str(counter))
             counter += 1
         else:
