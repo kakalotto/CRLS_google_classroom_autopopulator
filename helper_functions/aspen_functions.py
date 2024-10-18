@@ -716,7 +716,7 @@ def convert_assignment_name(p_name, p_content_knowledge_completion):
     new_title = re.sub('DO NOW', 'DN', new_title)
     new_title = re.sub('Why lists part ', 'l-p', new_title)
     new_title = re.sub('Databases', 'DB', new_title)
-    new_title = re.sub('Coding challenge', 'cg', new_title)
+    new_title = re.sub('Coding challenge', 'cc', new_title)
 
     new_title = re.sub('Module', 'M', new_title)
     new_title = re.sub('JavaScript', 'J', new_title)
