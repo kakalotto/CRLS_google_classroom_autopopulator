@@ -18,12 +18,16 @@ content_knowledge_completion_value = config.getboolean("ASPEN", "content_knowled
 ignore_noduedate_value = config.getboolean('CLASSROOM', 'ignore_no_duedate', fallback=False)
 use_stored_gc_students_value = config.getboolean('CLASSROOM', 'use_stored_gc_students', fallback=False)
 
+counter = 1
 for key in all_classes.keys():
+    print(f"We are in classroom_grades_to_aspen_wrapper, on this class number: {counter}")
     classroom_grades_to_aspen(key, all_classes[key],
                               content_knowledge_completion=content_knowledge_completion_value,
                               username=username, password=password, p_config_filename=config_filename,
                               p_ignore_noduedate=ignore_noduedate_value,
                               p_use_stored_gc_students=use_stored_gc_students_value)
+    counter = counter + 1
+
 input("Press enter 2x to end")
 
 # ("https://www.googleapis.com/auth/classroom.courses "
